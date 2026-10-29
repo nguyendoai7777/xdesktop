@@ -33,11 +33,13 @@
   `cargo test` chạy cả hai crate; đo cỡ / RAM dùng `-p materiant`. Không bật `gpui-kit` feature `test-support` (xung
   đột `taffy`).
 - `materiant::init` đã gọi `theme::init`; đăng ký asset icon thêm SAU dòng đó trong `src/lib.rs`.
-- **Bẫy**: máy chạy thử là máy dùng thật của chủ dự án — trước khi giả lập phím / chụp màn hình gallery phải soát
-  `GetForegroundWindow() == MainWindowHandle`, không thì dừng (gd1_01 đã gửi nhầm Ctrl+T vào app khác). Xem
-  `materiant/CLAUDE.md` mục Bẫy.
-- **Soát lại khi làm**: `cargo test` (đang 17 unit + 3 UI + 1 gallery); `cargo run --example gallery -- --page style`;
-  trang `theme` để so màu token. Chi tiết gd1_01: `plan/materiant-gd1_01_theme.md` mục 9.
+- **Bẫy**: máy chạy thử là máy dùng thật của chủ dự án (hay chơi game ở màn chính) — chạy thử gallery CHỈ qua
+  `pwsh materiant/tools/gallery-run.ps1 -Page style -Keys "…"`: màn phụ, không giành focus, phím vào thẳng GPUI, ảnh
+  bằng PrintWindow; không `SendKeys` / chụp màn hình (gd1_01 đã gửi nhầm Ctrl+T vào game). Ripple cần CHUỘT ⇒ script
+  chưa giả lập được: kiểm hình học / thời lượng bằng unit test, đè / nhả chuột bằng `#[gpui::test]` `simulate_*`
+  trong `ui-tests/`, phần nhìn ⇒ `[owner-qa]`.
+- **Soát lại khi làm**: `cargo test` (đang 17 unit + 4 UI + 1 gallery); `tools/gallery-run.ps1 -Page style`; trang
+  `theme` để so màu token. Chi tiết gd1_01: `plan/materiant-gd1_01_theme.md` mục 9.
 
 Cuối **trục tuần tự**: xong task này mới mở bốn làn song song gd1_03–06. Vì các task song song **không được** sửa
 `style.rs` / `icon.rs`, task này phải đặt đủ token + icon chúng cần (mục 3).

@@ -92,14 +92,14 @@ quyết định D-* / F-* đã chốt.
 ## 6. Đóng task
 
 1. Điền mục 9 (bàn giao thực tế: số đo, lệnh soát, quyết định đã chốt, việc chờ kiểm tay) → `Trạng thái` ✅ (ngày).
-2. Bàn giao: chèn khối `## 0. Bàn giao từ <task>` + dấu `<!-- handoff: <task> -->` vào **task kế tiếp cùng repo, cùng
-   giai đoạn** (theo số; task trong làn song song ⇒ các task ghi nó ở dòng "Phụ thuộc") — khuôn ở
-   `_tasking-convention.md` mục 6. Task cuối giai đoạn ⇒ ghi vào lộ trình repo.
+2. Bàn giao: gọi skill **`handoff`** (chế độ A, tham số = mã task) — nó tìm task nhận (số kế tiếp, hoặc các task ghi
+   task này ở dòng "Phụ thuộc" khi lộ trình có làn song song), chèn khối `## 0. Bàn giao từ <task>` + dấu
+   `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `_tasking-convention.md` mục 6.
 3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
    `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Xung
    đột ⇒ dừng hỏi. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
-4. Commit plan ở repo gốc theo đường dẫn: `git commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<task kế> plan/_backlog.md`
-   (+ `docs/decisions.md` nếu có quyết định mới).
+4. Commit plan ở repo gốc theo đường dẫn: `git commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<các task nhận>
+   plan/_backlog.md` (+ `docs/decisions.md` nếu có quyết định mới; lộ trình repo commit ở repo đó).
 
 Báo chủ dự án ≤ 10 dòng: kết quả + commit từng repo, case xanh / đỏ, số đo chính, việc chủ dự án phải làm (lệnh chạy
 được, bước kiểm tay), đề xuất mục 10 đang chờ chọn.

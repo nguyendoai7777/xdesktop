@@ -1,7 +1,8 @@
 # Khung tệp task và cách ước lượng — workspace xdesktop
 
 > Bản Rust / desktop của `xbds/plan/_tasking-convention.md` (D-5), soạn 29/10/2026. Skill dùng khung này:
-> `.claude/skills/run-task` (làm một task), `.claude/skills/close-phase` (đóng giai đoạn).
+> `.claude/skills/run-task` (làm một task), `.claude/skills/handoff` (bàn giao khi xong task — mục 6),
+> `.claude/skills/close-phase` (đóng giai đoạn).
 
 ## 0. Bố cục + đặt tên — tên PHẢI nói lên thứ tự
 
@@ -102,7 +103,8 @@ Lệnh soát xanh mỗi repo: `cargo build`, `cargo clippy --all-targets -- -D w
 
 ## 6. Bàn giao khi xong
 
-Task vừa ✅ thì — TRƯỚC khi gộp `master` — chèn khối bàn giao vào **task kế tiếp cùng repo, cùng giai đoạn** (theo số;
+Làm bằng skill `handoff` (chế độ A; run-task mục 6 gọi). Task vừa ✅ thì — TRƯỚC khi gộp `master` — chèn khối bàn
+giao vào **task kế tiếp cùng repo, cùng giai đoạn** (theo số;
 task trong làn song song — lộ trình có sơ đồ làn, vd `materiant/ROADMAP.md` — ⇒ vào các task ghi nó ở dòng
 "Phụ thuộc"), ngay sau bảng thuộc tính; có khối cũ thì đặt khối mới lên trên:
 

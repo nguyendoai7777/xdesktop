@@ -32,9 +32,9 @@ vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `doc
   Thêm phụ thuộc lớn vào tiến trình nền ⇒ đo RAM trước / sau.
 - **`.claude` chỉ ở repo gốc**: rule, skill, agent, memory của mọi repo con sống ở `<gốc>/.claude`. Không `.agents/`,
   `.codex/`, `AGENTS.md`.
-- Quy trình Opus điều phối + subagent Sonnet (D-5, bê từ `xbds`): skill **`run-task`** (làm một task trong `plan/`, gồm
-  cả khuôn bàn giao của `handoff`) và **`close-phase`** (đóng giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style
-  `terse`, agent riêng, hook nhắc bàn giao — `plan/_backlog.md`.
+- Quy trình Opus điều phối + subagent Sonnet (D-5, bê từ `xbds`): skill **`run-task`** (làm một task trong `plan/`),
+  **`handoff`** (bàn giao khi task ✅ — run-task gọi; hoặc tài liệu bàn giao cho session khác) và **`close-phase`** (đóng
+  giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style `terse`, agent riêng, hook nhắc bàn giao — `plan/_backlog.md`.
 
 ## Memory của Claude dùng chung giữa các máy
 

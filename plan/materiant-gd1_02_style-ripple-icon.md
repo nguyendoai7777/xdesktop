@@ -10,6 +10,30 @@
 | Phụ thuộc mới | — (SVG Lucide chép vào repo — ISC, ghi nguồn + giấy phép ở `assets/icons/LICENSE-lucide`) |
 | File đụng tới | `src/style.rs` SỬA · `src/effect/mod.rs` + `src/effect/ripple.rs` SỬA · `src/window.rs` SỬA · `src/icon.rs` SỬA · `assets/icons/*.svg` MỚI · `src/lib.rs` SỬA (đăng ký asset) · `examples/gallery/pages/style.rs` SỬA |
 
+## 0. Bàn giao từ materiant-gd1_01 (29/10/2026)
+
+<!-- handoff: materiant-gd1_01 -->
+
+- **Đã có sẵn để dùng** (`materiant::theme`): `cx.theme()` (trait `ActiveTheme`) → `colors()` = `ThemeColors` đã giải
+  theo nền: `primary` / `on_primary`, `danger` / `on_danger`, `warning` / `on_warning`, `success` / `on_success`,
+  `surface`, `text`, `muted`, `border`, `input` / `input_hover` / `input_focus`, `primary_ink`, `series[8]`,
+  `neutral(Neutral::N50…N900)`. Kèm `font_size()`, `caption_size()`, `radius_field()` (10 px), `shadow_card_md()` /
+  `shadow_card_2xs()`, `is_dark()`. Trait style ở `style.rs` chỉ cần bọc các hàm này.
+- Trộn hover / active kiểu `color-mix` của button: `materiant::theme::color::mix(a, b, phần_a)` (= `color-mix(in oklab,
+  a p%, b)`, có nhân alpha — trộn với `transparent` giữ sắc); chữ trên nền nhấn: `color::on_color`. Màu vào / ra là
+  `gpui_kit::Rgba`; `ThemeColors` là `Hsla` ⇒ `Rgba::from(hsla)` trước khi trộn.
+- `Accent` (enum cho `bg_accent` / `on_accent`) CHƯA có — đặt trong `style.rs`, ánh xạ sang 4 cặp màu trên.
+- Ripple: nhánh tông sáng / tối lấy từ `cx.theme().is_dark()` hoặc độ sáng của nền (`color::Oklch::from(rgba).l`).
+  Giảm chuyển động của OS: `gpui_kit::base` có `reduce_motion` (soát API khi làm).
+- **Test UI đã bật**: dev-dependency `gpui` (= gpui-pre, `test-support`) — viết `tests/<module>.rs` với `#[gpui::test]`,
+  mẫu `tests/theme.rs` (`cx.add_window` bọc `Root`). Không bật `gpui-kit` feature `test-support` (xung đột `taffy`).
+- `materiant::init` đã gọi `theme::init`; đăng ký asset icon thêm SAU dòng đó trong `src/lib.rs`.
+- **Bẫy**: máy chạy thử là máy dùng thật của chủ dự án — trước khi giả lập phím / chụp màn hình gallery phải soát
+  `GetForegroundWindow() == MainWindowHandle`, không thì dừng (gd1_01 đã gửi nhầm Ctrl+T vào app khác). Xem
+  `materiant/CLAUDE.md` mục Bẫy.
+- **Soát lại khi làm**: `cargo test` (đang 17 unit + 3 UI + 1 gallery); `cargo run --example gallery -- --page style`;
+  trang `theme` để so màu token. Chi tiết gd1_01: `plan/materiant-gd1_01_theme.md` mục 9.
+
 Cuối **trục tuần tự**: xong task này mới mở bốn làn song song gd1_03–06. Vì các task song song **không được** sửa
 `style.rs` / `icon.rs`, task này phải đặt đủ token + icon chúng cần (mục 3).
 

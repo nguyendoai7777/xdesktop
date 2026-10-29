@@ -11,7 +11,7 @@ Một thư mục plan cho cả workspace: `plan/` ở repo gốc (chủ dự án
 ```
 plan/
   _tasking-convention.md        # tệp này
-  _backlog.md                   # việc treo / đề xuất đã chọn, chia mục theo dự án
+  _backlog.md                   # việc treo KHÔNG làm được trong lượt (kèm lý do), chia mục theo dự án — D-8
   gd<N>_<NN>_<slug>.md          # task của fastcast — app chính
   <repo>-gd<N>_<NN>_<slug>.md   # task của repo khác (materiant-gd1_03_button-kbd.md…)
   <repo>-gd<N>.md               # plan giai đoạn chưa tách task (tạm, tách ngay khi bắt đầu giai đoạn)

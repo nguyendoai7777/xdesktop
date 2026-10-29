@@ -1,7 +1,7 @@
-# Backlog — việc treo, đề xuất đã chọn
+# Backlog — việc treo không làm được trong lượt
 
-Mỗi gạch một việc làm được. Có task thì trỏ tới tệp task, đừng chép lại. Skill `run-task` (mục 5) và `close-phase`
-(mục 3) ghi thêm vào đây.
+Mỗi gạch một việc + LÝ DO chưa làm được (thiếu máy, dịch vụ trả phí, chờ quyết định — D-8: đề xuất đã xác nhận thì làm
+ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép lại. `run-task` mục 5, `close-phase` mục 3 ghi thêm.
 
 ## fastcast
 

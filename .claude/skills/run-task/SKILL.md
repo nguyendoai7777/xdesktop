@@ -86,8 +86,12 @@ quyết định D-* / F-* đã chốt.
 - **Lỗi thật trong phạm vi task** ⇒ sửa luôn, ghi mục 9.
 - **Ngoài phạm vi** ⇒ `## 10. Đề xuất cải tiến`, mỗi dòng: `[bảo mật|ux|ram|pro]` vấn đề — bằng chứng — đề xuất — giá
   trị — cỡ (S/M) — ưu tiên (P1/P2/P3). Tối đa 7 dòng, xếp theo giá trị.
-- Cuối lượt hỏi chủ dự án (`AskUserQuestion`, `multiSelect`) đề xuất nào làm: chọn ⇒ chép vào `plan/_backlog.md` mục
-  của repo, hoặc tách task mới theo khung; P1 bảo mật được đề xuất làm ngay trong task kế.
+- Hỏi chủ dự án NGAY sau khi viết mục 10, TRƯỚC khi đóng task (`AskUserQuestion`, `multiSelect`) đề xuất nào làm.
+  **Chọn ⇒ làm ngay trong lượt** (D-8): trên chính nhánh `claude/<task>` (chưa gộp) — code, test, soát xanh lại, ghi
+  mục 9 "Đề xuất đã làm"; đề xuất thuộc tệp của task khác chưa tới thì vẫn làm ngay nếu không đụng làn song song đang
+  mở, không thì ghi thẳng vào mục 0 / mục 1 của task đó. Chỉ vào `plan/_backlog.md` khi KHÔNG làm được trong lượt
+  (cần máy / thiết bị không có, dịch vụ trả phí, chờ quyết định khác) — ghi rõ lý do. Đề xuất `[pro]` (D-4 chỉ đặt
+  chỗ) ⇒ ghi vào lộ trình / task của tính năng đó ngay. Vượt trần mục 2 của khung ⇒ tách task mới rồi làm luôn.
 
 ## 6. Đóng task
 
@@ -102,4 +106,4 @@ quyết định D-* / F-* đã chốt.
    plan/_backlog.md` (+ `docs/decisions.md` nếu có quyết định mới; lộ trình repo commit ở repo đó).
 
 Báo chủ dự án ≤ 10 dòng: kết quả + commit từng repo, case xanh / đỏ, số đo chính, việc chủ dự án phải làm (lệnh chạy
-được, bước kiểm tay), đề xuất mục 10 đang chờ chọn.
+được, bước kiểm tay), đề xuất mục 10 đã làm / lý do còn treo.

@@ -56,6 +56,9 @@ Idempotent, chạy lại lúc nào cũng được: nối memory, clone repo app 
 
 - Rust stable (≥ 1.96), MSVC Build Tools + Windows SDK trên Windows. Repo con: `git -C <repo> …`.
 - Repo gốc commit theo đường dẫn: `git commit -- <paths>` (tránh kéo tệp người khác đã stage).
+- Chủ dự án xem tay: `pwsh start.ps1 docs [trang] [worktree]` (`bash start.sh …`) — gallery materiant từ master hoặc
+  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree. App mới ⇒ thêm nhánh vào
+  cả hai script.
 
 ## Xong task thì gộp về `master` và dọn nhánh
 

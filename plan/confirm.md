@@ -34,3 +34,26 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   (khung 41–50 ms), bỏ trần thì 60 fps đều, khung chậm nhất 17 ms; animation của materiant chỉ xin khung lúc đang chạy nên
   nghỉ không tốn gì. Có thể đây là cảm giác "FPS thua bản web" bạn thấy; nếu vẫn thấy giật khi cửa sổ ĐANG active, chạy
   `$env:GALLERY_FRAME_STATS=1; pwsh start.ps1 docs style` rồi bấm ô ripple — dòng `FRAMES … fps` cho biết số thật.
+- [materiant-gd1_04] `TextField::new(id, window, cx)` / `NumberField::new(id, window, cx)` (thêm `window`) — phương án
+  khác: đúng spec `new(id, cx)`, tạo `InputState` trễ ở lần vẽ đầu — vì sao: `InputState::new` của gpui-base cần
+  `window`; tạo trễ thì `value()` trước khung đầu không đọc được.
+- [materiant-gd1_04] ↑ ↓ trong `TextField` đi tiếp tới cha (gallery: đổi trang khi đang gõ) — phương án khác: ô chữ nuốt
+  ↑ ↓ — vì sao: launcher của fastcast cần ↑ ↓ chọn kết quả trong lúc con trỏ ở ô tìm kiếm, cùng luật "không nuốt Esc /
+  Enter".
+- [materiant-gd1_04] Ô lỗi / cảnh báo lúc nghỉ KHÔNG có quầng (chỉ viền màu), hover / focus mới có — phương án khác:
+  quầng `/10` lúc nghỉ như comment của `FIELD_STATE_CLASS_MAPPED` bản web — vì sao: class thật của bản web là
+  `ring-transparent` lúc nghỉ, theo code chứ không theo comment.
+- [materiant-gd1_04] `NumberField` chỉ dấu thập phân `.`, chưa nhóm nghìn — phương án khác: cấu hình dấu theo locale
+  (`1.000,5`) — vì sao: gpui-base bước / kẹp giá trị theo `.`; FPS / cỡ chữ không cần; `numeric_mask` đã có sẵn khi cần.
+- [materiant-gd1_06] `VirtualList` dựng trên `uniform_list` của gpui-pre — phương án khác: `gpui_base::VirtualList` —
+  vì sao: bản gpui-base cho dòng khác cao, đòi `Rc<Vec<Size>>` mỗi dòng một phần tử + một `Entity` view; dòng cùng cao
+  thì `uniform_list` chỉ cần số dòng (RAM không theo số dòng) và `gpui_base::Scrollbar` nhận sẵn handle của nó.
+- [materiant-gd1_06] Phím danh sách là action trong `key_context("VirtualList")`, gán lười một lần ở lần vẽ đầu
+  (`materiant::list::bind_keys`) — phương án khác: `on_key_down` (không cần gán phím) / gán trong `materiant::init` —
+  vì sao: GPUI chạy action của key binding TRƯỚC `on_key_down` ⇒ ↑ ↓ của view cha (gallery đổi trang) sẽ thắng;
+  `lib.rs` cấm sửa ở làn song song ⇒ gd1_10 dời `bind_keys` vào `init`.
+- [materiant-gd1_06] `ListNav::apply(key, ix: Option<usize>, …) -> Option<usize>` (spec ghi `ix -> ix`) — phương án khác:
+  `usize` — vì sao: `count = 0` phải "không chọn gì", và chưa chọn gì thì ↓ vào dòng đầu / ↑ vào dòng cuối.
+- [materiant-gd1_06] `ScrollArea` mặc định hiện thanh khi con trỏ trong khung + khi đang cuộn (`ScrollbarVisibility::
+  Hover`) — phương án khác: mặc định web `scroll` (chỉ hiện lúc cuộn) — vì sao: task ghi "hiện khi rê / khi đang cuộn";
+  `Scrolling` vẫn chọn được.

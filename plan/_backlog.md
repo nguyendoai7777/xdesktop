@@ -30,6 +30,14 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   mép màn hình Snap); bấm "Occluded button" ⇒ in `CLICK drag-occluded`, cửa sổ không nhích. Đè / thả các ô ripple, so
   với ripple bản web (tông sáng trên nền nhấn đậm hơn chút — đã biết); dải icon nét đều ở 100 % và 150 % DPI. Chi tiết
   `plan/materiant-gd1_02_style-ripple-icon.md` mục 9.
+- **Kiểm tay gd1_06** (C4 — lý do: touchpad / bánh xe thật và độ mượt trên màn 144 Hz không giả lập được):
+  `cargo run --example gallery -- --page scroll` → cuộn bằng touchpad + bánh xe ở khung đoạn văn, bảng rộng (Shift +
+  bánh xe / vuốt ngang) và danh sách 10 000 dòng — phải mượt; kéo thumb danh sách tới cuối. Chi tiết
+  `plan/materiant-gd1_06_scroll-list.md` mục 9.
+- **Kiểm tay gd1_04** (C4 — lý do: bộ gõ Unikey / EVKey / IME tiếng Việt thật và blur ở cửa sổ active không giả lập
+  được khi chạy thử nền): `pwsh start.ps1 docs input` → gõ Telex "Tiếng Việt có dấu" vào các ô chữ (không mất / nhân
+  đôi ký tự), gõ Telex vào ô số (không chèn chữ); ô FPS gõ `99` rồi bấm ô khác ⇒ `60`; bấm nhãn "Display name" ⇒ con
+  trỏ vào ô. Chi tiết `plan/materiant-gd1_04_input.md` mục 9.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
 

@@ -10,6 +10,48 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_04 (30/10/2026)
+
+<!-- handoff: materiant-gd1_04 -->
+
+- **Đã có sẵn để dùng** (launcher): `materiant::field::TextField` — `cx.new(|cx| TextField::new("search", window, cx)
+  .placeholder(…).leading_icon(IconName::Search).clearable(true).on_change(…).on_submit(…))`; focus bằng
+  `window.focus(&field.focus_handle(cx), cx)` (`impl Focusable`). Esc, Enter, ↑ ↓ đều đi tiếp tới `on_key_down` /
+  `capture_key_down` của launcher (test C3) ⇒ ẩn bằng Esc, chọn bằng ↑ ↓ như mẫu gd1_06 ở dưới. Hoặc
+  `cx.subscribe(&field, |…, e: &FieldEvent, …|)` (`Change` / `Submit`).
+- **Đổi so với spec**: `new(id, window, cx)` (có `window`); placeholder / giá trị ban đầu áp ở khung vẽ đầu ⇒ đọc
+  `value(cx)` sau một khung. `set_value` không phát `Change`. Ô lớn `lg` (38 px) chưa có — launcher cần chữ to thì đặt
+  `.text_size()` ở phần tử cha hoặc thêm `FieldSize` (mục 10 gd1_04).
+- **Nợ chuyển sang đây** (mục 8 gd1_04): dời `FIELD_HEIGHT` / `FIELD_PADDING_X` / `FIELD_ICON_SIZE` (`field/shell.rs`)
+  lên `style.rs`. Kiểm tay C4 gd1_04 (Unikey / EVKey / IME tiếng Việt, ô FPS `99` → rời ô ⇒ `60`, bấm nhãn ⇒ focus) —
+  gom vào lượt kiểm tay GĐ1.
+- **Bẫy đã gặp**: GPUI chỉ phát focus / blur cho cửa sổ ĐANG active ⇒ gallery `--background` không kiểm được blur;
+  test UI cần `window.activate_window()` (mẫu `ui-tests/tests/field.rs` `focus_field`). Enter ở ô một dòng làm
+  `InputState` phát `Change` dù chữ không đổi — `TextField` đã lọc, ô tự viết trên `gpui_base::Input` thì nhớ lọc.
+  Không thử Ctrl+V trên máy thật (đọc clipboard của chủ dự án) — dán kiểm bằng clipboard giả của test.
+- **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test field` (5 ca); trang gallery `input` RAM 16,3 MB lúc mở.
+  Chi tiết: `plan/materiant-gd1_04_input.md` mục 9.
+
+## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
+
+<!-- handoff: materiant-gd1_06 -->
+
+- **Đã có sẵn để dùng** (launcher): `materiant::list::{VirtualList, VirtualListHandle, ListKey, Align}`. Ô tìm giữ focus
+  ⇒ `on_key_down` của launcher: `ListKey::from_key(&e.keystroke.key)` → `this.selected = this.list.navigate(key,
+  this.selected, n)`; lọc xong `this.list.scroll_to(0, Align::Start)`; Enter ⇒ chạy mục chọn. `TextField` của gd1_04 để
+  ↑ ↓ đi tiếp lên cha (`plan/confirm.md`) nên cách này chạy được. Mẫu đủ: trang `examples/gallery/pages/scroll.rs`.
+- **Nợ chuyển sang đây** (mục 8 của gd1_06): gọi `materiant::list::bind_keys(cx)` trong `materiant::init` (hiện gán lười
+  ở lần vẽ danh sách đầu); đồng bộ `ScrollbarMotion` vào theme `gpui_base` ở `theme/` — `with_idle(1 s)`,
+  `with_enter / with_exit(160 ms)` cho đúng web (hiện: ẩn sau 2 s, không fade); dời `ROW_RADIUS` / `LIST_RADIUS`
+  (`list.rs`), hằng thanh cuộn (`scroll.rs`) lên `style.rs` nếu component khác cần.
+- **Việc treo gom**: C4 gd1_06 `[owner-qa]` — cuộn touchpad + bánh xe trên màn 144 Hz ở trang `scroll`.
+- **Bẫy đã gặp**: GPUI chạy action của key binding TRƯỚC `on_key_down` ⇒ phím của component phải là action trong
+  `key_context` riêng (sâu hơn cha nên thắng), `on_key_down` không chặn được binding của view cha. Worktree chung
+  `CARGO_TARGET_DIR` ghi đè rlib của nhau ⇒ build ở `materiant/target/<task>`; `gallery-run.ps1` truyền `-Exe` / `-Out`
+  riêng.
+- **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test scroll` (7 ca); RAM trang `scroll` 18,1 MB lúc mở /
+  18,5 MB sau End — số so khi gộp mọi trang. Chi tiết: `plan/materiant-gd1_06_scroll-list.md` mục 9.
+
 ## 0. Bàn giao từ materiant-gd1_02 (29/10/2026)
 
 <!-- handoff: materiant-gd1_02 -->

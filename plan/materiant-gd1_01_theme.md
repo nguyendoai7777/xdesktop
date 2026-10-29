@@ -10,6 +10,28 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `src/theme/mod.rs` SỬA · `src/theme/color.rs` MỚI (oklab / oklch, trộn) · `src/theme/palette.rs` MỚI (theme có tên, thang trung tính) · `src/lib.rs` SỬA (`init`) · `examples/gallery/main.rs` SỬA (nút sáng / tối) · `examples/gallery/pages/theme.rs` SỬA |
 
+## 0. Bàn giao từ materiant-gd0_01 (29/10/2026)
+
+<!-- handoff: materiant-gd0_01 -->
+
+- **Đã có sẵn để dùng**: `src/theme/mod.rs` (stub một dòng doc) — thêm `color.rs`, `palette.rs` bên trong `theme/` là
+  đúng luật (task GĐ1 chỉ cấm thêm module cấp gốc). `src/lib.rs` đã `pub mod theme;` + `pub use gpui_kit;`.
+- `materiant::init(cx)` hiện chỉ gọi `gpui_kit::init(cx)` (= `gpui_base::init`) — giữ dòng đó, thêm đăng ký `Theme`
+  global SAU nó (gpui-base tự `Theme::global_mut` của nó; đặt tên kiểu khác để khỏi lẫn với `gpui_kit::base::Theme`).
+- **Nợ chuyển sang đây**: gallery `examples/gallery/main.rs` có `struct Palette` + `fn palette(dark)` màu tạm và cờ
+  `Gallery::dark` — thay bằng token theme, nút `Dark` / `Light` thành ba chế độ Light / Dark / System. Ctrl+T (action
+  `ToggleDark`) đang lật cờ — cho nó xoay vòng ba chế độ hoặc đổi tên action.
+- Trang `examples/gallery/pages/theme.rs`: hàm `render(window, cx) -> impl IntoElement` đang trả
+  `super::todo(…)`; state giữ qua khung dùng `window.use_keyed_state`.
+- **Bẫy đã gặp**: import qua `gpui_kit::{…}` + `gpui_kit::prelude::*` (bảng đường import ở `materiant/CLAUDE.md`);
+  `gpui_kit::actions!` thay `actions!` của GPUI. `Window::focus(&handle, cx)` nhận hai tham số. Chạy exe bằng
+  `Start-Process` phải `-NoNewWindow`, không thì phím giả lập rơi vào cửa sổ console.
+- Build: `export CARGO_TARGET_DIR=<gốc>/materiant/target` — cache đã có sẵn (release + debug); release lặp lại ≈ 1 phút
+  vì LTO thin, soát nhanh bằng debug.
+- **Soát lại khi làm**: `cargo run --example gallery -- --page theme`; stdout in `PAGE <tên>` / `DARK <bool>` — đổi
+  dòng `DARK` thành `MODE <light|dark|system>` để C4 soát bằng log. Cột Memory Task Manager lúc nghỉ trước task:
+  13,3–13,5 MB (so sau khi có theme).
+
 Nằm trên **trục tuần tự** (ROADMAP): mọi task sau đọc màu qua đây.
 
 ## 1. Làm gì

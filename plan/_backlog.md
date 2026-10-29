@@ -11,8 +11,6 @@ Mỗi gạch một việc làm được. Có task thì trỏ tới tệp task, �
   `fst status | Out-Host`. Gộp vào gd1_11 nếu chưa làm trước.
 - **Khác DPI chạy thật**: đặt một màn 125 % / 150 % → `cargo run -p fastcast-capture --example probe --release`
   (cùng lượt gd1_02).
-- **Giấy phép**: `fastcast/deny.toml` có thêm `0BSD` (recvmsg, doctest-file qua interprocess) và
-  `Apache-2.0 WITH LLVM-exception` (target-lexicon, chỉ lúc build Linux) — chủ dự án chốt có ghi bổ sung vào D-2 không.
 - **Khay trên Linux**: `tray-icon` đang `default-features = false` ⇒ chưa có backend Linux. Chọn `ksni` (D-Bus thuần, soát
   giấy phép) hay `libappindicator` (GTK, LGPL — phải hỏi) — gd0_07.
 - **Daemon macOS / Linux**: `crates/daemon/src/platform/other.rs` trả lỗi — vòng sự kiện macOS (NSApplication) + Linux
@@ -24,7 +22,6 @@ Mỗi gạch một việc làm được. Có task thì trỏ tới tệp task, �
 ## materiant
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
-- Giấy phép `CC0-1.0` (`tiny-keccak`, build-only, Linux) — chốt trước `materiant-gd0_01`; ghi D-2.
 
 ## Workspace
 

@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (29/10/2026) |
 | Repo | materiant |
 | Cỡ | S — ~350 dòng (phần lớn là stub + gallery) |
 | Phụ thuộc | — · **chủ dự án chốt giấy phép `CC0-1.0`** (mục 9 / `docs/decisions.md` D-2) trước khi bắt đầu |
@@ -102,4 +102,50 @@ Chữ trong gallery là tiếng Anh cứng (example nội bộ, không phải UI
 
 ## 9. Bàn giao thực tế
 
+- **Chủ dự án chốt 29/10/2026**: cho phép `CC0-1.0` (chỉ `tiny-keccak`, build-only, Linux — `gpui-pre-linux` → `zed-xim`
+  → `ahash` → `const-random-macro`); ghi luôn `0BSD` + `Apache-2.0 WITH LLVM-exception` vào D-2 (`docs/decisions.md`).
+  Dò thật: cả cây materiant chỉ vướng CC0-1.0.
+- **Commit** `materiant` `431932a` trên `claude/gd0_01`, gộp `master` (`merge --no-ff`).
+- **Soát xanh** (cwd = worktree, `CARGO_TARGET_DIR=materiant/target`): `cargo build --all-targets`, `cargo clippy
+  --all-targets -- -D warnings`, `cargo test` (1 test: `pages::tests::page_names_round_trip`), `cargo deny check
+  licenses` → `licenses ok`, `cargo fmt --check`. `cargo tree -i gpui-component` → "did not match any packages";
+  `cargo tree -e features | grep -c gpui-component` = 0.
+- **C1** `[opus-run]` xanh: `gallery.exe` (release), giả lập ↓ ×11 + ↑ ⇒ stdout `PAGE theme … toast → theme → toast`
+  đủ 11 trang; chuột bấm sidebar ⇒ `PAGE button / tabs / toggles`; Ctrl+T và nút Dark ⇒ `DARK false`, ảnh chụp thấy
+  nền sáng; đóng cửa sổ ⇒ thoát mã 0. Chữ trang là `Not done yet — materiant-gd1_NN` (tiếng Anh theo mục 7, không
+  phải "chưa làm").
+- **C2** xanh (trên). **C3** xanh: `spikes/ui-foundation/gpui-proto` `cargo build` được, không cần `[workspace]` rỗng
+  (gốc là package, không phải workspace ⇒ cargo không nhận spike làm thành viên).
+- **C4** `[owner-qa]` chờ kiểm tay: `cargo run --example gallery` trong `materiant/` → cửa sổ hiện, bấm từng mục
+  sidebar đổi trang, ↑ / ↓ đổi trang, nút Dark / Ctrl+T đổi nền, nhãn RAM nhảy số.
+- **Đo** (Windows 10 19045, máy nhà): exe gallery release **7,0 MB** (spike `gpui-proto` có gpui-component + assets:
+  23,2 MB) ⇒ rủi ro "gpui-base kéo crate editor làm phình exe" không xảy ra — LTO + strip bỏ hết phần không gọi.
+  RAM gallery nghỉ **13,3–13,5 MB** (Task Manager = `WorkingSetPrivate`); nhãn trong app 13,4 MB — khớp.
+  **Build nguội**: `cargo build --release --example gallery` ≈ **5 phút** (240 s phụ thuộc + ~60 s crate + LTO thin);
+  `cargo build --all-targets` debug sau đó 2 m 33 s; release lặp lại khi chỉ sửa crate ≈ 50–60 s (LTO).
+- **Quyết định trong task** (interface cho GĐ1):
+  - `materiant::init(cx)` gọi `gpui_kit::init` (= `gpui_base::init`) — app chỉ gọi một hàm; gd1_01 thêm theme vào đây.
+  - `pub use gpui_kit;` ở gốc — app (fastcast) dùng `materiant::gpui_kit` khỏi ghim GPUI lần hai.
+  - Module con trong `field/`, `overlay/`, `effect/` đã `pub mod` sẵn; task GĐ1 được thêm tệp con trong thư mục của mình
+    (gd1_01 cần `theme/color.rs`, `theme/palette.rs`) nhưng không thêm module cấp gốc.
+  - Trang gallery: `pub fn render(window: &mut Window, cx: &mut App) -> impl IntoElement`; state qua
+    `window.use_keyed_state`. `Page::name()` là nhãn sidebar + giá trị `--page`.
+  - Gallery thêm ngoài spec: `--page <tên>`, ↑ / ↓, Ctrl+T, in `PAGE` / `DARK` ra stdout — để session song song chạy
+    thẳng trang mình và soát bằng log.
+  - `[[example]] test = true` để `cargo test` chạy test trong gallery.
+- **Không thêm crate nào ngoài `gpui-kit`** (cả `smallvec`: spike dùng cho `RenderImage` — component GĐ1 không cần).
+  Nhãn RAM đọc bằng FFI tay (`K32GetProcessMemoryInfo` + `PROCESS_MEMORY_COUNTERS_EX2`), không kéo `windows-sys`.
+- `.gitignore` không phải sửa (đã đủ `/target/`). `ROADMAP.md`: bỏ câu hỏi mở CC0.
+- **Bẫy**: chạy `gallery.exe` bằng `Start-Process` thường ⇒ exe console mở cửa sổ console riêng, `MainWindowHandle` là
+  console và phím giả lập rơi vào đó — dùng `-NoNewWindow`. `Window::focus` của gpui-pre 0.3.10 nhận `(handle, cx)`.
+
 ## 10. Đề xuất cải tiến
+
+Soi bốn lăng kính — bảo mật: không áp (không tệp, không IPC; FFI một lời gọi, đúng bố cục C); Pro: không áp.
+
+- [ux] Component chưa có cách kiểm bàn phím / focus tự động — ROADMAP chỉ đòi test logic thuần, gd1_03…09 lại cấm sửa
+  `Cargo.toml` — bật `gpui-kit` feature `test-support` trong `[dev-dependencies]` ngay (một dòng, cùng crate; soát lại
+  `cargo deny`) để các task GĐ1 viết test `#[gpui_kit::test]` cho ↑ ↓ Enter Esc — bắt hồi quy bàn phím mà không cần
+  chạy tay — S — P2.
+- [ram] Nhãn RAM của gallery trên macOS hiện `RAM —` (`examples/gallery/main.rs` mod `ram`) — thêm `task_info`
+  `phys_footprint` (cột Memory của Activity Monitor) cho gd1_10 đo RAM trên Mac — S — P3.

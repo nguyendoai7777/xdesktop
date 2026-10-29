@@ -1,0 +1,2 @@
+- [Chủ dự án](user-profile.md) — nói tiếng Việt, dev web chuyển sang Rust desktop, làm ở máy nhà Windows + công ty Ubuntu + Mac; quyết định ghi ở docs/decisions.md
+- [AppData ảo hoá MSIX](msix-appdata-virtualization.md) — exe chạy từ app Claude ghi config/log vào LocalCache của gói, khác AppData thật

@@ -12,6 +12,24 @@
 
 Task làn song song: **chỉ** sửa các tệp trên. Bàn giao ghi vào gd1_10 + fastcast `gd1_06` (launcher) qua mục 9.
 
+## 0. Bàn giao từ materiant-gd1_02 (29/10/2026)
+
+<!-- handoff: materiant-gd1_02 -->
+
+- **Đã có sẵn để dùng**: `cx.scrollbar_tokens()` → `ScrollbarTokens { thumb, thumb_hover }` — `muted` ở alpha 0,45, hover
+  × `SCROLLBAR_THUMB_HOVER_ALPHA_SCALE` (1,35). Khác web: web viết cứng xám trung tính, ở đây theo `muted` của theme.
+- Dòng chọn của `VirtualList`: nền gợi ý `c.neutral(Neutral::N100)` / chọn `N200` như sidebar gallery, hoặc
+  `Accent::Primary.tokens(cx).ghost_hover` / `.tonal` nếu cần màu nhấn — chưa có token riêng ⇒ hằng cục bộ + mục 8.
+- Ripple trên dòng (nếu làm): `.ripple(RippleConfig::default())` trên `Stateful<Div>` của dòng — lớp ripple chỉ xin
+  khung khi đang chạy, không tốn gì với dòng đứng yên.
+- Icon cần: `ChevronUp` / `ChevronDown` (nếu có nút cuộn).
+- **Bẫy**: toạ độ chuột giả lập (`down@x,y`) là toạ độ logic trong cửa sổ; cuộn bằng con lăn chưa giả lập được trong
+  `--keys` ⇒ test `#[gpui::test]` (`simulate_event(ScrollWheelEvent)`) trong `ui-tests/tests/scroll.rs`.
+- **Soát lại khi làm**: `cargo test` (25 unit + 4 theme UI + 5 ripple UI + 1 gallery); chạy thử chỉ qua
+  `pwsh materiant/tools/gallery-run.ps1 -Page <trang> -Keys "…"` — phím, chuột `down@x,y` / `up@` / `move@`, `wait@ms`,
+  `shot@tên` (ảnh giữa chuỗi); toạ độ lấy từ ảnh trừ ~31 px thanh tiêu đề; ảnh xem xong xoá. Token + tên hàm đầy đủ:
+  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9; mẫu dùng: `materiant/CLAUDE.md` mục "Style · ripple · icon".
+
 ## 1. Làm gì
 
 - `ScrollArea` kiểu `scroll` của materiant trên `gpui_base::Scrollbar`: thanh mảnh, hiện khi rê / khi đang cuộn rồi ẩn

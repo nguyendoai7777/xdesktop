@@ -13,6 +13,33 @@
 Task làn song song: **chỉ** sửa ba tệp trên (luật tệp chung: `materiant/ROADMAP.md` mục Nguyên tắc). Bàn giao ghi vào
 gd1_07 và gd1_09 (hai task nhận task này làm phụ thuộc).
 
+## 0. Bàn giao từ materiant-gd1_02 (29/10/2026)
+
+<!-- handoff: materiant-gd1_02 -->
+
+- **Đã có sẵn để dùng**: `Accent::{Primary, Danger, Warning, Success}.tokens(cx)` → `AccentTokens` đủ cho 4 dáng:
+  `filled` = `base` / `on` / `filled_hover` / `filled_active`; `tonal` = `tonal*` + chữ `ink`; `outlined` / `dashed` =
+  viền `outline*` + nền `ghost_*` + chữ `ink`; `text` = `ghost_*` + `ink`. Màu tuỳ ý (`Hsla`) / `base` ⇒
+  `AccentTokens::resolve(màu, on_color(màu), cx.theme().colors().text, is_dark)` (hàm thuần). `cx.disabled_tokens()`
+  (`ink` / `bg` / `border`; dáng text bỏ nền + viền), `LOADING_OPACITY` 0,8.
+- Ripple: `.ripple(RippleConfig::default())` (IconButton: `RippleConfig::centered()`), gọi SAU `.rounded*()`. Space /
+  Enter ⇒ `RippleTrigger` + `.ripple_with(cfg, &trigger)`, gọi `trigger.fire(window)` trong handler phím; giữ trigger
+  bằng `window.use_keyed_state((id, "ripple"), …)` — mẫu: ô "Click, then Space" trong `examples/gallery/pages/style.rs`.
+  `disabled` / `loading` ⇒ đừng gắn ripple.
+- Icon: `Icon::new(IconName::Loader)` (cung tròn của Lucide `loader-circle`, quay bằng `gpui_base::motion`), `.size()`
+  / `.color()`; mặc định 1 rem, màu chữ hiện hành. Gallery đã `with_assets(materiant::icon::Assets)`.
+- **Đổi so với spec**: method `StyledExt` nhận `cx` (`.focus_ring(cx)`, `.bg_accent(Accent, cx)`). Trong `.hover` /
+  `.active` không có `cx` ⇒ lấy `AccentTokens` (là `Copy`) trước rồi bắt vào closure.
+- **Bẫy**: vòng focus `focus_ring()` / `ring_shadow` là bóng spread — GPUI vẽ bóng cả DƯỚI phần tử ⇒ nút `text` /
+  `outlined` / `dashed` (nền trong suốt) bị tô kín màu vòng. Dùng `ring_overlay(cx.focus_ring_color(), bo_góc)` làm con
+  khi đang focus-visible; `ring_shadow` chỉ cho `filled` / `tonal` / `elevated` (nền đục).
+- Kbd: chưa có token riêng — chip dùng `bg(c.neutral(Neutral::N100))` + `border_line(cx)` + `text_caption(cx)` như trang
+  `style`; thiếu token ⇒ hằng cục bộ + mục 8 (không sửa `style.rs`).
+- **Soát lại khi làm**: `cargo test` (25 unit + 4 theme UI + 5 ripple UI + 1 gallery); chạy thử chỉ qua
+  `pwsh materiant/tools/gallery-run.ps1 -Page <trang> -Keys "…"` — phím, chuột `down@x,y` / `up@` / `move@`, `wait@ms`,
+  `shot@tên` (ảnh giữa chuỗi); toạ độ lấy từ ảnh trừ ~31 px thanh tiêu đề; ảnh xem xong xoá. Token + tên hàm đầy đủ:
+  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9; mẫu dùng: `materiant/CLAUDE.md` mục "Style · ripple · icon".
+
 ## 1. Làm gì
 
 - `Button` / `IconButton` dựng trên `gpui_base::Button` + `.ripple()`: dáng `text` / `filled` / `tonal` / `outlined` /

@@ -13,6 +13,27 @@
 Task làn song song: **chỉ** sửa các tệp trên. Bàn giao ghi vào gd1_10 (nghiệm thu) + fastcast `gd1_06` (launcher dùng
 ô tìm kiếm) qua mục 9.
 
+## 0. Bàn giao từ materiant-gd1_02 (29/10/2026)
+
+<!-- handoff: materiant-gd1_02 -->
+
+- **Đã có sẵn để dùng**: `cx.field_tokens()` → `FieldTokens` (`form.css`): `ink`, `placeholder`, `bg`, `bg_disabled`,
+  viền `border` / `border_hover` / `border_focus`, vòng `ring_hover` / `ring_focus`, lỗi `danger` + `danger_ring_hover`
+  / `_focus`, cảnh báo `warning` + tương tự. Bo `.radius_field(cx)` (10 px), chữ `.text_body(cx)` / `.text_caption(cx)`
+  (gợi ý, lỗi), `.text_muted(cx)`.
+- Vòng 3 px quanh ô: ô nhập có nền đục (`bg`) ⇒ `.shadow(ring_shadow(field.ring_focus))` dùng được (mẫu "Focus ring" /
+  "Rest / hover" trên trang `style`). Phần tử nền trong suốt thì `ring_overlay` (xem bẫy).
+- Icon: `Search`, `Close` (dấu ✕ — spec ghi `x`: Lucide `x` không nhúng vì trùng hình `close`), `CloseThin`,
+  `ChevronUp` / `ChevronDown` (nút ↑ ↓ của `NumberField`), `Info`, `Warning`. `Icon::new(..).size(px(16.)).color(..)`.
+- Nút xoá nhanh trong ô (icon `Close`): `div().id(..).rounded_full()` rồi `.ripple(RippleConfig::centered())`.
+- **Bẫy**: `ring_shadow` là bóng spread — GPUI vẽ cả dưới phần tử; phần tử nền trong suốt bị tô kín ⇒
+  `ring_overlay(color, bo_góc)`. `StyledExt` / token nhận `cx`; trong `.hover` lấy `FieldTokens` (`Copy`) trước rồi bắt
+  vào closure.
+- **Soát lại khi làm**: `cargo test` (25 unit + 4 theme UI + 5 ripple UI + 1 gallery); chạy thử chỉ qua
+  `pwsh materiant/tools/gallery-run.ps1 -Page <trang> -Keys "…"` — phím, chuột `down@x,y` / `up@` / `move@`, `wait@ms`,
+  `shot@tên` (ảnh giữa chuỗi); toạ độ lấy từ ảnh trừ ~31 px thanh tiêu đề; ảnh xem xong xoá. Token + tên hàm đầy đủ:
+  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9; mẫu dùng: `materiant/CLAUDE.md` mục "Style · ripple · icon".
+
 ## 1. Làm gì
 
 - `FieldShell`: khung nhãn, gợi ý, lỗi, icon đầu / cuối, trạng thái thường / hover / focus / lỗi / disabled theo token

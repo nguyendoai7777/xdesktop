@@ -10,6 +10,21 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_02 (29/10/2026)
+
+<!-- handoff: materiant-gd1_02 -->
+
+- **Đã có sẵn để dùng**: `.drag_region()` (`materiant::window::DragRegionExt`) — thanh trên của launcher; ô nhập bên
+  trong bọc `.occlude()`. Cửa sổ mở với `is_movable: true`. Icon `Search` cho ô lọc.
+- Việc treo của gd1_02 cần gom: kiểm tay C4 (kéo cửa sổ) + C5 (ripple so web, icon 150 % DPI) — `plan/_backlog.md`.
+- Gom "dời lên `style.rs` / `icon.rs`" của gd1_03–06 (mục 8 của từng task); thêm icon = tệp `assets/icons/<tên>.svg` +
+  một dòng `icons!` ở `src/icon.rs`.
+- So ảnh sáng / tối: `gallery-run.ps1 -Keys "ctrl-t shot@light ctrl-t shot@dark"` cho mỗi trang.
+- **Soát lại khi làm**: `cargo test` (25 unit + 4 theme UI + 5 ripple UI + 1 gallery); chạy thử chỉ qua
+  `pwsh materiant/tools/gallery-run.ps1 -Page <trang> -Keys "…"` — phím, chuột `down@x,y` / `up@` / `move@`, `wait@ms`,
+  `shot@tên` (ảnh giữa chuỗi); toạ độ lấy từ ảnh trừ ~31 px thanh tiêu đề; ảnh xem xong xoá. Token + tên hàm đầy đủ:
+  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9; mẫu dùng: `materiant/CLAUDE.md` mục "Style · ripple · icon".
+
 ## 1. Làm gì
 
 - Dựng lại launcher của spike bằng materiant (`TextField`, `VirtualList`, `Kbd`, `.drag_region()`, `Menu` cho Ctrl+K):

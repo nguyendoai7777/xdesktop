@@ -25,6 +25,11 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **Kiểm tay gd1_01** (C4 phần nhìn + C5): `cargo run --example gallery -- --page theme` → Ctrl+T xoay Light / Dark /
   System, bấm 4 preset, ở System bật / tắt chế độ tối Windows ⇒ gallery đổi theo; so với trang theme bản web. Chi tiết
   `plan/materiant-gd1_01_theme.md` mục 9.
+- **Kiểm tay gd1_02** (C4 + C5 — lý do: kéo cửa sổ của OS và nhìn bằng mắt không giả lập được):
+  `cargo run --example gallery -- --page style` → kéo thanh "Drag region" ⇒ cửa sổ đi theo (nhấp đúp phóng to, kéo lên
+  mép màn hình Snap); bấm "Occluded button" ⇒ in `CLICK drag-occluded`, cửa sổ không nhích. Đè / thả các ô ripple, so
+  với ripple bản web (tông sáng trên nền nhấn đậm hơn chút — đã biết); dải icon nét đều ở 100 % và 150 % DPI. Chi tiết
+  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
 

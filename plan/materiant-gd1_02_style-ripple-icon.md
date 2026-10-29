@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (29/10/2026) |
 | Repo | materiant |
 | Cỡ | M — ~700 dòng |
 | Phụ thuộc | materiant-gd1_01 |
@@ -105,4 +105,98 @@ Trang `style`: hàng ô ripple (nền surface / nền primary), dải icon có t
 
 ## 9. Bàn giao thực tế
 
+**Tên hàm chốt cho bốn làn gd1_03–06** (mẫu đủ ở `materiant/CLAUDE.md` mục "Style · ripple · icon · vùng kéo"):
+
+- `materiant::style`
+  - `Accent { Primary, Danger, Warning, Success }` (+ `Accent::ALL`, `.color(cx)`, `.on_color(cx)`, `.tokens(cx)`).
+  - `AccentTokens` (nút, `btn.css`): `base`, `on`, `filled_hover` (+12 % trắng), `filled_active` (+12 % đen), `ink` (chữ
+    của text / outlined / tonal: 85 % / 70 % về màu chữ), `ghost_hover` 9 %, `ghost_active` 12 %, `tonal` 12 % /
+    `tonal_hover` 20 % / `tonal_active` 26 %, `outline` 40 % / `outline_hover` 70 % / `outline_active` 100 %.
+  - `DisabledTokens { ink, bg, border }` (alpha 0,3 / 0,036 / 0,15 của màu chữ); `LOADING_OPACITY` 0,8;
+    `DISABLED_OPACITY` 0,5 (switch); `CONTROL_DURATION_MS` 200.
+  - `FieldTokens` (ô nhập, `form.css`): `ink`, `placeholder`, `bg`, `bg_disabled`, `border` / `border_hover` /
+    `border_focus`, `ring_hover` / `ring_focus`, `danger` + `danger_ring_hover` / `_focus`, `warning` + tương tự.
+  - `ControlTokens` (checkbox / radio / switch): `checked`, `on_checked`, `unchecked_border` (N400), `track_off` (N300),
+    `thumb` (surface), `state_hover` / `state_focus` (N400 20 % / 34 %), `focus_ring` (N400 40 %).
+  - `ScrollbarTokens { thumb, thumb_hover }` (`muted` alpha 0,45 / × 1,35); `SCROLLBAR_THUMB_HOVER_ALPHA_SCALE`.
+  - `ActiveTokens` trên `App`: `cx.field_tokens()`, `control_tokens()`, `scrollbar_tokens()`, `disabled_tokens()`,
+    `focus_ring_color()` (primary 50 %). Vòng 3 px (`FOCUS_RING_WIDTH`): `ring_shadow(color)` (bóng spread — CHỈ nền
+    đục: GPUI vẽ bóng cả dưới phần tử, nền trong suốt bị tô kín) / `ring_overlay(color, bo_góc)` (con tuyệt đối, viền
+    tràn ra ngoài — nút text / outlined, ô chọn; gắn khi `focus.is_focused(window)`).
+  - `StyledExt` (mọi `Styled`, nhận `cx`): `bg_surface`, `text_ink`, `text_muted`, `border_line`, `focus_ring`,
+    `radius_field`, `shadow_card_md`, `shadow_card_2xs`, `text_body`, `text_caption`, `bg_accent(Accent, cx)`,
+    `on_accent(Accent, cx)`.
+- `materiant::effect::ripple`: `RippleConfig { center, radius, color, opacity }` (+ `::centered()`, builder), trait
+  `RippleExt::ripple(cfg)` / `.ripple_with(cfg, &trigger)` trên `Stateful<Div>`; `RippleTrigger::fire(window)` (bấm
+  phím ⇒ vòng từ tâm, tự mờ — giữ trigger bằng `window.use_keyed_state`, mẫu ở doc + ô "Click, then Space" của trang
+  `style`); hằng `RIPPLE_DURATION`, `RIPPLE_OPACITY`, `RIPPLE_LIGHT_OPACITY`.
+- `materiant::icon`: `IconName` (Check, ChevronDown / Up / Left / Right, Close, CloseThin, Info, Warning, Search, Minus,
+  Circle, Loader, Copy, Save, Settings, Keyboard; `ALL`, `path()`, `file_name()`), `Icon::new(..).size(..).color(..)`,
+  `Assets` (`AssetSource`).
+- `materiant::window::DragRegionExt::drag_region()` trên mọi `InteractiveElement`.
+
+**Cho fastcast** (`gd1_03_selection-edit` dùng ripple, `gd1_06_launcher` dùng `.drag_region()`): `use
+materiant::effect::ripple::{RippleConfig, RippleExt}` → `.ripple(RippleConfig::default())` trên `div().id(..)`, gọi
+sau `.rounded*()`; vùng kéo `use materiant::window::DragRegionExt` → `.drag_region()`, phần tử bấm được bên trong
+`.occlude()`, cửa sổ `is_movable: true`. App phải `application().with_assets(materiant::icon::Assets)` nếu dùng `Icon`
+(app có asset riêng ⇒ gọi `materiant::icon::Assets.load(path)` trong `AssetSource` của mình cho `icons/…`).
+
+**Lệch so với mục 1 / 3** (đều đã ghi ở doc của module):
+
+- Method `StyledExt` nhận `cx` (`.bg_surface(cx)`): builder GPUI không cầm `cx`. Trong `.hover` / `.active` dùng bộ
+  token `Copy` bắt vào closure.
+- `RippleConfig` thêm `opacity: Option<f32>` (mặc định 0,16 khi màu ripple sáng — OKLCh L ≥ 0,7 — còn lại 0,12; tông lấy
+  theo độ sáng màu ripple, mặc định màu chữ, thay vì `is_dark()`).
+- `.ripple()` chép bo góc của phần tử LÚC GỌI ⇒ gọi sau `.rounded*()`. Vòng được cắt bằng đa giác (tròn ∩ chữ nhật bo
+  góc, Sutherland–Hodgman) vì `ContentMask` của GPUI chỉ là chữ nhật.
+- Mất focus nhả ripple khi cửa sổ CHUYỂN từ active sang không; bấm vào cửa sổ đang nền (gallery `--background`, popup
+  không focus) vẫn giữ được. Đồng hồ = `background_executor().now()` (test tua được).
+- Icon: không có Lucide `chevron-*` / `x` riêng — dùng chevron 4 chiều + `close` của materiant (cùng hình). `Loader` là
+  `loader-circle` của Lucide (cung tròn, quay được). Đăng ký asset: app gọi
+  `application().with_assets(materiant::icon::Assets)` (không làm được trong `materiant::init`); gallery đã gọi.
+- Gallery `--keys` nhận thêm chuột `down@x,y` / `up@` / `move@` + `wait@ms` (đưa thẳng vào GPUI) để chạy thử C3 không
+  đụng chuột thật; sau bước chuột không nghỉ cố định (phím vẫn 300 ms). `tools/gallery-run.ps1` in thêm `cpu_ms`.
+
+**Nghiệm thu** (29/10/2026, Windows 10, màn phụ 1920×1080 100 %):
+
+- C1, C2 ✅ `cargo test -p materiant --lib ripple` (`radius_reaches_furthest_corner`, `timeline_matches_material`) + cắt
+  đa giác (`clip_keeps_circle_inside_rounded_rect`). Lỗi bắt được khi viết: hai cung bo kín nửa cạnh ngắn (pill, nút
+  tròn) sinh đỉnh gần trùng ⇒ cạnh ~0 hướng ngẫu nhiên cắt mất cả vòng — đã bỏ đỉnh trùng.
+- C3 ✅ `ui-tests/tests/ripple.rs` (giữ khi đè, thả ngoài vẫn nhả, mờ hết ~267 ms, hết vòng thì `animating = false`,
+  mất focus ⇒ nhả, nhấn ngoài không sinh vòng, reduce-motion ⇒ không lớp ripple) + `gallery-run.ps1 -Page style -Keys
+  "down@420,199 wait@100 up@1000,600 down@250,189 wait@600"`: ô thả ngoài đã mờ hết, ô còn đè giữ vòng phủ kín cắt theo
+  bo 12 px; nút tròn / pill cắt đúng hình. Sáng (ripple đen 0,12 trên surface, trắng 0,16 trên primary) và tối đều đúng.
+- C4 ⏳ `[owner-qa]`: kéo cửa sổ của OS không giả lập được (HTCAPTION do Windows hỏi hit-test) — xem `plan/_backlog.md`.
+- C5 ⏳ `[owner-qa]`: so ripple với bản web, icon ở 150 % DPI.
+- Mục 5 (đo): tổng CPU của tiến trình qua `gallery-run.ps1` 2 lượt — nghỉ 3 s 547–625 ms (phần lớn là khởi động), 30
+  ripple trong 3 s (10 / s, đè 50 ms) 828–1000 ms ⇒ ripple liên tục thêm ~300 ms / 3 s ≈ 10 % một nhân (khung 60 Hz).
+  Hết vòng ⇒ không xin khung (test `animating = false`). Nhấn / nhả chỉ báo view chứa ripple (`cx.notify(view)`),
+  không vẽ lại cả cửa sổ — sửa trong lượt soát cải tiến (bản đầu `window.refresh()`: 969–1016 ms).
+- RAM trang `style` (private working set, gallery-run): 16,2–17,2 MB lúc nghỉ, ~18 MB sau một loạt ripple. Exe release
+  build lại không đổi đáng kể (9 SVG + 8 SVG ≈ 6 KB nhúng).
+- Kiểm xanh: `cargo fmt --check`, `cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test` (25 unit + 4
+  theme UI + 4 ripple UI + 1 gallery), `cargo deny check licenses` (Lucide ISC — đã cho phép ở D-2).
+
+**Soát cải tiến (mục 5 run-task)**: bảo mật — không áp (không IPC / tệp; ảnh chạy thử xoá ngay sau khi xem). UI/UX —
+nhãn ô ripple ghi "dark / light tone" sai ở nền tối ⇒ đổi theo màu (sửa luôn); phím chưa sinh ripple (mục 10). RAM /
+hiệu năng — `window.refresh()` ⇒ `cx.notify(view)` (sửa luôn, số ở trên). Pro — không áp.
+
+**Đề xuất đã làm** (chủ dự án chọn cả hai, 29/10/2026 — D-8):
+
+- P1 ripple khi bấm phím: `RippleTrigger` + `.ripple_with()`; test `trigger_fires_one_released_wave` (một vòng, không
+  giữ, lan xong tự mờ, bắn trước lần vẽ đầu thì bỏ qua); gallery: click ô "Click, then Space" rồi `space` ⇒ in
+  `RIPPLE key space`, ảnh `shot@key` thấy vòng từ tâm. Lỗi thật bắt được khi chạy: `ring_shadow` trên ô nền trong suốt
+  tô kín cả ô màu vòng (GPUI vẽ bóng dưới phần tử) ⇒ thêm `ring_overlay`, ghi rõ ở doc + `CLAUDE.md` — gd1_03 / 04 cần.
+- P2 `shot@<tên>`: gallery in `SHOT <tên>` rồi nghỉ 300 ms; `gallery-run.ps1` theo dõi stdout, chụp
+  `<trang>-<tên>.png` ngay (in dòng `shots=`). Đã soát: `down@290,190 wait@40 shot@spread` thấy vòng đang lan cắt theo
+  mép ô.
+
 ## 10. Đề xuất cải tiến
+
+- ✅ P1 `[ux]` Bấm bằng bàn phím không có phản hồi ripple — `effect/ripple.rs` chỉ nghe `MouseDownEvent`; Button
+  (gd1_03), checkbox / radio (gd1_04) nhấn Space / Enter chỉ thấy focus ring — thêm `ripple::trigger(window, id)` (vòng
+  từ tâm, tự nhả) để component gọi trong handler phím — phản hồi đồng nhất chuột / phím, đúng tinh thần "dùng hết bằng
+  bàn phím" — S — P2.
+- ✅ P2 `[ux]` `gallery-run.ps1` chỉ chụp một ảnh cuối — animation (vòng đang lan, thumb switch gd1_04, popup gd1_05) không
+  soát được giữa chừng — thêm bước `shot@<tên>` trong `--keys`: gallery in `SHOT <tên>`, script chụp ngay khi thấy dòng
+  đó — bốn làn song song tự soát animation không cần chủ dự án — S — P2.

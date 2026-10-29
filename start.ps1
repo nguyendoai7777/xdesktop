@@ -4,7 +4,7 @@
 #   pwsh start.ps1 docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                        chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   pwsh start.ps1 list                  liệt kê worktree đang mở
-# Build chung thư mục materiant/target với các session Claude ⇒ có thể đứng ở "Blocking waiting for file lock" một lúc.
+# Build ở materiant/target/start, tách khỏi thư mục build của các session Claude ⇒ không bị khoá; lần đầu build nguội.
 # Trong gallery: ↑ / ↓ đổi trang, Ctrl+T xoay Light / Dark / System.
 param(
     [Parameter(Position = 0)] [string]$App = 'help',
@@ -36,7 +36,8 @@ switch ($App) {
                 exit 1
             }
         }
-        $env:CARGO_TARGET_DIR = Join-Path $root 'materiant\target'
+        # Thư mục build riêng: không chờ khoá của các session Claude (chúng dùng materiant/target). Lần đầu build nguội.
+        $env:CARGO_TARGET_DIR = Join-Path $root 'materiant\target\start'
         $cargoArgs = @('run', '--manifest-path', (Join-Path $dir 'Cargo.toml'), '-p', 'materiant', '--example', 'gallery')
         if ($Page) { $cargoArgs += @('--', '--page', $Page) }
         Write-Host "gallery từ $dir"

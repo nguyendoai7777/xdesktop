@@ -5,7 +5,7 @@
 #   bash start.sh docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                       chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   bash start.sh list                  liệt kê worktree đang mở
-# Build chung thư mục materiant/target với các session Claude ⇒ có thể đứng ở "Blocking waiting for file lock" một lúc.
+# Build ở materiant/target/start, tách khỏi thư mục build của các session Claude ⇒ không bị khoá; lần đầu build nguội.
 # Trong gallery: ↑ / ↓ đổi trang, Ctrl+T xoay Light / Dark / System.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -33,7 +33,8 @@ case "$app" in
         exit 1
       fi
     fi
-    export CARGO_TARGET_DIR="$root/materiant/target"
+    # Thư mục build riêng: không chờ khoá của các session Claude (chúng dùng materiant/target). Lần đầu build nguội.
+    export CARGO_TARGET_DIR="$root/materiant/target/start"
     echo "gallery từ $dir"
     if [ -n "$page" ]; then
       exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example gallery -- --page "$page"

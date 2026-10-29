@@ -23,6 +23,10 @@
   a p%, b)`, có nhân alpha — trộn với `transparent` giữ sắc); chữ trên nền nhấn: `color::on_color`. Màu vào / ra là
   `gpui_kit::Rgba`; `ThemeColors` là `Hsla` ⇒ `Rgba::from(hsla)` trước khi trộn.
 - `Accent` (enum cho `bg_accent` / `on_accent`) CHƯA có — đặt trong `style.rs`, ánh xạ sang 4 cặp màu trên.
+- **Nợ chuyển sang đây** (chủ dự án chọn 29/10/2026): cỡ chữ kéo theo rem — trong `theme::init` (chỗ
+  `observe_new::<Root>`) đặt `window.set_rem_size(font_size × 16 / 14)` và đặt lại khi `set_theme` đổi `font_size`, để
+  `text_sm()` / `size_4()`… co giãn theo Settings → Cỡ chữ. Sửa `src/theme/mod.rs` là hợp lệ ở task này (gd1_03+ mới
+  cấm). Thêm test `#[gpui::test]`: đổi `font_size` ⇒ `window.rem_size()` đổi.
 - Ripple: nhánh tông sáng / tối lấy từ `cx.theme().is_dark()` hoặc độ sáng của nền (`color::Oklch::from(rgba).l`).
   Giảm chuyển động của OS: `gpui_kit::base` có `reduce_motion` (soát API khi làm).
 - **Test UI đã bật**: dev-dependency `gpui` (= gpui-pre, `test-support`) — viết `tests/<module>.rs` với `#[gpui::test]`,

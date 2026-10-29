@@ -126,10 +126,20 @@ Trang `theme`: hàng màu nhấn (ô + `on-*` chữ mẫu), hàng trung tính, t
   `Option`), không gom `accents` / `neutrals`; bộ đầy đủ đang áp là `ThemeSeeds`. Không có `radius` trong bản vá (bản web
   cũng không). `cx.refresh_windows()` gọi khi đổi theme; OS đổi mà nền thật không đổi (chế độ ghim) thì không vẽ lại.
 - Theme của `gpui-base` được đồng bộ (appearance + `ColorTokens`) — `InputBase` (gd1_04) đọc `ring`, `input`… từ đó.
+- **Đề xuất mục 10 đã làm (D-8, chủ dự án chọn cả ba 29/10/2026)** — `materiant` `3ddf89e`, gộp `99dd3c6`; `fastcast`
+  `c6e4a61`:
+  - [ux] `Theme::rem_size()` = `font_size × 16 / 14`; đặt cho cửa sổ có `Root` lúc mở, đặt lại mọi cửa sổ khi
+    `set_theme` đổi cỡ chữ (qua `cx.defer` — gọi từ handler của chính cửa sổ vẫn ăn). Test `rem_follows_font_size`.
+  - [ram] Test UI tách ra crate con `ui-tests/` (`materiant-ui-tests`, workspace `members` + `default-members`) ⇒
+    `-p materiant` không còn `test-support` (`cargo tree -p materiant -e features -i gpui-pre` 0 dòng). Exe gallery
+    `cargo build --release -p materiant --example gallery` **7,35 MB** (bản mang `test-support` 7,45 MB). Spike
+    `gpui-proto` thêm `[workspace]` rỗng. **RAM chưa đo lại**: lúc đó cửa sổ trên cùng là game của chủ dự án — không mở
+    gallery chen lên (treo ở `plan/_backlog.md`).
+  - [pro] Ghi vào `fastcast/ROADMAP.md` hàng GĐ4: preset miễn phí, theme tuỳ biến gắn huy hiệu "Pro".
 
 ## 10. Đề xuất cải tiến
 
-Bảo mật: không áp (không tệp, không IPC; FFI macOS một lời gọi đọc). 
+Bảo mật: không áp (không tệp, không IPC; FFI macOS một lời gọi đọc). Cả ba dòng dưới đã làm — mục 9.
 
 - [ram] Example gallery là target dùng dev-dependency ⇒ build release của nó cũng mang `gpui` `test-support` (exe +0,1
   MB, chưa rõ RAM) — số RAM gd1_10 đo qua gallery sẽ lệch so với app thật. Đề xuất: gd1_10 đo bằng một `[[bin]]` /

@@ -25,14 +25,12 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **Kiểm tay gd1_01** (C4 phần nhìn + C5): `cargo run --example gallery -- --page theme` → Ctrl+T xoay Light / Dark /
   System, bấm 4 preset, ở System bật / tắt chế độ tối Windows ⇒ gallery đổi theo; so với trang theme bản web. Chi tiết
   `plan/materiant-gd1_01_theme.md` mục 9.
-- **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — soát ở gd1_10 hoặc lần đầu chạy
-  gallery trên Mac.
-- **Cỡ chữ kéo theo rem** (P2, chủ dự án chọn 29/10/2026): theme đặt `window.set_rem_size(font_size × 16 / 14)` cho mọi
-  cửa sổ có `Root` ⇒ Settings → Cỡ chữ co giãn cả bố cục. Đã ghi nợ vào `materiant-gd1_02` mục 0 (làm trước khi mở 4 làn).
-- **Đo RAM tách `test-support`** (P2): gd1_10 đo bằng target không mang dev-dependency (gallery release đang kéo
-  `gpui` `test-support`), hoặc so có / không một lần. Chi tiết `plan/materiant-gd1_01_theme.md` mục 10.
-- **[Pro] Theme tuỳ biến** (P3, chỉ ghi — D-4): tự chọn màu nhấn / lưu `MateriantTheme` riêng là tính năng Pro của
-  fastcast Settings; preset có sẵn để bản miễn phí.
+- **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
+  darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
+- **Đo RAM gallery không `test-support`** — lý do: lúc làm (29/10/2026) chủ dự án đang dùng máy (game toàn màn hình),
+  không mở gallery chen lên. Khi máy rảnh: `cargo build --release -p materiant --example gallery`, mở
+  `--page button` và `--page theme`, đọc cột Memory (Task Manager) sau ~5 s; so 13,4 MB (gd0_01) / 15,8 MB (gd1_01 có
+  `test-support`). Ghi vào `plan/materiant-gd1_01_theme.md` mục 9.
 
 ## Workspace
 

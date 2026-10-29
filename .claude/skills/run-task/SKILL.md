@@ -101,7 +101,8 @@ quyết định D-* / F-* đã chốt.
    `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `_tasking-convention.md` mục 6.
 3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
    `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Xung
-   đột ⇒ dừng hỏi. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
+   đột ⇒ dừng hỏi. Gỡ worktree từ shell đang đứng TRONG nó (Windows) ⇒ "Permission denied", git vẫn gỡ đăng ký nhưng
+   để lại thư mục rỗng: `cd` ra gốc trước, sót thì `git worktree prune` + xoá thư mục. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
 4. Commit plan ở repo gốc theo đường dẫn: `git commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<các task nhận>
    plan/_backlog.md` (+ `docs/decisions.md` nếu có quyết định mới; lộ trình repo commit ở repo đó).
 

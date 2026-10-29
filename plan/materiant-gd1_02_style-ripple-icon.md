@@ -23,14 +23,15 @@
   a p%, b)`, có nhân alpha — trộn với `transparent` giữ sắc); chữ trên nền nhấn: `color::on_color`. Màu vào / ra là
   `gpui_kit::Rgba`; `ThemeColors` là `Hsla` ⇒ `Rgba::from(hsla)` trước khi trộn.
 - `Accent` (enum cho `bg_accent` / `on_accent`) CHƯA có — đặt trong `style.rs`, ánh xạ sang 4 cặp màu trên.
-- **Nợ chuyển sang đây** (chủ dự án chọn 29/10/2026): cỡ chữ kéo theo rem — trong `theme::init` (chỗ
-  `observe_new::<Root>`) đặt `window.set_rem_size(font_size × 16 / 14)` và đặt lại khi `set_theme` đổi `font_size`, để
-  `text_sm()` / `size_4()`… co giãn theo Settings → Cỡ chữ. Sửa `src/theme/mod.rs` là hợp lệ ở task này (gd1_03+ mới
-  cấm). Thêm test `#[gpui::test]`: đổi `font_size` ⇒ `window.rem_size()` đổi.
+- `rem` của mọi cửa sổ đã theo cỡ chữ gốc (`theme.rem_size()` = `font_size × 16 / 14`) ⇒ token kích thước trong
+  `style.rs` nên theo `rem` (`rems(…)`, `text_sm()`…) để co giãn theo Settings → Cỡ chữ; `px(…)` cố định chỉ cho viền
+  1 px, bán kính bo.
 - Ripple: nhánh tông sáng / tối lấy từ `cx.theme().is_dark()` hoặc độ sáng của nền (`color::Oklch::from(rgba).l`).
   Giảm chuyển động của OS: `gpui_kit::base` có `reduce_motion` (soát API khi làm).
-- **Test UI đã bật**: dev-dependency `gpui` (= gpui-pre, `test-support`) — viết `tests/<module>.rs` với `#[gpui::test]`,
-  mẫu `tests/theme.rs` (`cx.add_window` bọc `Root`). Không bật `gpui-kit` feature `test-support` (xung đột `taffy`).
+- **Test UI đã bật**: crate con `ui-tests/` (dev-dependency `gpui` = gpui-pre `test-support`) — viết
+  `ui-tests/tests/<module>.rs` với `#[gpui::test]`, mẫu `ui-tests/tests/theme.rs` (`cx.add_window` bọc `Root`).
+  `cargo test` chạy cả hai crate; đo cỡ / RAM dùng `-p materiant`. Không bật `gpui-kit` feature `test-support` (xung
+  đột `taffy`).
 - `materiant::init` đã gọi `theme::init`; đăng ký asset icon thêm SAU dòng đó trong `src/lib.rs`.
 - **Bẫy**: máy chạy thử là máy dùng thật của chủ dự án — trước khi giả lập phím / chụp màn hình gallery phải soát
   `GetForegroundWindow() == MainWindowHandle`, không thì dừng (gd1_01 đã gửi nhầm Ctrl+T vào app khác). Xem

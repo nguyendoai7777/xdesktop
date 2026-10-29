@@ -115,8 +115,7 @@ Trang `theme`: hàng màu nhấn (ô + `on-*` chữ mẫu), hàng trung tính, t
   Ctrl+T xoay Light / Dark / System (nút trên phải đổi chữ, nền đổi không nháy); bấm 4 preset; ở System bật / tắt chế
   độ tối Windows (Settings → Personalization → Colors) ⇒ gallery đổi theo; C5 so với trang theme của bản web.
 - **Đo**: gallery release 7,45 MB (gd0_01: 7,30 MB; +0,1 MB do example kéo dev-dependency `test-support`, phần còn lại
-  là theme). RAM nghỉ trang `theme` 15,8 MB (gd0_01 trang stub: 13,4 MB) — chưa tách được phần do trang theme vẽ nhiều
-  hơn với phần do `test-support`; đo lại ở gd1_10.
+  là theme). RAM: xem dòng [ram] ở "Đề xuất mục 10 đã làm" bên dưới (đo lại không `test-support`).
 - **Interface đã chốt cho task sau** (`materiant::theme`): `Theme::global(cx)` / `cx.theme()` (`ActiveTheme`) →
   `colors()` (`ThemeColors`: `primary`, `on_primary`, `danger`…, `surface`, `text`, `muted`, `border`, `input`,
   `input_hover`, `input_focus`, `primary_ink`, `series[8]`, `neutral(Neutral::N50…N900)`), `mode()`, `is_dark()`,
@@ -133,8 +132,10 @@ Trang `theme`: hàng màu nhấn (ô + `on-*` chữ mẫu), hàng trung tính, t
   - [ram] Test UI tách ra crate con `ui-tests/` (`materiant-ui-tests`, workspace `members` + `default-members`) ⇒
     `-p materiant` không còn `test-support` (`cargo tree -p materiant -e features -i gpui-pre` 0 dòng). Exe gallery
     `cargo build --release -p materiant --example gallery` **7,35 MB** (bản mang `test-support` 7,45 MB). Spike
-    `gpui-proto` thêm `[workspace]` rỗng. **RAM chưa đo lại**: lúc đó cửa sổ trên cùng là game của chủ dự án — không mở
-    gallery chen lên (treo ở `plan/_backlog.md`).
+    `gpui-proto` thêm `[workspace]` rỗng. **RAM nghỉ** (bản `-p materiant`, cột Memory sau 5 s, 3 lượt, trung vị —
+    đo sau khi chủ dự án tắt game): trang `button` (stub) **13,2 MB** (13,2 / 13,2 / 13,3; gd0_01 trước theme 13,4 MB)
+    · trang `theme` **15,9 MB** (15,9 / 15,9 / 15,1). Kết luận: theme không tốn RAM nền; +2,7 MB là do trang theme vẽ
+    nhiều ô màu + chữ, `test-support` không đáng kể (bản có nó 15,8 MB cùng trang).
   - [pro] Ghi vào `fastcast/ROADMAP.md` hàng GĐ4: preset miễn phí, theme tuỳ biến gắn huy hiệu "Pro".
 
 ## 10. Đề xuất cải tiến

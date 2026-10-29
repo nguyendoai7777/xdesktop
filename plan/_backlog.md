@@ -27,10 +27,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   `plan/materiant-gd1_01_theme.md` mục 9.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
-- **Đo RAM gallery không `test-support`** — lý do: lúc làm (29/10/2026) chủ dự án đang dùng máy (game toàn màn hình),
-  không mở gallery chen lên. Khi máy rảnh: `cargo build --release -p materiant --example gallery`, mở
-  `--page button` và `--page theme`, đọc cột Memory (Task Manager) sau ~5 s; so 13,4 MB (gd0_01) / 15,8 MB (gd1_01 có
-  `test-support`). Ghi vào `plan/materiant-gd1_01_theme.md` mục 9.
 
 ## Workspace
 

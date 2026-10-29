@@ -1,14 +1,18 @@
 # Workspace xdesktop — app desktop Rust, nhiều repo
 
-Repo gốc chỉ giữ cấu hình workspace, tài liệu chỉ đạo và spike. Mỗi app / thư viện là **repo git riêng** clone vào thư
+Repo gốc chỉ giữ cấu hình workspace, tài liệu chỉ đạo và plan. Mỗi app / thư viện là **repo git riêng** clone vào thư
 mục con (không submodule). File này chỉ giữ định tuyến + luật chung mọi dự án; **luôn đọc `CLAUDE.md` của repo mình
 đang chạm trước khi sửa code**.
 
 | Dự án | Thư mục | Nạp ngữ cảnh |
 | --- | --- | --- |
-| **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/docs/plans/roadmap.md` | `fastcast/CLAUDE.md` |
-| **rs-materiant** (bộ component UI dùng chung mọi app) | `rs-materiant/` — chưa tạo; nền GPUI (D-6), plan `docs/plans/rs-materiant-gd1.md` | `rs-materiant/CLAUDE.md` |
-| Spike | `spikes/<tên>/` (trong repo gốc, mã vứt đi được) | báo cáo ở `docs/spikes/<tên>.md` |
+| **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/ROADMAP.md`, task `plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
+| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI, crate dựng ở T0; nền GPUI (D-6), plan `plan/materiant-gd1.md` | `materiant/CLAUDE.md` |
+
+**Plan: một thư mục `plan/` ở gốc cho cả workspace** — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
+`plan/_tasking-convention.md`; việc treo: `plan/_backlog.md`; giai đoạn đã đóng: `completed/<repo>/gd<N>/`. Lộ trình
+của app nằm ở repo app (`<repo>/ROADMAP.md`). Spike sống trong repo nó phục vụ: `<repo>/spikes/<tên>/`, báo cáo
+`<repo>/docs/spikes/<tên>.md`.
 
 **Quyết định đã chốt: `docs/decisions.md`** — đọc trước khi đề xuất thứ gì trái với nó. Chủ dự án chốt thêm ⇒ ghi
 vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `docs/decisions.md` đi theo git).
@@ -28,8 +32,9 @@ vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `doc
   Thêm phụ thuộc lớn vào tiến trình nền ⇒ đo RAM trước / sau.
 - **`.claude` chỉ ở repo gốc**: rule, skill, agent, memory của mọi repo con sống ở `<gốc>/.claude`. Không `.agents/`,
   `.codex/`, `AGENTS.md`.
-- Quy trình Opus điều phối + subagent Sonnet, `run-task`, `handoff`, `close-phase`, output style `terse` (D-5): **chưa
-  chuyển từ `xbds`** — làm khi tạo repo app đầu tiên.
+- Quy trình Opus điều phối + subagent Sonnet (D-5, bê từ `xbds`): skill **`run-task`** (làm một task trong `plan/`, gồm
+  cả khuôn bàn giao của `handoff`) và **`close-phase`** (đóng giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style
+  `terse`, agent riêng, hook nhắc bàn giao — `plan/_backlog.md`.
 
 ## Memory của Claude dùng chung giữa các máy
 
@@ -54,6 +59,7 @@ Idempotent, chạy lại lúc nào cũng được: nối memory, clone repo app 
 
 ## Xong task thì gộp về `master` và dọn nhánh
 
-Làm trong worktree `claude/<task>` là chuyện của Claude; chủ dự án chỉ nhìn `master`. Hết task: kiểm xanh
-(`cargo build`, `cargo clippy -- -D warnings`, `cargo test`) → commit hết trên nhánh → `git -C <repo> merge --no-ff
-claude/<task>` vào `master` → gỡ worktree rồi `branch -d`. Có xung đột thì dừng lại hỏi.
+Làm trong worktree `claude/<task>` (đặt ở `.claude/worktrees/<repo>-<task>` của repo gốc) là chuyện của Claude; chủ dự
+án chỉ nhìn `master`. Hết task: kiểm xanh (`cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
+`cargo deny check licenses`) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → gỡ
+worktree rồi `branch -d`. Có xung đột thì dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.

@@ -51,7 +51,7 @@ fi
 # Không dùng mảng kết hợp: bash mặc định của macOS là 3.2. Thiếu remote = repo mới chỉ có local (Q-2) — chỉ báo.
 repos="
 fastcast
-# rs-materiant https://github.com/<owner>/rs-materiant.git
+materiant
 "
 printf '%s\n' "$repos" | while read -r name url; do
   case "$name" in ''|'#'*) continue ;; esac

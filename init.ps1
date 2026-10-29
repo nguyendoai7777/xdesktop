@@ -51,7 +51,7 @@ if ($item -and $item.LinkType -eq 'Junction') {
 # Remote rỗng = repo mới chỉ có local (Q-2) — không clone được, chỉ báo.
 $repos = [ordered]@{
     'fastcast'     = ''
-    # 'rs-materiant' = 'https://github.com/<owner>/rs-materiant.git'
+    'materiant'    = ''
 }
 foreach ($name in $repos.Keys) {
     $dir = Join-Path $root $name

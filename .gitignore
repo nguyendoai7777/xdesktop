@@ -1,0 +1,21 @@
+# Repo gốc chỉ giữ cấu hình workspace + tài liệu chỉ đạo. Mỗi app / thư viện là repo git riêng
+# clone vào thư mục con — KHÔNG phải submodule, repo gốc không ghim commit của chúng.
+/fastcast/
+/materiant/
+
+# Rust
+target/
+**/*.rs.bk
+
+# Cấu hình theo máy (init.ps1 / init.sh ghi)
+.claude/settings.local.json
+.claude/worktrees/
+
+# Ảnh / số đo sinh ra khi chạy spike
+spikes/**/out/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

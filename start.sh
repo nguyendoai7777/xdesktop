@@ -5,7 +5,8 @@
 #   bash start.sh docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                       chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   bash start.sh list                  liệt kê worktree đang mở
-# Build ở materiant/target/start, tách khỏi thư mục build của các session Claude ⇒ không bị khoá; lần đầu build nguội.
+# Master build ở materiant/target/start; worktree build ở materiant/target/<worktree> (thư mục của chính session đó —
+# không build nguội lại, nhưng có thể chờ khoá khi session đang build). Không trộn: cargo dễ đưa ra exe của nguồn khác.
 # Trong gallery: ↑ / ↓ đổi trang, Ctrl+T xoay Light / Dark / System.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -33,8 +34,9 @@ case "$app" in
         exit 1
       fi
     fi
-    # Thư mục build riêng: không chờ khoá của các session Claude (chúng dùng materiant/target). Lần đầu build nguội.
-    export CARGO_TARGET_DIR="$root/materiant/target/start"
+    # Mỗi nguồn một thư mục build (cargo trộn worktree trong cùng target ⇒ dễ ra exe của nguồn khác).
+    name="${worktree#materiant-}"; name="${name:-start}"
+    export CARGO_TARGET_DIR="$root/materiant/target/$name"
     echo "gallery từ $dir"
     if [ -n "$page" ]; then
       exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example gallery -- --page "$page"
@@ -43,5 +45,5 @@ case "$app" in
     fi
     ;;
   list) show_worktrees ;;
-  *) sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//' ;;
 esac

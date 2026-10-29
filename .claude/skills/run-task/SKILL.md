@@ -52,8 +52,12 @@ quyết định lâu dài ⇒ thêm dòng vào `docs/decisions.md` kèm ngày. K
 1. Nhánh: mỗi repo bị sửa một worktree đặt ở `.claude/worktrees/` của **repo gốc** (`.claude` chỉ ở gốc, đã gitignore):
    ```bash
    git -C <repo> worktree add ../.claude/worktrees/<repo>-<task> -b claude/<task> master
-   export CARGO_TARGET_DIR="$PWD/<repo>/target"   # dùng lại cache build của checkout chính, khỏi build lại cả cây
+   export CARGO_TARGET_DIR="$PWD/<repo>/target/<task>"   # RIÊNG từng worktree (nằm trong target/ ⇒ đã gitignore)
    ```
+   **Không** dùng chung `<repo>/target` giữa các worktree: fingerprint của package path theo đường dẫn tương đối +
+   mtime ⇒ build ở worktree này sau worktree khác có thể báo `Fresh` mà exe / test là code của worktree kia (đã dính
+   30/10/2026: gallery của gd1_03 ra trang stub của master). Lần đầu build nguội vài phút — chấp nhận. Gỡ worktree thì
+   xoá luôn `<repo>/target/<task>`.
    Task chỉ sửa plan / tài liệu ⇒ không worktree, làm thẳng `master` repo gốc.
 2. Opus code `[opus]` + test `[opus-unit]`, chốt interface, commit trên nhánh.
 3. Giao Sonnet: `Agent` với `subagent_type: "general-purpose"`, `model: "sonnet"`. Lời giao gồm: đường dẫn tệp task +

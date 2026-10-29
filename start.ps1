@@ -4,7 +4,8 @@
 #   pwsh start.ps1 docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                        chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   pwsh start.ps1 list                  liệt kê worktree đang mở
-# Build ở materiant/target/start, tách khỏi thư mục build của các session Claude ⇒ không bị khoá; lần đầu build nguội.
+# Master build ở materiant/target/start; worktree build ở materiant/target/<worktree> (thư mục của chính session đó —
+# không build nguội lại, nhưng có thể chờ khoá khi session đang build). Không trộn: cargo dễ đưa ra exe của nguồn khác.
 # Trong gallery: ↑ / ↓ đổi trang, Ctrl+T xoay Light / Dark / System.
 param(
     [Parameter(Position = 0)] [string]$App = 'help',
@@ -36,8 +37,9 @@ switch ($App) {
                 exit 1
             }
         }
-        # Thư mục build riêng: không chờ khoá của các session Claude (chúng dùng materiant/target). Lần đầu build nguội.
-        $env:CARGO_TARGET_DIR = Join-Path $root 'materiant\target\start'
+        # Mỗi nguồn một thư mục build (cargo trộn worktree trong cùng target ⇒ dễ ra exe của nguồn khác).
+        $name = if ($Worktree) { $Worktree -replace '^materiant-', '' } else { 'start' }
+        $env:CARGO_TARGET_DIR = Join-Path $root "materiant\target\$name"
         $cargoArgs = @('run', '--manifest-path', (Join-Path $dir 'Cargo.toml'), '-p', 'materiant', '--example', 'gallery')
         if ($Page) { $cargoArgs += @('--', '--page', $Page) }
         Write-Host "gallery từ $dir"
@@ -46,6 +48,6 @@ switch ($App) {
     }
     'list' { Show-Worktrees }
     default {
-        Get-Content $PSCommandPath -TotalCount 8 | ForEach-Object { $_ -replace '^# ?', '' }
+        Get-Content $PSCommandPath -TotalCount 9 | ForEach-Object { $_ -replace '^# ?', '' }
     }
 }

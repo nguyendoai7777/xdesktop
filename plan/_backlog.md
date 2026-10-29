@@ -22,6 +22,12 @@ Mỗi gạch một việc làm được. Có task thì trỏ tới tệp task, �
 ## materiant
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
+- **Test bàn phím tự động** (P2, chủ dự án chọn 29/10/2026): `gpui-kit` feature `test-support` trong
+  `[dev-dependencies]` (soát lại `cargo deny`) để task component viết `#[gpui_kit::test]` cho ↑ ↓ Enter Esc. Phải làm
+  trước khi bốn làn gd1_03…06 mở (chúng cấm sửa `Cargo.toml`) — gộp vào gd1_01 hoặc gd1_02. Chi tiết
+  `plan/materiant-gd0_01_crate.md` mục 10.
+- **RAM gallery trên macOS** (P3): mod `ram` của `examples/gallery/main.rs` đọc `task_info` `phys_footprint` thay
+  `RAM —` — trước gd1_10 (đo RAM trên Mac).
 
 ## Workspace
 

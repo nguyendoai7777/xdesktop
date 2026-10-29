@@ -12,6 +12,21 @@
 
 Bàn giao ghi vào gd1_08 (Menu dựng trên Popover của task này).
 
+## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
+
+<!-- handoff: materiant-gd1_06 -->
+
+- **Đã có sẵn để dùng**: thân `Dialog` / `Popover` nội dung dài ⇒ `materiant::scroll::ScrollArea::new(id).vertical()
+  .max_h(…)` (thanh mảnh nổi, hiện khi rê / cuộn). `Scrollbar` tự dựng ⇒ `.styles(materiant::scroll::scrollbar_styles(
+  cx.scrollbar_tokens()))` để cùng diện mạo.
+- **Bẫy đã gặp**: GPUI chạy action của key binding TRƯỚC `on_key_down` — Esc của popup / dialog nên là action trong
+  `key_context` riêng của tầng đó (ngữ cảnh sâu hơn thắng cha), không trông `on_key_down` chặn binding của view cha.
+  Phím mặc định của component gán một lần qua `Global` cờ (mẫu `materiant::list::bind_keys`) vì `lib.rs` cấm sửa.
+- **Bẫy đã gặp**: build ở `CARGO_TARGET_DIR=materiant/target/<task>` riêng (target chung ⇒ cargo đưa exe của làn khác);
+  `gallery-run.ps1 -Exe <target riêng>/release/examples/gallery.exe -Out <thư mục riêng>`.
+- **Soát lại khi làm**: popup đè lên `VirtualList` (trang `scroll`) — Esc đóng popup, không lọt Enter xuống danh sách
+  (danh sách chỉ nhận phím khi có focus).
+
 ## 1. Làm gì
 
 - `position.rs`: hàm thuần đặt popup theo neo + phía ưa thích (trên / dưới / trái / phải × đầu / giữa / cuối), **lật

@@ -13,6 +13,21 @@
 Task làn song song: **chỉ** sửa các tệp trên. Bàn giao ghi vào gd1_10. Nếu lúc làm gd1_06 (cuộn) đã xong thì danh
 sách của dropdown dùng `ScrollArea`; chưa xong thì dùng thanh cuộn mặc định của gpui-base + ghi mục 8.
 
+## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
+
+<!-- handoff: materiant-gd1_06 -->
+
+- **Đã có sẵn để dùng**: danh sách thả của `Select` dài ⇒ `materiant::list::scroll_top_for_index(…, Align::Nearest)` /
+  `VirtualListHandle::scroll_to(ix, Align::Nearest)` để mục đang trỏ luôn lọt khung; `ListNav::apply` (↑ ↓ PageUp PageDown
+  Home End, KHÔNG vòng, kẹp, `count = 0` ⇒ `None`). Bọc danh sách ngắn bằng `ScrollArea::new(id).vertical().max_h(…)`;
+  `Scrollbar` tự dựng ⇒ `materiant::scroll::scrollbar_styles(cx.scrollbar_tokens())`.
+- **Khác cần chú ý**: `ListNav` không vòng (đúng danh sách / launcher); typeahead chưa có ở `list.rs` — viết trong
+  `select.rs`.
+- **Bẫy đã gặp**: GPUI chạy action của key binding TRƯỚC `on_key_down` ⇒ ↑ ↓ / Enter của Select phải là action trong
+  `key_context` riêng (sâu hơn cha nên thắng ↑ ↓ đổi trang của gallery); mẫu `materiant::list::bind_keys` + test
+  `keys_move_selection_and_keep_it_visible` (`ui-tests/tests/scroll.rs`) gán ↓ ở view cha để soát.
+- **Bẫy đã gặp**: build ở `CARGO_TARGET_DIR=materiant/target/<task>` riêng; `gallery-run.ps1 -Exe … -Out …` riêng.
+
 ## 1. Làm gì
 
 - `Select` trên `gpui_base::Select`: đóng / mở bằng Enter / Space / ↓, ↑ ↓ chọn, typeahead (gõ chữ nhảy tới mục),

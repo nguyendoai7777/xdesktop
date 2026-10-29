@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | M — ~550 dòng |
-| Phụ thuộc | gd1_06 · materiant-gd1 T7 (`Menu`, `Dialog`) |
+| Phụ thuộc | gd1_06 · materiant-gd1_07 (`Dialog`), gd1_08 (`Menu`) |
 | Quyết định áp dụng | F-2, F-4 |
 | Phụ thuộc mới | — |
 | File đụng tới | `crates/ui/src/launcher/actions.rs` MỚI · `crates/ui/src/launcher/recorder.rs` MỚI · `crates/core/src/ipc.rs` SỬA · `crates/daemon/src/daemon.rs` SỬA · `crates/daemon/src/hotkeys.rs` SỬA · `i18n/{vi,en}.toml` SỬA |

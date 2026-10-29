@@ -14,9 +14,10 @@ Phiên chính là **Opus**. Trả lời chủ dự án **gọn**, tiếng Việt
 - Một thư mục plan cho cả workspace: `plan/` ở gốc. Chủ dự án đưa **tệp** · **mã** (`gd1_03`, `materiant-gd1_02`) ·
   **"làm tiếp <repo>"** ⇒ task 🔄 của repo đó nếu có, không thì ☐ có số nhỏ nhất (gd thấp trước) mà mọi "Phụ thuộc"
   đã ✅ — nêu tên task ở câu trả lời đầu tiên.
-- "làm tiếp" không nói repo, hoặc khớp nhiều tệp ⇒ hỏi (`AskUserQuestion`).
-- Phụ thuộc vào task của repo khác ghi dạng `materiant-gd1 T3` (plan chưa tách tệp) ⇒ soát bằng `git -C materiant log`
-  + dòng trạng thái trong plan đó; chưa xong ⇒ báo, hỏi làm task khác hay làm tạm không có nó.
+- "làm tiếp" không nói repo, hoặc khớp nhiều tệp ⇒ hỏi (`AskUserQuestion`). Task 🔄 có worktree `claude/<task>` đang
+  mở có thể là của session khác (làn song song) ⇒ hỏi trước khi nhận. Bắt đầu task ⇒ đổi `Trạng thái` sang 🔄 ngay.
+- Phụ thuộc vào task của repo khác ghi dạng `materiant-gd1_03` ⇒ soát dòng `Trạng thái` của
+  `plan/materiant-gd1_03_*.md` + `git -C materiant log`; chưa xong ⇒ báo, hỏi làm task khác hay làm tạm không có nó.
 
 ## 1. Nạp ngữ cảnh (không hỏi)
 
@@ -92,7 +93,8 @@ quyết định D-* / F-* đã chốt.
 
 1. Điền mục 9 (bàn giao thực tế: số đo, lệnh soát, quyết định đã chốt, việc chờ kiểm tay) → `Trạng thái` ✅ (ngày).
 2. Bàn giao: chèn khối `## 0. Bàn giao từ <task>` + dấu `<!-- handoff: <task> -->` vào **task kế tiếp cùng repo, cùng
-   giai đoạn** (theo số) — khuôn ở `_tasking-convention.md` mục 6. Task cuối giai đoạn ⇒ ghi vào lộ trình repo.
+   giai đoạn** (theo số; task trong làn song song ⇒ các task ghi nó ở dòng "Phụ thuộc") — khuôn ở
+   `_tasking-convention.md` mục 6. Task cuối giai đoạn ⇒ ghi vào lộ trình repo.
 3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
    `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Xung
    đột ⇒ dừng hỏi. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).

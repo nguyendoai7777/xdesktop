@@ -12,8 +12,8 @@ plan/
   _tasking-convention.md        # tệp này
   _backlog.md                   # việc treo / đề xuất đã chọn, chia mục theo dự án
   gd<N>_<NN>_<slug>.md          # task của fastcast — app chính
-  <repo>-gd<N>_<NN>_<slug>.md   # task của repo khác (materiant-gd1_03_button.md…)
-  <repo>-gd<N>.md               # plan giai đoạn chưa tách task (materiant-gd1.md)
+  <repo>-gd<N>_<NN>_<slug>.md   # task của repo khác (materiant-gd1_03_button-kbd.md…)
+  <repo>-gd<N>.md               # plan giai đoạn chưa tách task (tạm, tách ngay khi bắt đầu giai đoạn)
 completed/<repo>/gd<N>/         # giai đoạn đã đóng (skill close-phase dời về đây)
 ```
 
@@ -35,7 +35,7 @@ completed/<repo>/gd<N>/         # giai đoạn đã đóng (skill close-phase d�
 | Trạng thái | ☐ / 🔄 / ✅ (ngày) / ⛔ (lý do) |
 | Repo | repo bị sửa (fastcast, materiant…) — run-task nạp `<repo>/CLAUDE.md` theo dòng này |
 | Cỡ | S / M — kèm ước lượng dòng code |
-| Phụ thuộc | task phải ✅ trước, kể cả task của repo khác (`materiant-gd1 T3`) |
+| Phụ thuộc | task phải ✅ trước, kể cả task của repo khác (`materiant-gd1_03`) |
 | Quyết định áp dụng | D-… / F-… trong `docs/decisions.md` |
 | Phụ thuộc mới | crate + giấy phép (soát D-2), hoặc "—" |
 | File đụng tới | đường dẫn thật tính từ repo, MỚI / SỬA |
@@ -102,8 +102,9 @@ Lệnh soát xanh mỗi repo: `cargo build`, `cargo clippy --all-targets -- -D w
 
 ## 6. Bàn giao khi xong
 
-Task vừa ✅ thì — TRƯỚC khi gộp `master` — chèn khối bàn giao vào **task kế tiếp cùng repo, cùng giai đoạn** (theo số),
-ngay sau bảng thuộc tính; có khối cũ thì đặt khối mới lên trên:
+Task vừa ✅ thì — TRƯỚC khi gộp `master` — chèn khối bàn giao vào **task kế tiếp cùng repo, cùng giai đoạn** (theo số;
+task trong làn song song — lộ trình có sơ đồ làn, vd `materiant/ROADMAP.md` — ⇒ vào các task ghi nó ở dòng
+"Phụ thuộc"), ngay sau bảng thuộc tính; có khối cũ thì đặt khối mới lên trên:
 
 ```markdown
 ## 0. Bàn giao từ gd<N>_<NN> (dd/mm/yyyy)

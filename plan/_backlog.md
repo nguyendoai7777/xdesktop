@@ -23,7 +23,8 @@ Mỗi gạch một việc làm được. Có task thì trỏ tới tệp task, �
 
 ## materiant
 
-- Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b, `plan/materiant-gd1.md`.
+- Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
+- Giấy phép `CC0-1.0` (`tiny-keccak`, build-only, Linux) — chốt trước `materiant-gd0_01`; ghi D-2.
 
 ## Workspace
 

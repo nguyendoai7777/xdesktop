@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | M — ~600 dòng |
-| Phụ thuộc | gd1_01 · materiant-gd1 T2 (`.drag_region()`), T3 (`Kbd`), T6 (danh sách) |
+| Phụ thuộc | gd1_01 · materiant-gd1_02 (`.drag_region()`), gd1_03 (`Kbd`), gd1_04 (ô tìm), gd1_06 (danh sách) |
 | Quyết định áp dụng | F-2, F-4 |
 | Phụ thuộc mới | `unicode-normalization` (MIT / Apache-2.0) — đã dùng ở spike để bỏ dấu |
 | File đụng tới | `crates/ui/src/launcher/mod.rs` MỚI · `crates/ui/src/launcher/filter.rs` MỚI · `crates/ui/src/launcher/view.rs` MỚI · `crates/ui/src/commands.rs` SỬA · `crates/core/src/config.rs` SỬA · `i18n/{vi,en}.toml` SỬA |

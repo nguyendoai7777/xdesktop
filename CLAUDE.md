@@ -7,7 +7,7 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 | Dự án | Thư mục | Nạp ngữ cảnh |
 | --- | --- | --- |
 | **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/ROADMAP.md`, task `plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
-| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI, crate dựng ở T0; nền GPUI (D-6), plan `plan/materiant-gd1.md` | `materiant/CLAUDE.md` |
+| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI; nền GPUI (D-6); lộ trình `materiant/ROADMAP.md`, task `plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` |
 
 **Plan: một thư mục `plan/` ở gốc cho cả workspace** — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
 `plan/_tasking-convention.md`; việc treo: `plan/_backlog.md`; giai đoạn đã đóng: `completed/<repo>/gd<N>/`. Lộ trình

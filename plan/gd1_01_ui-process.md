@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | M — ~450 dòng |
-| Phụ thuộc | GĐ0 T2 ✅ (daemon + khung `fastcast-ui`) · materiant-gd1 T0, T1 (crate + theme) |
+| Phụ thuộc | GĐ0 T2 ✅ (daemon + khung `fastcast-ui`) · materiant-gd1_01 (theme; kéo theo gd0_01 crate) |
 | Quyết định áp dụng | F-4, D-6, F-2 |
 | Phụ thuộc mới | `gpui-kit` =0.8.1 (không bật `gpui-component`) qua `materiant` |
 | File đụng tới | `crates/ui/Cargo.toml` SỬA · `crates/ui/src/main.rs` SỬA · `crates/ui/src/app.rs` MỚI · `crates/ui/src/ipc.rs` MỚI · `crates/ui/src/keep_warm.rs` MỚI · `crates/ui/src/commands.rs` MỚI |

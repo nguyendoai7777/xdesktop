@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | S — ~300 dòng |
-| Phụ thuộc | gd1_03 · materiant-gd1 T8 (`Toast` — chưa có thì log + bỏ toast, ghi nợ) |
+| Phụ thuộc | gd1_03 · materiant-gd1_09 (`Toast` — chưa có thì log + bỏ toast, ghi nợ) |
 | Quyết định áp dụng | F-8 |
 | Phụ thuộc mới | `image` (MIT / Apache-2.0, chỉ PNG) — đã có trong cây qua xcap |
 | File đụng tới | `crates/ui/src/save.rs` MỚI · `crates/core/src/naming.rs` MỚI · `crates/core/src/lib.rs` SỬA · `crates/ui/src/overlay/view.rs` SỬA · `i18n/{vi,en}.toml` SỬA |

@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | M — ~550 dòng |
-| Phụ thuộc | gd1_02 · materiant-gd1 T2, T3 (ripple, `IconButton`), T7 (`Tooltip`) |
+| Phụ thuộc | gd1_02 · materiant-gd1_02 (ripple), gd1_03 (`IconButton`), gd1_07 (`Tooltip`) |
 | Quyết định áp dụng | F-3, F-1 |
 | Phụ thuộc mới | — |
 | File đụng tới | `crates/ui/src/overlay/selection.rs` SỬA · `crates/ui/src/overlay/handles.rs` MỚI · `crates/ui/src/overlay/toolbar.rs` MỚI · `crates/ui/src/overlay/view.rs` SỬA · `i18n/{vi,en}.toml` SỬA |

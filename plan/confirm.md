@@ -19,4 +19,18 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   session đó (`target/<worktree>`) — phương án khác: thư mục riêng cho script (không bao giờ chờ khoá nhưng build nguội
   lại mỗi worktree) — vì sao: xem tay thường lúc session đã xong / rảnh, đỡ 2 GB + 5 phút mỗi lần.
 
+- [điều phối] Xoá thư mục build chung cũ `materiant/target/{debug,release,tmp}` (~8,5 GB) — ổ E: còn 12 GB — phương án
+  khác: giữ — vì sao: sau luật "mỗi worktree một target" không ai dùng nữa; session nào lỡ còn trỏ vào thì chỉ build
+  nguội lại. Session mới build ở `C:/xdesktop-target/<task>` (C: còn ~450 GB) — chưa ghi vào skill, chờ bạn chọn ổ.
+- [điều phối] Session fastcast gd1_01 mới để ở dạng thẻ đề xuất (app không cho tự mở session từ lượt do sự kiện nền);
+  materiant gd1_07 / gd1_09 chờ gd1_03 (Button) gộp xong mới mở. Spike OCR (gd0_05) / quay video (gd0_06) KHÔNG mở khi
+  vắng — cần chụp / quay màn hình thật của máy và tải ONNX Runtime lúc build.
+
 ## materiant
+
+- [ripple / window] `materiant::window::window_options()` = `WindowOptions` mặc định với `inactive_frame_interval:
+  None`; gallery + mọi cửa sổ materiant nên trải `..window_options()` — phương án khác: giữ mặc định GPUI (cửa sổ không
+  active ~30 fps, tiết kiệm điện khi app chạy animation dài ở nền) — vì sao: đo ripple ở cửa sổ không active chỉ 24 fps
+  (khung 41–50 ms), bỏ trần thì 60 fps đều, khung chậm nhất 17 ms; animation của materiant chỉ xin khung lúc đang chạy nên
+  nghỉ không tốn gì. Có thể đây là cảm giác "FPS thua bản web" bạn thấy; nếu vẫn thấy giật khi cửa sổ ĐANG active, chạy
+  `$env:GALLERY_FRAME_STATS=1; pwsh start.ps1 docs style` rồi bấm ô ripple — dòng `FRAMES … fps` cho biết số thật.

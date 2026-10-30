@@ -169,6 +169,13 @@ materiant `09857b9` (nhánh `ee94406`), fastcast `ccfe42f` (nhánh `3017173` + `
   active); nhấp ra desktop / cửa sổ khác ⇒ launcher ẩn; Alt+Tab ⇒ ẩn; kéo thanh trên ⇒ không ẩn; nhấp khoảng trống dưới
   "Settings" ⇒ không viền hồng, gõ tiếp vẫn lọc; nhìn header: icon ba lớp, ô trần, vạch mảnh dưới.
 
+- **Icon app đã chốt** (fastcast `c9597d8`, nhánh `5398159`): mẫu #9 đợt 2 — `crates/ui/assets/app-icon.svg` = bản
+  chỉ hình (`design/fastcast-icon/glyph.svg`, `fill="currentColor"`), header tô đỏ cố định `assets::APP_ICON_COLOR`
+  `#ff6363` cả sáng / tối (`svg()` một màu ⇒ bỏ gradient); bản đầy đủ (nền ô + gradient) chép vào
+  `fastcast/assets/icon/app-icon.svg`. Test assets thêm: glyph có `currentColor`, không `url(` gradient. ico / png cho
+  exe + khay ⇒ `plan/_backlog.md` (không sửa daemon / khay lượt này). Chụp PrintWindow (`--background`): icon đỏ ba
+  lớp đúng chỗ; RAM 14,0 MB. 118 test + clippy + deny + fmt xanh.
+
 ## 10. Đề xuất cải tiến
 
 Bảo mật / riêng tư: `GetAsyncKeyState` / `WindowFromPoint` chỉ đọc trạng thái nút + cửa sổ dưới con trỏ, không ghi

@@ -5,6 +5,12 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **Icon app cho exe / khay / bản cài** (icon đã chốt 30/10/2026 — `fastcast/assets/icon/app-icon.svg`, bản đầy đủ có
+  nền ô + gradient; launcher đã dùng bản chỉ hình ở `crates/ui/assets/app-icon.svg`): chưa xuất `.ico` (16–256 px) /
+  `.png` và nhúng vào exe (`winres` / `.rc`) + icon khay (`tray-icon`) — lý do: lượt materiant-gd1_11 chỉ thay icon
+  launcher, không sửa daemon / khay (session điều phối dặn); chọn công cụ xuất ico + soát giấy phép crate nhúng resource
+  là việc riêng.
+
 ### GĐ0 (T0–T4 xong 29/10/2026 — chi tiết `fastcast/ROADMAP.md` mục GĐ0)
 
 - **Kiểm T3 thật**: `fst autostart on` → khởi động lại máy → daemon lên sau ~12 s, logon không chậm →

@@ -1,9 +1,12 @@
 # Dựng máy mới cho workspace xdesktop (Windows). Idempotent — chạy lại lúc nào cũng được.
-#   pwsh init.ps1
+#   pwsh init.ps1                    hỏi init project nào
+#   pwsh init.ps1 -Project fastcast  không hỏi
 # 1. Nối memory của Claude trên máy này vào .claude/memory (track trong git) bằng junction.
-# 2. Clone repo app / thư viện còn thiếu (bảng $repos — điền remote khi tạo repo).
+# 2. Clone repo của project được chọn (bảng $repos, $projects); repo đã có thì giữ nguyên, không pull.
 # 3. Soát công cụ.
+param([ValidateSet('fastcast', 'materiant')] [string[]] $Project)
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
 
 # --- 1. Memory -------------------------------------------------------------------------------------------------
@@ -48,16 +51,38 @@ if ($item -and $item.LinkType -eq 'Junction') {
 }
 
 # --- 2. Repo con -----------------------------------------------------------------------------------------------
-# Remote rỗng = repo mới chỉ có local (Q-2) — không clone được, chỉ báo.
+# Thư mục luôn là `materiant` (fastcast trỏ `../materiant`); trên remote tên materiant-rust để khỏi trùng bản web Angular.
 $repos = [ordered]@{
-    'fastcast'     = ''
-    'materiant'    = ''
+    'fastcast'  = 'https://github.com/nguyendoai7777/fastcast.git'
+    'materiant' = 'https://github.com/nguyendoai7777/materiant-rust.git'
 }
-foreach ($name in $repos.Keys) {
+# Project → các repo cần có.
+$projects = [ordered]@{
+    'fastcast'  = @('fastcast', 'materiant')
+    'materiant' = @('materiant')
+}
+if (-not $Project) {
+    # Đọc bằng [Console]::In: chạy được cả khi stdin là pipe (Git Bash); hết stdin thì lấy mặc định.
+    Write-Host 'Bạn muốn init project nào:'
+    Write-Host '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
+    Write-Host '  [2] materiant  (chỉ thư viện UI)'
+    while (-not $Project) {
+        Write-Host -NoNewline 'Chọn (nhiều project thì cách bằng dấu phẩy): '
+        $answer = [Console]::In.ReadLine()
+        if ([string]::IsNullOrWhiteSpace($answer)) { $answer = '1' }
+        $picks = @($answer -split '[,\s]+' | Where-Object { $_ })
+        if ($picks | Where-Object { $_ -notin '1', '2' }) { Write-Host 'Nhập 1, 2 hoặc 1,2.'; continue }
+        $Project = @($picks | ForEach-Object { @($projects.Keys)[[int]$_ - 1] })
+    }
+}
+$wanted = @($Project | ForEach-Object { $projects[$_] } | Select-Object -Unique)
+foreach ($name in $wanted) {
     $dir = Join-Path $root $name
-    if (Test-Path (Join-Path $dir '.git')) { Write-Host "✓ $name có sẵn"; continue }
-    if (-not $repos[$name]) { Write-Warning "$name chưa có remote — chép tay từ máy khác hoặc điền remote vào init.ps1 / init.sh"; continue }
+    if (Test-Path (Join-Path $dir '.git')) { Write-Host "✓ $name có sẵn, không kéo lại"; continue }
+    if ((Test-Path $dir) -and (Get-ChildItem $dir -Force)) { Write-Warning "$dir có tệp nhưng không phải repo git — dọn tay rồi chạy lại"; continue }
     git clone $repos[$name] $dir
+    if ($LASTEXITCODE -ne 0) { throw "clone $name thất bại" }
+    Write-Host "✓ $name đã clone"
 }
 
 # --- 3. Công cụ ------------------------------------------------------------------------------------------------

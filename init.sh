@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 # Dựng máy mới cho workspace xdesktop (macOS / Linux). Idempotent — chạy lại lúc nào cũng được.
-#   bash init.sh
+#   bash init.sh                 hỏi init project nào
+#   bash init.sh fastcast        không hỏi (fastcast, materiant; nhiều project thì liệt kê)
 # Git Bash trên Windows ⇒ đá sang init.ps1 (junction cần PowerShell).
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*)
+    if [ $# -gt 0 ]; then
+      exec pwsh -NoProfile -Command "& '$(cygpath -w "$root/init.ps1")' -Project $(IFS=,; echo "$*")"
+    fi
     exec pwsh -NoProfile -File "$(cygpath -w "$root/init.ps1")" ;;
 esac
 
@@ -47,17 +51,49 @@ else
   echo "✓ memory: nối $machine_dir → $shared"
 fi
 
-# --- 2. Repo con (điền remote khi tạo repo; mỗi dòng "<thư mục> <remote>") --------------------------------------
-# Không dùng mảng kết hợp: bash mặc định của macOS là 3.2. Thiếu remote = repo mới chỉ có local (Q-2) — chỉ báo.
-repos="
-fastcast
-materiant
-"
-printf '%s\n' "$repos" | while read -r name url; do
-  case "$name" in ''|'#'*) continue ;; esac
-  if [ -d "$root/$name/.git" ]; then echo "✓ $name có sẵn"; continue; fi
-  if [ -z "${url:-}" ]; then echo "⚠ $name chưa có remote — chép tay từ máy khác hoặc điền remote vào init.ps1 / init.sh" >&2; continue; fi
-  git clone "$url" "$root/$name"
+# --- 2. Repo của project được chọn; repo đã có thì giữ nguyên, không pull ------------------------------------------
+# Không dùng mảng kết hợp: bash mặc định của macOS là 3.2.
+# Thư mục luôn là `materiant` (fastcast trỏ `../materiant`); trên remote tên materiant-rust để khỏi trùng bản web Angular.
+repo_url() {
+  case "$1" in
+    fastcast) echo https://github.com/nguyendoai7777/fastcast.git ;;
+    materiant) echo https://github.com/nguyendoai7777/materiant-rust.git ;;
+  esac
+}
+
+selected="$*"
+if [ -z "$selected" ]; then
+  echo 'Bạn muốn init project nào:'
+  echo '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
+  echo '  [2] materiant  (chỉ thư viện UI)'
+  while [ -z "$selected" ]; do
+    printf 'Chọn (nhiều project thì cách bằng dấu phẩy): '
+    read -r answer || answer=""
+    [ -n "$answer" ] || answer=1
+    for pick in $(printf '%s' "$answer" | tr ',' ' '); do
+      case "$pick" in
+        1) selected="$selected fastcast" ;;
+        2) selected="$selected materiant" ;;
+        *) echo 'Nhập 1, 2 hoặc 1,2.'; selected=""; break ;;
+      esac
+    done
+  done
+fi
+
+wanted=""
+for project in $selected; do
+  case "$project" in
+    fastcast) wanted="$wanted fastcast materiant" ;;
+    materiant) wanted="$wanted materiant" ;;
+    *) echo "✗ không có project $project" >&2; exit 1 ;;
+  esac
+done
+for name in $(printf '%s\n' $wanted | awk '!seen[$0]++'); do
+  dir="$root/$name"
+  if [ -d "$dir/.git" ]; then echo "✓ $name có sẵn, không kéo lại"; continue; fi
+  if [ -d "$dir" ] && [ -n "$(ls -A "$dir")" ]; then echo "⚠ $dir có tệp nhưng không phải repo git — dọn tay rồi chạy lại" >&2; continue; fi
+  git clone "$(repo_url "$name")" "$dir"
+  echo "✓ $name đã clone"
 done
 
 # --- 3. Công cụ ---------------------------------------------------------------------------------------------------

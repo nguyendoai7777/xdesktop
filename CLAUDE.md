@@ -50,7 +50,18 @@ pwsh init.ps1      # Windows
 bash init.sh       # macOS / Ubuntu (Git Bash trên Windows tự đá sang init.ps1)
 ```
 
-Idempotent, chạy lại lúc nào cũng được: nối memory, clone repo app còn thiếu (khi đã có remote), soát công cụ.
+Idempotent, chạy lại lúc nào cũng được: nối memory, hỏi init project nào rồi clone repo còn thiếu (fastcast kéo cả
+materiant; repo có rồi thì không đụng; remote của materiant tên `materiant-rust`), soát công cụ. Không hỏi: `-Project fastcast` / `bash init.sh fastcast`.
+
+## Build bản release
+
+```bash
+pwsh ./build.ps1   # Windows
+bash build.sh      # macOS / Ubuntu
+```
+
+Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `fastcast/dist/<target>/`; Windows x64 phổ thông thêm bản cài NSIS.
+Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`.
 
 ## Lệnh chung
 

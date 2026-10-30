@@ -89,10 +89,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   `pwsh start.ps1 docs menu` → so với trang menu của materiant web ở sáng / tối (chip phím tắt thẳng cột); rê qua Share
   / More mở sau ~150 ms; chuột phải sát góc phải dưới cửa sổ lật lên trên-trái; "40 items" cuộn bằng bánh xe.
   `plan/materiant-gd1_08_menu.md` mục 9.
-- **Menu: phím tắt từ keymap** (`MenuItem::action` + `Kbd::from_keystroke`) — lý do treo: cần sửa `kbd.rs` (làn gd1_03)
-  + chủ dự án chưa chọn đề xuất 3 của gd1_03. `plan/materiant-gd1_08_menu.md` mục 10.
-- **Menu dài có thanh cuộn** (đổi `overflow_y_scroll` trần sang `ScrollArea`) và **phím Menu / Apps** mở menu chuột phải —
-  lý do treo: `ScrollArea` chưa co theo `max_h`; tên phím Apps trong GPUI phải bấm phím thật mới biết.
+- **Phím Menu / Apps** mở menu chuột phải như Shift+F10 — lý do treo: tên phím Apps trong GPUI phải bấm phím thật mới
+  biết. `plan/materiant-gd1_08_menu.md` mục 10.
 - **`cargo fmt --check` đỏ ở tệp của gd1_06** (`src/scroll.rs`, `src/list.rs`, `examples/gallery/pages/scroll.rs`,
   `ui-tests/tests/scroll.rs`) — lý do treo: tệp của làn khác; gd1_10 chạy `cargo fmt` một lượt khi nghiệm thu.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target

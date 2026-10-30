@@ -20,6 +20,8 @@
 - **Ctrl+K của launcher**: Menu chưa có API mở bằng code — gắn `.context_menu(…)` cho dòng kết quả rồi gán
   `KeyBinding::new("ctrl-k", materiant::menu::OpenContextMenu, Some(<ngữ cảnh launcher>))`: mở giữa dòng, trỏ sẵn mục
   đầu (mục 9 gạch "Cho fastcast"). Thấy cần mở theo điểm / theo code ⇒ thêm `Menu` API ở đây, ghi mục 9.
+- **Mục gọi lệnh của app**: `MenuItem::new(id, nhãn).action(MyAction)` — chọn ⇒ dispatch `MyAction` từ chỗ focus trở
+  về, chip phím tắt tự lấy từ keymap (khỏi `.shortcut("…")` chép tay). Launcher dùng cho Gán phím / Gỡ phím / Về mặc định.
 - **Đổi so với spec**: phím tắt là chip `Kbd` (web chữ trơn) — 5 lựa chọn tự quyết của gd1_08 đang chờ ở
   `plan/confirm.md` mục materiant; chủ dự án đổi ý thì sửa `src/menu.rs` trước khi so ảnh.
 - **Đã gỡ** hàm `todo` của `examples/gallery/pages/mod.rs` (trang menu là chỗ giữ cuối) — gallery không còn trang stub.

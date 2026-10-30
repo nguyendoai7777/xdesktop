@@ -186,6 +186,16 @@ không bung); chuột phải sát góc phải dưới cửa sổ lật lên trê
   mục lọt khung (`ScrollHandle::scroll_to_item`); menu con là `deferred` nên không bị cắt. Gallery: dropdown "40 items"
   (cao kín cửa sổ ⇒ không vị trí nào vừa, định vị chọn vị trí tràn ít nhất = `right-start` cạnh nút; End + `y` + Enter ⇒
   `SELECT Yellow`).
+- Sau luật mới của chủ dự án (30/10 — làm hết đề xuất S/M đáng làm), nhánh `claude/gd1_08b`:
+  - `MenuItem::action(impl Action)` — chọn mục ⇒ đóng menu, `on_select`, rồi `window.dispatch_action` từ chỗ focus trở
+    về (nút / phần tử mở menu); không gọi `.shortcut` ⇒ cột phím tắt tự hiện phím đang gán trong keymap
+    (`highest_precedence_binding_for_action` của khung trước — ngữ cảnh nơi mở menu), đổi phím ⇒ menu đổi theo. Đổi
+    phím GPUI → chuỗi `Kbd` ngay trong `menu.rs` (`keystroke_combo`, `binding_combos`, `key_label`; phím đôi ⇒ nhiều
+    chip) nên KHÔNG phải sửa `kbd.rs`. Test `keystrokes_become_kbd_combos`, `an_action_item_dispatches_from_where_focus_returns`;
+    gallery: ô Corner F2 ⇒ `ACTION rename`, mục Rename hiện chip `F2` từ keymap, chọn ⇒ `ACTION rename`.
+  - Thanh cuộn mảnh của materiant (`gpui_base::Scrollbar` + `scroll::scrollbar_styles`, luôn hiện khi có phần khuất)
+    cạnh danh sách cuộn của menu dài — không dùng `ScrollArea` (khung `size_full` của nó không co theo `max_h`). Menu
+    ngắn không có thanh (gallery đã soát cả hai).
 
 **Cho fastcast** (gd1_07 "Gán phím tắt từ launcher", Ctrl+K): menu lệnh của launcher = `Menu` dropdown neo vào nút /
 dòng kết quả, hoặc mở bằng code? — Menu CHƯA có API mở từ ngoài (chỉ nút bấm / Enter / Space / chuột phải / Shift+F10).
@@ -196,11 +206,8 @@ là an toàn (menu đã đóng + trả focus trước khi `on_select` chạy).
 
 ## 10. Đề xuất cải tiến
 
-- `[ux]` Mục menu tự hiện phím tắt từ keymap — `MenuItem::shortcut` nhận chuỗi tay, dễ lệch với phím thật — thêm
-  `MenuItem::action(Box<dyn Action>)` đọc `window.keystroke_text_for` + `Kbd::from_keystroke` (đề xuất 3 của gd1_03) —
-  phím đổi trong Settings tự cập nhật trên menu — M — P2 (backlog: cần `kbd.rs` của gd1_03, chờ GĐ2 / chủ dự án chọn).
-- `[ux]` Thanh cuộn mảnh cho menu dài (hiện cuộn không có thanh) — `src/menu.rs` khung `rows` dùng `overflow_y_scroll`
-  trần — đổi sang `ScrollArea` của gd1_06 khi nó hỗ trợ `max_h` — S — P3 (backlog).
+- `[ux]` Mục menu tự hiện phím tắt từ keymap — M — P2 — **ĐÃ LÀM** (`MenuItem::action`, mục 9).
+- `[ux]` Thanh cuộn mảnh cho menu dài — S — P3 — **ĐÃ LÀM** (`Scrollbar` cạnh danh sách, mục 9).
 - `[ux]` Phím Menu / Apps của bàn phím Windows mở menu chuột phải như Shift+F10 — chưa rõ tên phím trong GPUI — thử
   `KeyBinding::new("menu", …)` trên máy thật — S — P3 (backlog: cần bấm phím thật).
 - `[bảo mật]` không áp — menu không đọc tệp / IPC, không lưu gì. `[ram]` không áp — state theo id, rơi khi menu đóng

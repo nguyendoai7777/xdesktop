@@ -10,6 +10,28 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_09 (30/10/2026)
+
+<!-- handoff: materiant-gd1_09 -->
+
+- **Đã có sẵn để dùng**: `materiant::select::Select` (dropdown chọn một, typeahead), `materiant::tabs::Tabs` (ngang /
+  `.vertical()` — đủ cho sidebar Settings của fastcast), `materiant::toast::{Toast, ToastSpec, ToastViewport}`
+  (`Toast::push(window, cx, …)`; app đặt MỘT `ToastViewport::new()` ở view gốc, `.inset_top(px)` nếu có header tự vẽ).
+  API + ví dụ: doc đầu mỗi tệp; tóm tắt ở `plan/materiant-gd1_09_select-tabs-toast.md` mục 9.
+- **Đổi so với spec**: `Select::new(id)` không `cx`; `ToastTimer.resume` đếm lại đủ thời lượng (như web) — cả hai chờ
+  chủ dự án xác nhận ở `plan/confirm.md`.
+- **Nợ chuyển sang đây** (mục 8 của gd1_09): dropdown của Select đang neo bằng `gpui_kit::base::Popup` trực tiếp ⇒ chuyển
+  sang Popover / định vị lật của gd1_07 (thiếu chỗ phía dưới thì lật lên); cân nhắc `ToastViewport` thành `RootPlugin`
+  đăng ký trong `materiant::init` (khi đó bỏ `ToastViewport` khỏi trang toast của gallery); dời hằng cục bộ của
+  `select.rs` / `tabs.rs` / `toast.rs` lên `style.rs`, icon đặc của toast lên `icon.rs`; tách nhãn / gợi ý của
+  `FieldShell` (+ `.cursor(..)`) để Select bọc lại thay khung tự vẽ.
+- **Bẫy đã gặp**: `window.refresh()` gọi trong lúc vẽ (vd callback `on_prepaint` đo kích thước) bị GPUI bỏ qua ⇒ dùng
+  `window.request_animation_frame()`; test UI KHÔNG bắt được (helper `frame()` tự `refresh()`), chỉ gallery thấy —
+  soát lại launcher nếu có đo kích thước.
+- **Bẫy đã gặp**: cửa sổ test chưa focus gì thì action Tab của `Root` không chạy ⇒ focus view gốc trước khi bấm Tab.
+- **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test select --test tabs --test toast`; gallery `select` /
+  `tabs` / `toast` sáng / tối qua `tools/gallery-run.ps1`; C5 của gd1_09 (so với web) còn chờ chủ dự án.
+
 ## 0. Bàn giao từ materiant-gd1_07 (30/10/2026)
 
 <!-- handoff: materiant-gd1_07 -->

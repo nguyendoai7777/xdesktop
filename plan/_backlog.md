@@ -30,6 +30,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 ## materiant
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
+- **Kiểm tay gd1_09** (C5 — lý do: so bằng mắt với tài liệu web): `pwsh start.ps1 docs select` / `tabs` / `toast`, Ctrl+T
+  sáng / tối — nhịp vạch tab, lò xo vào + trượt ra của toast, rê chuột dừng đếm, panel dropdown + typeahead. Chi tiết
+  `plan/materiant-gd1_09_select-tabs-toast.md` mục 9.
 - **Kiểm tay gd1_01** (C4 phần nhìn + C5): `cargo run --example gallery -- --page theme` → Ctrl+T xoay Light / Dark /
   System, bấm 4 preset, ở System bật / tắt chế độ tối Windows ⇒ gallery đổi theo; so với trang theme bản web. Chi tiết
   `plan/materiant-gd1_01_theme.md` mục 9.

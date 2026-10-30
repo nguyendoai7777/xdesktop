@@ -66,6 +66,19 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [materiant-gd1_07] Bề mặt Popover nền tối có viền 1 px `border` (web: không viền) — phương án khác: đúng web — vì sao:
   ảnh gallery nền tối: panel cùng màu `surface` với trang, bóng đen gần như không thấy ⇒ panel lẫn vào nền. Menu
   (gd1_08) / Select dùng `popover::surface` sẽ cùng diện mạo.
+- [materiant-gd1_09] Toast rê chuột rồi rời ra ⇒ đếm lại ĐỦ 5 s (đúng `toast-timer.ts` + spec "restart full duration")
+  — phương án khác: tiếp phần còn lại (như ghi ở C2 của task, như Sonner / `gpui_base::ToastManager`) — vì sao: spec
+  web là nguồn thật; đọc xong rời chuột thì toast không biến mất ngay sau 0,1 s.
+- [materiant-gd1_09] `Select::new(id)` (không `cx`), RenderOnce + state theo id — phương án khác: đúng spec `new(id, cx)`
+  + `Entity` do app giữ — vì sao: cùng kiểu Switch / Checkbox, app chỉ giữ chỉ số chọn.
+- [materiant-gd1_09] Toast cần app đặt MỘT `ToastViewport::new()` ở view gốc; tối đa 5 toast (thêm nữa thì cái cũ nhất
+  tự ra); ra kiểu ✕ = mờ tại chỗ, không phóng to; nền đặc (không blur) — phương án khác: `RootPlugin` đăng ký trong
+  `materiant::init` (app khỏi đặt — cần sửa `lib.rs`, ghi nợ gd1_10); cuộn trong khung như web; scale — vì sao: làn song
+  song không được sửa `lib.rs`; GPUI không có `scale` / `backdrop-filter` cho `div`.
+- [materiant-gd1_09] Select tự vẽ khung theo `cx.field_tokens()`, không bọc `FieldShell` — phương án khác: bọc shell —
+  vì sao: shell ép con trỏ chữ `I` và gộp nhãn / gợi ý vào vùng neo của popup (panel rơi dưới dòng gợi ý).
+- [materiant-gd1_09] Tabs dọc: vạch + đường kẻ ở mép TRÁI — phương án khác: mép phải (phía nội dung) — vì sao: kiểu
+  "vạch trái của cột menu" mà doc `tab-ink.ts` nêu.
 - [materiant-gd1_04] `TextField::new(id, window, cx)` / `NumberField::new(id, window, cx)` (thêm `window`) — phương án
   khác: đúng spec `new(id, cx)`, tạo `InputState` trễ ở lần vẽ đầu — vì sao: `InputState::new` của gpui-base cần
   `window`; tạo trễ thì `value()` trước khung đầu không đọc được.

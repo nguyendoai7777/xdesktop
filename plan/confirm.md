@@ -162,6 +162,11 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_09] Thêm Shift+mũi tên, Ctrl+C, chuột phải đóng — phương án khác: đúng phím spec — vì sao: cùng phím với chọn vùng.
 
 ## materiant
+- [materiant-gd2_01] `ColorPicker` chỉ là nội dung bảng, `.floating(true)` tự vẽ nền nổi, không tự mở popover — phương án khác: nút màu + popover đóng gói sẵn — vì sao: overlay fastcast tự quản bảng, phím `c`, focus; bọc thêm sẽ phải vòng qua dismiss của Popover khi kéo ra ngoài.
+- [materiant-gd2_01] Ô hex: đủ 6 chữ số áp ngay, 3 chữ số chỉ áp khi Enter / rời ô, chữ sai thì trả về màu hiện tại, không báo đỏ — phương án khác: chỉ áp khi Enter, hoặc viền lỗi — vì sao: thấy màu ngay lúc dán mã; `fff` có thể là nửa chừng của `fff000`; không có chữ báo lỗi cố định trong component.
+- [materiant-gd2_01] Sắc độ kẹp 0–360, không xoay vòng khi bấm mũi tên; kiểu màu `Rgb` u8 đổi được `[u8; 3]` — phương án khác: xoay vòng, dùng `Rgba` f32 — vì sao: thumb không nhảy qua đầu kia; ảnh xuất cần đúng mã 8 bit.
+- [materiant-gd2_01] Thêm ngoài phạm vi ghi trong task: `TextField::set_accessibility_label`, verb `drag@` của `--keys` — phương án khác: nhãn hex hiện thành chữ, không chạy thử được kéo — vì sao: bảng gọn, và `move@` gửi không giữ nút.
+
 - [D-10] "trong suốt tầm 75%" đọc là độ đục 0,75 (nền còn đặc 75%) — hoặc trong suốt thật 75% (alpha 0,25, chữ khó đọc trên ảnh sáng) — vì chữ phải đọc được trên mọi ảnh nền; đổi một hằng `FLOATING_SURFACE_ALPHA` là xong. Dialog, toast giữ nền đặc — hoặc áp cả hai — vì yêu cầu chỉ nói popover và khối nổi trên overlay. Chữ phụ tông tối trên nền trắng tinh còn ~2,9:1.
 
 - [dark-neutral] Tông tối mặc định: nền `#1c1c1c`, chữ `#f5f5f5`, chữ phụ `#a3a3a3`, viền trắng 8 %, viền ô nhập

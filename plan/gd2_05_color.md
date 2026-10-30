@@ -10,6 +10,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `overlay/annotate/{options,model}.rs`, `overlay/{mod,view,toolbar}.rs`, `crates/core/src/config.rs`, `i18n/{vi,en}.toml` |
 
+
+## 0. Bàn giao từ gd2_04 (30/10/2026)
+
+<!-- handoff: gd2_04 -->
+
+- **Đã có sẵn để dùng**: `OverlaySession::change_font`, `relayout_text`; `Ink.style` (`InkStyle { color, width, font: TextFont }`) là kiểu hiện tại, ô đang soạn đọc `style` lúc vẽ nên đổi màu áp ngay; `options::Labels`.
+- **Bẫy đã gặp**: khi có ô soạn, `on_key` để phím thường rơi tới input handler. Ô hex của bảng màu có focus riêng, phải kiểm phím tắt công cụ không chạy. `Shape::Text` lưu màu lúc chốt, `TextEditing` thì chưa có màu.
+
 ## 1. Làm gì
 
 - Nút màu trên bảng tuỳ chọn mở `materiant::color_picker`, đổi màu áp cho nét sau, cho cả ô chữ đang soạn. Phím `c` mở / đóng.

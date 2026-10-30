@@ -5,6 +5,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd2_04 · owner-qa] Gõ tiếng Việt vào ô chữ**: chạy `fst` thật, chụp vùng, phím `t`, click, gõ Telex + VNI qua Unikey / EVKey: không mất / nhân đôi chữ, ô ứng viên đúng chỗ; thử cả màn scale khác 100 % + vùng vắt hai màn khác scale (chữ không đổi cỡ vật lý, ảnh lưu khớp) — lý do: máy dùng thật, session không gõ phím thật; màn giả luôn theo scale màn chính.
+- **[gd2_04] Font chữ chú thích trên macOS, Ubuntu**: chưa chạy thử, kiểm ảnh lưu có đúng chữ, đúng chỗ.
+
 - **Kiểm tay GĐ1 — MỘT danh sách, theo thứ tự chạy: `fastcast/docs/gd1-report.md` mục 4** (gom mọi gạch `owner-qa` / "Kiểm tay" gd1_01 → gd1_10, T3 autostart, khác DPI, độ trễ phím thật, RDP, nền mờ, dán thật) — lý do: máy dùng thật, session không chạy overlay / phím thật. Tiêu chí 2 màn khác Hz, khác scale: **chưa xác nhận**. Xong ⇒ `close-phase` GĐ1, các gạch kiểm tay dưới đây xoá theo.
 - **[gd1_11 · ux] GPUI ghi ERROR `Invalid window handle. (0x80070578)` mỗi lần đóng overlay**: làm rối `ui.log`, khả nghi `gpui-pre-windows` `window.rs:627` — lý do treo: chưa kiểm gốc, phải vá crate ngoài, không ảnh hưởng hành vi (P3). `plan/gd1_11_acceptance.md` mục 10.
 - **Kiểm tay gd1_09 (C14 — `plan/gd1_09_color-picker.md` mục 6)**: trên màn HDR và màn scale 125 / 150 %, Ctrl+Shift+3 (hoặc launcher "Lấy màu"): kính lúp hiện cạnh con trỏ, mũi tên dời con trỏ thật đúng 1 px, kính lúp sang màn kia khi di chuột; Enter chép, dán ra so với màu thật — lý do: máy dùng thật không chạy overlay thật; màu HDR phụ thuộc cách `xcap` chụp, chưa kiểm.

@@ -28,6 +28,17 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd2_01] Chú thích gắn với ảnh đóng băng: dời / đổi cỡ vùng chọn không dời chú thích, chỉ cắt — phương án khác: dời theo vùng — vì sao: spec task; giữ được hình khi chỉnh lại vùng.
+- [gd2_01] Esc bỏ vùng vẫn giữ chú thích (thứ tự: bỏ nét → tắt công cụ → bỏ vùng → đóng) — phương án khác: bỏ vùng là xoá hết — vì sao: lỡ tay không mất công vẽ.
+- [gd2_01] Có công cụ bật: ẩn tay nắm, nhấn ngoài vùng bỏ qua — phương án khác: nhấn ngoài vùng chọn lại — vì sao: tránh mất vùng khi vẽ trượt tay.
+- [gd2_02] Bốn độ dày 2 / 3 / 5 / 8 logic, `lyon` thêm trực tiếp — phương án khác: thanh trượt; tự tessellate — vì sao: chọn một chạm; `lyon` đã có trong cây.
+- [gd2_01..04] Icon `line undo redo bold italic underline plus minus` tự vẽ cùng hệ F-11 (viewBox 24, nét 2, đầu tròn) — phương án khác: chờ chủ dự án chọn từ bộ F-11 — vì sao: bộ chưa có, chủ dự án cho tự vẽ.
+- [gd2_04] Một kiểu cho cả ô chữ; đổi đậm / cỡ áp cho cả ô đang soạn — phương án khác: nhiều kiểu trong một ô — vì sao: đúng phạm vi task.
+- [gd2_04] Ảnh xuất vẽ chữ từ tệp font hệ thống (`fontdb` + `ttf-parser`), khử răng cưa khác trên màn chút ít, vị trí giữ nguyên — phương án khác: chụp lại lớp chữ của GPUI — vì sao: GPUI không cho lấy ảnh glyph.
+- [gd2_04] Họ font `Segoe UI` / `Helvetica Neue` / `Noto Sans` theo OS, macOS + Ubuntu chưa chạy thử — phương án khác: font hệ thống ảo `.SystemUIFont` — vì sao: ảnh xuất cần tên tệp font thật.
+- [gd2_04] Cỡ chữ 10–96 logic, bước 2, mặc định 20; Backspace xoá một ký tự (trừ emoji ghép) — phương án khác: xoá cả cụm — vì sao: Unikey lùi rồi gõ lại theo từng ký tự.
+- [gd2_04] Đổi `FASTCAST_OVERLAY_FAKE`: giá trị lạ dùng màn giả nhỏ thay vì chụp màn thật — phương án khác: giữ nguyên — vì sao: session đã gõ sai `1.5` làm overlay thật mở trên máy chủ dự án hai lần (`plan/gd2_04_text.md` mục 9).
+
 - [plan GĐ3] Thêm exe thứ tư `fastcast-rec`, quay ở tiến trình riêng — phương án khác: quay trong `fastcast-ui` (ba exe đúng F-4) — vì sao: sau khi dừng còn ~33 MB DLL Media Foundation, chỉ thoát tiến trình mới nhả (`docs/spikes/video.md` mục 7).
 - [plan GĐ3] OCR và quay nói với UI qua stdin / stdout của tiến trình con — phương án khác: qua pipe của daemon (`Role::Ocr` có sẵn) — vì sao: daemon không đổi, không phải đo lại RAM; UI chết thì con tự biết; UI và engine tách được thành làn song song.
 - [plan GĐ3] Q-1 âm thanh: Không / Hệ thống / Micro, mặc định Không — phương án khác: thêm "Cả hai" — vì sao: "Cả hai" phải trộn + bù lệch đồng hồ giữa hai thiết bị, chưa đáng ở GĐ3. Chỉ ghi ở đây, chưa vào `docs/decisions.md`.

@@ -2,13 +2,21 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ |
 | Repo | fastcast |
 | Cỡ | M — ~400 dòng |
 | Phụ thuộc | gd2_01 |
 | Quyết định áp dụng | D-9, D-10, F-11 |
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `overlay/annotate/{model,shape,export,paint}.rs`, `overlay/{toolbar,view}.rs`, `assets.rs`, `i18n/{vi,en}.toml`; MỚI `overlay/annotate/options.rs`, icon `line.svg` (`design/fastcast-icons/` + `crates/ui/assets/icons/`) |
+
+
+## 0. Bàn giao từ gd2_01 (30/10/2026)
+
+<!-- handoff: gd2_01 -->
+
+- **Đã có sẵn để dùng**: `annotate::shape::prims` là nguồn hình chung cho lớp vẽ + lớp xuất, thêm hình chỉ sửa ở đó; `tests/overlay.rs::saved_ink_image`.
+- **Bẫy đã gặp**: `Visible` chỉ giữ `ink_rev` theo màn; đọc thẳng `Ink` lúc paint, đừng đọc `OverlaySession` trong `render`.
 
 ## 1. Làm gì
 
@@ -36,5 +44,10 @@ Bảng tuỳ chọn cùng nền khối nổi, đặt dưới thanh (lật lên k
 ## 8. Nợ chuyển task khác
 
 ## 9. Bàn giao thực tế
+
+Gộp `master` ở `a379e5b`.
+
+- Có: đường thẳng, mũi tên, elip; Shift khoá 45° / vuông; bốn độ dày 2 / 3 / 5 / 8 logic, phím `[` `]`; bảng tuỳ chọn `annotate/options.rs`.
+- `lyon` thêm trực tiếp vào `crates/ui` (đã có trong cây qua GPUI).
 
 ## 10. Đề xuất cải tiến

@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ |
 | Repo | fastcast |
 | Cỡ | M — ~850 dòng |
 | Phụ thuộc | GĐ1 đã gộp `master` (gd1_03, gd1_04, gd1_05, gd1_10) |
@@ -46,5 +46,11 @@ Thanh: `[nút công cụ] | [undo redo] | [lưu, lưu thành, chép, đóng]`. K
 ## 8. Nợ chuyển task khác
 
 ## 9. Bàn giao thực tế
+
+Gộp `master` ở `f5771e9`.
+
+- Có: `overlay/annotate/{model,shape,export,paint,options}.rs`, công cụ chữ nhật, undo / redo, `CropJob` ghép chú thích ở luồng nền (lưu + chép).
+- Lệch spec: `Ink` giữ `Rc<RefCell<…>>` đúng spec; màu kiểu `[u8; 3]`, độ dày nằm trong `Pen`, không có `Stroke`.
+- Kiểm: `fake_ink_*`, ảnh PrintWindow màn giả (`foreground_unchanged=True`).
 
 ## 10. Đề xuất cải tiến

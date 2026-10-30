@@ -11,6 +11,14 @@
 | Phụ thuộc mới | `objc2-*` (MIT, khối macOS của `crates/ui/Cargo.toml`, `crates/capture/Cargo.toml`) |
 | File đụng tới | SỬA `crates/ui/src/platform/macos.rs`, `crates/capture/src/lib.rs` (nhánh macOS + báo thiếu quyền), `crates/ui/Cargo.toml`, `crates/capture/Cargo.toml`; MỚI `crates/capture/src/macos.rs` |
 
+## 0. Bàn giao từ gd4_12 (30/10/2026)
+
+<!-- handoff: gd4_12 -->
+
+- **Phải khớp**: vùng gửi cho `fastcast-rec` được chia theo `video/src/macos/portable.rs::display_rect`: `Rect` của màn = `CGDisplayBounds` (điểm, gốc trên trái, không lật Y) × scale, scale = `pixelWidth / width` của `CGDisplayMode`. `capture/src/macos.rs` dùng công thức khác thì quay lệch vùng.
+- **Bẫy**: hai màn khác scale đặt sát nhau có thể chồng nhau trong hệ này (màn 1728 điểm scale 2 kết thúc ở x = 3456, màn kế bắt đầu ở 1728 × 1). Nếu đổi công thức để tránh chồng, sửa cả `display_rect` + test của nó.
+- **Quyền**: `fastcast-rec` thiếu quyền Screen Recording trả `CaptureLost`; UI nên chặn trước bằng `CGPreflightScreenCaptureAccess`.
+
 ## 0. Bàn giao từ gd4_01 (30/10/2026)
 
 <!-- handoff: gd4_01 -->

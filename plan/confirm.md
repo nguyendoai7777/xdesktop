@@ -391,3 +391,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_10] Không hạ ưu tiên daemon trên macOS — `Nice` / `ProcessType` trong plist — UI có thể thừa kế, Windows mới có cờ bật UI về ưu tiên thường.
 - [gd4_10] Thêm `dispatch2` (đã có trong lock, Zlib / Apache-2.0 / MIT) ngoài danh sách task — tự khai báo `dispatch_async_f` — khỏi viết `unsafe`.
 - [gd4_10] Nhãn LaunchAgent `com.fastcast.daemon` — theo tên người dùng như Task Scheduler — thư mục đã theo người dùng; đổi nếu gd4_13 chốt bundle id khác.
+- [gd4_12] Tách âm thanh sang `gd4_19` trước khi code — làm chung một task — ước lượng ~1.210 dòng, vượt trần 900; nhánh Mac báo `AudioUnavailable` tới khi xong gd4_19.
+- [gd4_12] Vùng vắt hai màn ghép bằng CPU trên bộ đệm từ pool — báo `Unsupported` — `SCStream` trả được từng màn, một màn phủ trọn thì vẫn đưa thẳng IOSurface, không chép.
+- [gd4_12] Quyền Screen Recording thiếu ⇒ `CaptureLost` — `Unsupported` hoặc mã mới — không sửa tệp chung trong làn; mã riêng ghi backlog.
+- [gd4_12] `Part`, `validate`, `pending` chép lại ở `macos/` — gom với `session.rs` — luật làn không cho sửa nhánh Windows; gd4_16 nên gom.
+- [gd4_12] `source_probe` đổi sang mở ở màn phụ — giữ (0, 0) — (0, 0) là màn LG, trái luật màn hình; thay đổi nhỏ ở mã thử của Windows.

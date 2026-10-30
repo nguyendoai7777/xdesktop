@@ -6,7 +6,7 @@
 | Máy | Mac (`hdiutil`, `codesign` không chạy trên Windows) |
 | Repo | fastcast |
 | Cỡ | S — ~200 dòng script |
-| Phụ thuộc | gd4_06, gd4_07, gd4_10, gd4_11, gd4_12 |
+| Phụ thuộc | gd4_06, gd4_07, gd4_10, gd4_11, gd4_12, gd4_19 |
 | Quyết định áp dụng | D-2, F-5 |
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
@@ -18,6 +18,14 @@
 - **Đã có sẵn để dùng**: `fst` chạy được làm exe chính của `.app`: `Accessory`, tìm `fastcast-ui` cạnh nó trong `Contents/MacOS/`. Autostart tự nhận `.app` (`autostart.rs::launchd::in_app_bundle`).
 - **Đổi so với spec**: `SMAppService` không có độ trễ cấu hình; bản chưa ký có thể bị từ chối và rơi về LaunchAgent `com.fastcast.daemon`. Bundle id khác thì sửa `launchd::LABEL`.
 - **Soát lại khi làm**: chưa dòng nào chạy trên Mac, trước hết làm gạch `gd4_10` trong `plan/_backlog.md`. Trong `.app` đã ký ad-hoc: `fst autostart on` in cách đăng ký, đăng nhập lại chỉ có một daemon, launcher không tự bật. Chi tiết: `plan/gd4_10_macos-daemon.md` mục 9.
+
+## 0. Bàn giao từ gd4_12 (30/10/2026)
+
+<!-- handoff: gd4_12 -->
+
+- **Đã có sẵn để dùng**: `fastcast-ocr` tìm model ở `Contents/Resources/models` khi exe nằm trong `Contents/MacOS/`. Runtime: `tools/fetch-ocr-models.ps1` trên Mac lấy `libonnxruntime.dylib` arm64.
+- **Bẫy**: dylib 44 MB nạp bằng đường dẫn tuyệt đối, phải được ký cùng `.app` (`codesign`, ad-hoc). Thiếu `NSMicrophoneUsageDescription` thì tiến trình bị OS giết khi gd4_19 xin quyền micro.
+- **Soát lại khi làm**: quyền Screen Recording tính cho app nào khi `fastcast-rec` là con của `fastcast-ui` trong `.app`; `plan/gd4_12_macos-video.md` mục 9.
 
 ## 0. Bàn giao từ gd4_07 (30/10/2026)
 

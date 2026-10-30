@@ -407,3 +407,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_03] Tự làm phần `[sonnet]` — giao Sonnet — bảng dính chặt interface vừa tách và test tích hợp
 - [gd4_03] Ghi phím tắt qua cùng khoá với `store` (`store::save` thành `pub`) — để `actions` tự ghi — tránh hai lần ghi đè nhau khi trang khác đang lưu
 - [gd4_03] Dòng lỗi đăng ký là câu đầy đủ `settings.hotkeys_register_failed` — nhãn ngắn như phác thảo — không thêm khoá i18n, người dùng biết rõ lệnh và tổ hợp nào hỏng
+- [gd4_19] Đổi đồng hồ mic qua `synchronizationClock`, mốc lệch giờ nhận quá 2 s thì lấy giờ nhận — tin thẳng mốc gói — chưa kiểm được đồng hồ của `AVCaptureSession` trên Mac, cách này giữ tiếng khớp hình dù đồng hồ khác dự đoán.
+- [gd4_19] Khoá `AVFormatIDKey`… dùng chuỗi — thêm `objc2-avf-audio` — chỉ cần bốn hằng, giá trị đúng bằng tên; chạy trên Mac sẽ xác nhận.
+- [gd4_19] Thêm `objc2-core-audio-types` vào khối macOS (đã có trong lock, Zlib / Apache-2.0 / MIT) ngoài dòng "Phụ thuộc mới" — tự khai báo struct — `AudioBufferList`, `AudioStreamBasicDescription` bắt buộc cho API của `objc2-core-media`.
+- [gd4_19] Mất nguồn âm giữa lượt quay thành im lặng, không mở lại — mở lại như Windows — không thử được trên máy này.

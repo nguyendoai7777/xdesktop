@@ -11,6 +11,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
 
+## 0. Bàn giao từ gd4_19 (30/10/2026)
+
+<!-- handoff: gd4_19 -->
+
+- **Đã có sẵn để dùng**: quay kèm âm hệ thống / micro trong `fastcast-rec` (`crates/video/src/macos/audio.rs`), mã chưa chạy trên Mac.
+- **Bẫy**: `Info.plist` phải có `NSMicrophoneUsageDescription` (bàn giao gd4_12 đã nhắc). Âm hệ thống đi chung quyền Screen Recording, không có quyền riêng.
+- **Soát lại khi làm**: chạy các bước gd4_19 trong `_backlog.md` từ trong `.app`, xem hộp thoại xin quyền micro ghi đúng tên app.
+
 ## 0. Bàn giao từ gd4_10 (30/10/2026)
 
 <!-- handoff: gd4_10 -->

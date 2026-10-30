@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | M — ~600 dòng, phần lớn là kiểu dữ liệu, stub, khoá i18n, dời nguyên mã |
-| Phụ thuộc | nên sau gd3_13 (cùng sửa `CLAUDE.md`, không chặn: xung đột thì giữ cả hai phía) |
+| Phụ thuộc | gd3_13 đã gộp `master` (chủ dự án chốt 30/10/2026) |
 | Quyết định áp dụng | D-2, D-3, D-4, D-9, F-2, F-5, F-8, F-12 |
 | Phụ thuộc mới | — (crate của OS khác do làn OS đó thêm trong khối `[target.…]`) |
 | File đụng tới | MỚI `crates/core/src/entitlement.rs`, `crates/ui/src/settings/{mod,view,store,row,page_general,page_hotkeys,page_capture,page_pro,page_about}.rs`, `crates/ui/src/dev.rs`, `crates/ui/src/hotkey_dialog.rs` (stub, khai sẵn trong `main.rs` cho gd4_03), `crates/ui/src/platform/{mod,windows,macos,linux}.rs`, `crates/daemon/src/platform/{macos,linux}.rs`, `crates/video/src/{macos,linux}/mod.rs`, `tools/settings-run.ps1`, `crates/ui/tests/settings.rs`; SỬA `crates/core/src/{lib,config}.rs`, `crates/ui/src/{main,commands,notice}.rs`, `crates/ui/src/launcher/mod.rs`, `crates/ui/src/overlay/dev.rs`, `crates/ui/tests/{ipc.rs,common/mod.rs}`, `crates/ui/examples/fake_daemon.rs`, `crates/daemon/src/platform/mod.rs`, `crates/video/src/lib.rs`, `i18n/{vi,en}.toml`, `CLAUDE.md`; XOÁ `crates/ui/src/platform.rs`, `crates/daemon/src/platform/other.rs` |

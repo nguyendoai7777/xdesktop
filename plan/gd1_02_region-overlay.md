@@ -10,6 +10,30 @@
 | Phụ thuộc mới | — (`fastcast-capture` đã có) |
 | File đụng tới | `crates/ui/src/overlay/mod.rs` MỚI · `crates/ui/src/overlay/selection.rs` MỚI · `crates/ui/src/overlay/view.rs` MỚI · `crates/ui/src/commands.rs` SỬA · `crates/ui/Cargo.toml` SỬA |
 
+## 0. Bàn giao từ gd1_01 (30/10/2026)
+
+<!-- handoff: gd1_01 -->
+
+- **Đã có sẵn để dùng**: `crates/ui/src/commands.rs` — gắn overlay vào nhánh `Command::CaptureRegion` của `open(command,
+  cx) -> Vec<AnyWindowHandle>`: trả **mọi** handle cửa sổ overlay (mỗi màn một cái) ⇒ sổ `OpenWindows` tự đưa overlay lên
+  trước khi phím tắt bấm lần hai, tự gỡ khi cửa sổ đóng. `open` đã chạy trong `app::with_gpu` (GPU chắc chắn đã gắn).
+- `UiState` (global, `crates/ui/src/app.rs`): `config`, `i18n` (`state.i18n.t("…")`), `keep_warm`, `windows`. Đọc bằng
+  `cx.global::<UiState>()`. Theme / cỡ chữ đã áp từ `general.*` lúc khởi động.
+- GPUI đi qua `materiant::gpui_kit` (không thêm `gpui-kit` vào `Cargo.toml`); `application()` đã `.with_assets(
+  materiant::icon::Assets)` + `QuitMode::Explicit` (đóng overlay cuối KHÔNG thoát tiến trình — giữ ấm).
+- **Bẫy đã gặp**: UI nhả GPU sau 10 s không cửa sổ (`request_windowing(Headless)`); cửa sổ mở NGOÀI `commands::open`
+  (vd sau `cx.spawn`/timer) phải bọc `app::with_gpu`, không thì GPUI báo "cannot open windows while headless".
+- Thoát tiến trình chỉ qua `app::quit` — `cx.quit()` trần có thể bị gpui-pre-windows nuốt `WM_QUIT` (mục 9 gd1_01).
+  Đóng overlay = `window.remove_window()`, không quit.
+- Cửa sổ overlay: `WindowOptions { .., ..materiant::window::window_options() }` + `gpui_kit::open_window` (bọc `Root`).
+- Chạy thử không cần daemon thật (đừng bật `fst` — đăng ký phím tắt toàn cục): `cargo run -p fastcast-ui --example
+  fake_daemon -- dev` rồi `fastcast-ui --endpoint dev --command capture_region`; gõ `capture_region` vào stdin daemon giả
+  để thử lệnh lặp. Thêm `--gpu-idle-secs 1` để đo overlay mở từ trạng thái đã nhả GPU.
+- Worktree build cần junction `.claude/worktrees/materiant` → `materiant` (đã có; `fastcast/CLAUDE.md`).
+- **Soát lại khi làm** (mục 5): khung đầu overlay ở ba trạng thái — nguội (spawn, ~300 ms khởi động GPUI có sẵn), ấm còn
+  GPU, ấm đã nhả GPU (+17–26 ms gắn lại). Nhả GPU làm khung đầu chậm rõ ⇒ tăng `GPU_IDLE_DEFAULT` (`app.rs`), ghi mục 9.
+  Test tích hợp mẫu đọc log exe con: `crates/ui/tests/ipc.rs`.
+
 ## 1. Làm gì
 
 - `capture_region` ⇒ `fastcast_capture::freeze()` rồi mở **mỗi màn một cửa sổ** không viền, toàn màn hình, luôn trên

@@ -26,6 +26,21 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   materiant gd1_07 / gd1_09 chờ gd1_03 (Button) gộp xong mới mở. Spike OCR (gd0_05) / quay video (gd0_06) KHÔNG mở khi
   vắng — cần chụp / quay màn hình thật của máy và tải ONNX Runtime lúc build.
 
+## fastcast
+
+- [gd1_01] `fastcast-ui` nhả GPU (DirectX device + luồng vsync, `request_windowing(Headless)`) sau 10 s không cửa sổ,
+  gắn lại khi có lệnh — phương án khác: giữ GPU suốt thời gian giữ ấm — vì sao: giữ ấm 9,7 → 4,2 MB (Task Manager),
+  private bytes 51,7 → 12,5 MB; cái giá là lệnh đầu sau khi nhả chậm thêm 17–26 ms. Muốn lệnh nào cũng nhanh tuyệt đối
+  ⇒ tăng `GPU_IDLE_DEFAULT` ở `crates/ui/src/app.rs`.
+- [gd1_01] `fastcast-ui` nối `materiant` bằng đường dẫn `../materiant` (`[workspace.dependencies]`) — phương án khác:
+  dependency git (khi có remote) hoặc chép vào `vendor/` — vì sao: `init.ps1` clone hai repo cạnh nhau, sửa materiant
+  thấy ngay ở fastcast. Worktree cần junction `.claude/worktrees/materiant` → `materiant` (đã tạo, ghi ở `fastcast/CLAUDE.md`).
+- [gd1_01] Daemon mất kết nối ⇒ UI thoát ngay nếu không cửa sổ, còn cửa sổ thì đợi đóng cửa sổ cuối — phương án khác:
+  thoát ngay như khung GĐ0 — vì sao: daemon sập giữa lúc đang chụp / chú thích thì không mất việc dở của người dùng.
+- [gd1_01] UI chỉ đọc `config.json` (thiếu / hỏng ⇒ mặc định, không ghi), `keepWarmMins: 0` ⇒ 1 phút, `fontSize` kẹp
+  10–32 — phương án khác: UI cũng tạo file; 0 = không giữ ấm — vì sao: daemon là bên tạo / sửa file (tránh hai bên cùng
+  ghi); giữ đúng hành vi GĐ0.
+
 ## materiant
 
 - [ripple / window] `materiant::window::window_options()` = `WindowOptions` mặc định với `inactive_frame_interval:

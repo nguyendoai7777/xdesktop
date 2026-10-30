@@ -15,6 +15,14 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   giấy phép) hay `libappindicator` (GTK, LGPL — phải hỏi) — gd0_07.
 - **Daemon macOS / Linux**: `crates/daemon/src/platform/other.rs` trả lỗi — vòng sự kiện macOS (NSApplication) + Linux
   (sau gd0_07). Autostart macOS (`SMAppService`) cùng bản cài GĐ4.
+- **[gd1_01 · bảo mật] Pipe IPC giả mạo được**: tạo pipe `fastcast-<user>` với `FILE_FLAG_FIRST_PIPE_INSTANCE` + DACL
+  chỉ người dùng hiện tại; UI / CLI kiểm `GetNamedPipeServerProcessId` là `fst` — chưa làm vì phải chạy daemon thật để
+  kiểm + đo RAM daemon, mà bật `fst` thật là đăng ký phím tắt toàn cục trên máy khi chủ dự án vắng. Chi tiết:
+  `plan/gd1_01_ui-process.md` mục 10.
+- **[gd1_01 · ux] Khởi động nguội UI ~300 ms**: đo từng bước khởi động GPUI, hoặc daemon bật sẵn UI headless (~4,2 MB)
+  sau đăng nhập — chờ chủ dự án chọn đánh đổi RAM. `plan/gd1_01_ui-process.md` mục 10.
+- **[gd1_01 · owner-qa] Kiểm UI cùng daemon thật**: `fst run capture_region` → `ui.log` có `run capture_region`; để
+  yên > 10 s, Task Manager `fastcast-ui` ~4 MB; hết `keepWarmMins` tiến trình biến mất; `fst quit` ⇒ UI tắt theo.
 - **Dọn dữ liệu thử**: `%APPDATA%\fastcast` + `%LOCALAPPDATA%\fastcast` thật trên máy nhà do lượt chạy Task Scheduler
   29/10/2026 tạo — giữ dùng tiếp, hoặc xoá bằng Explorer (session Claude chỉ thấy bản ảo hoá, memory
   `msix-appdata-virtualization`).

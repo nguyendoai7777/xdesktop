@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd4-report.md`; SỬA `crates/ui/tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd4_05 (31/10/2026)
+
+<!-- handoff: gd4_05 -->
+
+- **Đã có sẵn để dùng**: trang Pro + `row::locked_row` có `Badge`; `tests/settings_pro.rs` soát không có đường bật Pro (cả `--release`).
+- **Soát lại khi làm**: `pwsh tools/settings-run.ps1 -Page pro`; `cargo test --release -p fastcast-ui --test settings_pro`. Danh sách kiểm tay thêm: Narrator trên dòng Pro (`plan/_backlog.md`).
+- **Bẫy đã gặp**: `tests/overlay` đỏ ngẫu nhiên một test khác nhau lúc nhiều làn chạy, `plan/gd4_05_pro-slots.md` mục 9: chạy lúc máy rảnh rồi mới kết luận.
+- **Nhìn lại ở báo cáo**: hai việc ux chưa làm (PageUp / PageDown, Shift+Tab ở ô số), `plan/gd4_05_pro-slots.md` mục 10.
+
 ## 0. Bàn giao từ gd4_03 (30/10/2026)
 
 <!-- handoff: gd4_03 -->

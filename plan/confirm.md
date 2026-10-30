@@ -414,3 +414,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_06] Mở trang giấy phép bằng `open_with_system` — `open_url` như spec — khỏi mã hoá `file://` cho đường dẫn có dấu cách
 - [gd4_06] Chép văn bản giấy phép ONNX Runtime vào repo (344 KB) — đọc từ thư mục model lúc sinh — script chạy được không cần mạng, ra cùng nội dung
 - [gd4_06] Không ghi icon F-11 vào trang giấy phép — ghi như task liệt kê — dự án tự vẽ; nếu có bộ nào lấy từ ngoài thì phải thêm vào `extra.toml`
+- [gd4_05] Dòng Pro dùng `Role::Group` + nhãn `<tên>, pro` — để trình đọc tự đọc chữ con — chữ con chưa chắc thành nút a11y, nhãn ghép đọc được chắc chắn hơn.
+- [gd4_05] Dòng `Pro` giữ nguyên tên + mô tả, chỉ bỏ huy hiệu — thêm điều khiển bật tắt — chưa có tính năng thật (D-4).

@@ -5,6 +5,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd3_02 · GĐ4] Đóng gói OCR**: đưa `onnxruntime.dll` vào sổ sha256 và sửa nhãn `+int8-all` / "(all)" của `spikes/ocr/results/manifest.int8-mix.toml` (Paddle trong đó là fp32) — lý do: sổ + bản cài thuộc GĐ4; sửa bây giờ làm lệch `C:/xdesktop-target/ocr-models` các làn đang dùng chung.
 - **[gd0_05 · owner-qa] Thử OCR trên ảnh chụp thật (C8)** — lý do: máy dùng thật, session không chụp màn; số CER trong `fastcast/docs/spikes/ocr.md` chỉ là ảnh tổng hợp. Khi `fastcast-ocr` chạy được (GĐ3): chụp vùng code, chat, web sáng / tối, chữ nhỏ, xem chữ ra; dòng tiếng Việt mất dấu = `looks_like_code` chọn nhầm.
 - **[gd0_05] Đọc giấy phép dữ liệu huấn luyện của model trước khi bán** — lý do: spike chỉ tin nhãn Apache-2.0 trong sổ vnocr, không đọc giấy phép dữ liệu của `vgg_transformer` gốc + dữ liệu học thêm `vn8a30`; việc của chủ dự án, không chặn GĐ3.
 - **[gd3_10] Test `fake_picker_copies_the_pixel_retries_and_remembers_the_format` đỏ khi chuột thật nằm trên cửa sổ giả** (đọc `rgb(136 24 160)` thay vì giữa màn, chuột ở 1119,626; suy từ toạ độ, chưa kiểm bằng cách dời chuột): test giả định "con trỏ chưa di" — lý do treo: tệp của gd1_09, ngoài làn gd3_10. Sửa: màn giả bỏ qua `move` thật, hoặc đặt cửa sổ picker ngoài màn.

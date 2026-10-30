@@ -368,3 +368,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_03] Dll ở `<models>/onnxruntime.dll` — phương án khác: cạnh exe như spike — vì sao: task ghi vậy, bộ model gọn một thư mục khi đưa vào bản cài.
 - [gd3_03] Đánh dấu ✅ khi C13 (engine thật) chưa chạy, giao gd3_02 chạy lúc gộp — phương án khác: chờ gd3_02 gộp rồi mới đóng — vì sao: luật làn GĐ3 "làn gộp sau chạy"; chữ và số đo vẫn chưa có tới lúc đó.
 - [gd3_03] Sha256 zip ONNX Runtime ghim theo lần tải đầu — phương án khác: đối chiếu nguồn độc lập — vì sao: script dev, chỉ cần phát hiện tệp đổi; GĐ4 đưa vào bản cài thì nên soát lại.
+- [gd3_02] Có tệp model thiếu thì báo `ModelMissing` kể cả khi tệp khác sai sha256 — phương án khác: báo `ModelCorrupt` nếu có bất kỳ tệp sai — vì sao: thiếu tệp gỡ được bằng cách chép lại, báo "hỏng" làm người dùng nghi nhầm.
+- [gd3_02] Dựng phiên lỗi sau khi sha256 đã khớp ⇒ `Internal` — phương án khác: `ModelCorrupt` — vì sao: model đã được soát là đúng, lỗi lúc này do runtime hoặc mã.
+- [gd3_02] Codec PNG / JPEG chỉ ở `dev-dependencies` — phương án khác: bật trong crate như gd3_01 gợi ý — vì sao: worker nhận RGBA thô, exe phát hành không cần giải mã ảnh.
+- [gd3_02] Dùng `toml` 1 như `core` — phương án khác: ghim 0.9 như spike — vì sao: không thêm bản trùng; CER sau khi đổi vẫn 2,45 %, chữ đọc được trùng từng byte với spike.

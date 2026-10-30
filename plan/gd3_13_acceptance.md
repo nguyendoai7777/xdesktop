@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_02 (30/10/2026)
+
+<!-- handoff: gd3_02 -->
+
+- **Đã có sẵn để dùng**: engine thật trong `crates/ocr/src/engine/`. Đo CER + thời gian: `cargo build --release -p fastcast-ocr --example ocr_bench`, rồi `ocr_bench <thư mục> --bench <thư mục>/truth.tsv --models C:/xdesktop-target/ocr-models`. Ảnh: `pwsh spikes/ocr/tools/gen-bench.ps1 -Out <thư mục>` (+ `<thư mục>/hard`). Worker thật: `tools/ocr-e2e.ps1`.
+- **Số để so** (có session khác chạy song song, chưa phải số chính thức): 26 ảnh CER 2,45 %, trung vị 7,2 s; 12 ca khó CER 0,86 %, 1,03 s; `Ready` 942 ms; RAM đỉnh 343–365 MB trên ba ảnh của e2e. Chi tiết: `plan/gd3_02_ocr-engine.md` mục 9.
+- **Nợ chuyển sang đây**: thêm dòng lệnh `ocr_bench` vào `fastcast/CLAUDE.md` (tệp chung, làn engine không sửa). Danh sách kiểm tay nhắc C8 của gd0_05: CER mới đo trên ảnh tổng hợp, chưa có ảnh chụp thật.
+- **Bẫy**: chạy lúc máy bận thì thời gian lệch 2–5 lần. Đo RAM đỉnh cả màn phải dùng ảnh `full`, ba ảnh của e2e không tới đỉnh ~450 MB của spike.
+
 ## 0. Bàn giao từ gd3_03 (30/10/2026)
 
 <!-- handoff: gd3_03 -->

@@ -86,7 +86,7 @@ Thêm `models/` vào bản cài + trang giấy phép: GĐ4. C13 + số đo: gd3_
 ## 9. Bàn giao thực tế
 
 - **Kết quả**: C1–C12 xanh, 17 test, chạy lặp 5 lần không chập chờn. `cargo clippy -p fastcast-ocr --all-targets -- -D warnings`, `cargo fmt --check`, `cargo deny check licenses` xanh. Soát theo luật làn engine, không build GPUI.
-- **Chưa chạy**: C13 và số đo `Ready` / RAM, vì engine vẫn là stub trên `master`. Luật làn giao cho làn gộp sau là gd3_02; đã ghi lệnh ở khối bàn giao của nó. `tools/ocr-e2e.ps1` mới thử với `fake_ocr` (đường truyền, xoá tệp, mã thoát), chưa thử với engine thật.
+- **C13 xanh, gd3_02 chạy lúc gộp sau (30/10/2026)**: `tools/ocr-e2e.ps1` bản release với engine thật, cả `-IdleExit`, không phải sửa script. `Ready` 942 ms (lần đầu khi model chưa vào cache đĩa 5982 ms) · RAM đỉnh 343–365 MB · ba ảnh 4,9 / 8,5–8,7 / 8,0 s · khớp từ 91,6 / 100 / 99,6 % · thoát mã 0 sau 31 ms khi đóng stdin, sau 60034 ms khi rảnh · không sót tệp trong `tmp/`.
 - **`tools/fetch-ocr-models.ps1` đã chạy thật**: Docker + ONNX Runtime 1.31.1, mọi tệp khớp sổ `manifest.int8-mix.toml`, chạy lại không làm gì thêm. Kết quả ở `C:/xdesktop-target/ocr-models` (95 MB, ngoài git). Sha256 zip ONNX Runtime ghim theo lần tải này, tức tin lần tải đầu; chưa đối chiếu với nguồn độc lập.
 - **Opus chọn 30/10/2026** (`plan/confirm.md`):
   - Dll ở `<models>/onnxruntime.dll`, không cạnh exe như spike: task ghi vậy, và bộ model gọn một thư mục.

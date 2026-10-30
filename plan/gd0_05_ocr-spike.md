@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | 🔄 |
 | Repo | fastcast (spike ở `fastcast/spikes/ocr/`, ngoài cargo workspace) |
 | Cỡ | M — spike, ~600 dòng vứt đi được |
 | Phụ thuộc | — (độc lập; T0–T4 của GĐ0 đã xong) |
@@ -26,6 +26,13 @@
 - Chưa nối vào `fastcast-ocr` / IPC / overlay (GĐ3).
 - Không huấn luyện / tinh chỉnh model.
 
+## 2b. Phân vai
+
+| Phần | Ai |
+|---|---|
+| Crate spike: manifest, tiền xử lý, det, rec, bench, sinh ảnh, lượng tử hoá, so Python, báo cáo | `[opus]` (spike vứt đi được, phần lớn là chuyển thể thuật toán + đo, không có phần ghép UI) |
+| Thử ảnh chụp thật của chủ dự án | `[owner-qa]` — `plan/_backlog.md` |
+
 ## 4. Code
 
 - Crate spike riêng `fastcast/spikes/ocr/` có `[workspace]` rỗng (hoặc thêm `exclude = ["spikes"]` vào workspace).
@@ -39,9 +46,20 @@ Manager), cỡ model fp32 / int8, CER so với chữ chuẩn và so với bản 
 
 ## 6. Nghiệm thu
 
-- Báo cáo `fastcast/docs/spikes/ocr.md`: bảng số đo trên, kết luận dùng fp32 hay int8, cách phát hành model (kèm bản cài
-  hay tải khi cần — tải từ máy chủ là dịch vụ trả phí ⇒ hỏi chủ dự án), rủi ro.
-- CER của bản Rust không tệ hơn bản Python quá 1 điểm phần trăm trên bộ bench.
+- **C1** `[opus-unit]` Cho manifest có model sai sha256 / thiếu tệp / giấy phép ngoài danh sách. Khi mở sổ. Thì lỗi, không
+  nạp model.
+- **C2** `[opus-unit]` Cho hàm thuần (hình chữ nhật bao nhỏ nhất, resize kiểu PIL, cắt dòng rộng, Levenshtein, chọn đảo màu,
+  thứ tự đọc). Thì đúng ca biên.
+- **C3** `[opus-run]` Cho ≥ 20 ảnh tổng hợp (code, chat, web, dark / light, tiếng Việt có dấu, chữ 11–12 px) + chữ chuẩn.
+  Khi `ocr-spike <thư mục> --bench chuẩn.tsv`. Thì in chữ, thời gian det / rec / tổng từng ảnh + trung vị, CER.
+- **C4** `[opus-run]` Cho cùng ảnh, cùng tham số. Khi chạy bản Python (Docker) và bản Rust. Thì CER Rust không tệ hơn
+  Python quá 1 điểm phần trăm.
+- **C5** `[opus-run]` So fp32 / int8: CER, thời gian, RAM đỉnh + lúc nghỉ (Task Manager), cỡ file; kết luận dùng bản nào.
+- **C6** `[opus-run]` So có / không tiền xử lý màn hình (đảo màu, phóng chữ nhỏ) trên ảnh tối và chữ nhỏ.
+- **C7** `[opus-run]` Báo cáo `fastcast/docs/spikes/ocr.md`: bảng số đo trên, kết luận fp32 / int8, cách phát hành model
+  (kèm bản cài hay tải khi cần — tải từ máy chủ là dịch vụ trả phí ⇒ hỏi chủ dự án), rủi ro, giới hạn "ảnh tổng hợp",
+  giấy phép model + crate. `cargo deny check licenses` xanh.
+- **C8** `[owner-qa]` Thử ảnh chụp thật (backlog).
 
 ## 8. Nợ chuyển task khác
 

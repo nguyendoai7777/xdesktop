@@ -10,6 +10,17 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/video/src/audio.rs`; MỚI `crates/video/examples/audio_probe.rs` |
 
+## 0. Bàn giao từ gd3_04 (30/10/2026)
+
+<!-- handoff: gd3_04 -->
+
+- **Đã có sẵn để dùng**: `Encoder::write_audio(&mut self, pcm: &[i16], pts: i64)`: PCM 48 kHz, 16-bit, stereo xen kẽ, `pts` 100 ns cùng đồng hồ với `Pacer`. Bộ thu phải tự đổi về đúng định dạng này. AAC 128 kbps.
+- **Không phải lấp im lặng**: loopback không có gói khi máy im là bình thường. `Encoder` tự lấp khi âm trễ > 200 ms và khi `finish`; khoảng trống giữa hai gói cũng tự chèn.
+- **Mốc lệch dưới 5 ms coi như liền mạch**, không bù. Trên 5 ms: chèn im lặng hoặc bỏ phần trùng, có thể nghe tiếng tách ⇒ tính `pts` từ đồng hồ thiết bị chuẩn, đừng từ giờ nhận gói có độ giật lớn.
+- **`write_audio` cần `&mut Encoder`, cùng luồng với `write`**: thu âm đẩy gói qua kênh, vòng quay (gd3_06) rút hết gói trước mỗi `write`.
+- **Bẫy đã gặp**: stream âm không có mẫu làm `WriteSample` của video bị chặn ~1 s / khung. Đã xử lý trong `Encoder`, đừng đi đường khác vòng qua nó (gd3_04 mục 9).
+- **Soát lại khi làm**: `Options.audio = true`, rồi `mp4_verify <tệp>` in track `mp4a`, `audio_rms`, `track_gap_s`. Sóng sin thử sẵn trong `examples/pattern.rs`.
+
 ## 0. Bàn giao từ gd3_01 (30/10/2026)
 
 <!-- handoff: gd3_01 -->

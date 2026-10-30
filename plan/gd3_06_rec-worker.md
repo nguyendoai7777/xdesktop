@@ -10,6 +10,19 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/video/src/session.rs`, `crates/video/src/bin/fastcast-rec.rs`; MỚI `crates/video/tests/session.rs` |
 
+## 0. Bàn giao từ gd3_04 (30/10/2026)
+
+<!-- handoff: gd3_04 -->
+
+- **Đã có sẵn để dùng**: `encoder::{Encoder, Options, MIN_EDGE}`, `pacer::{Pacer, Tick}`, `size::{target_size, default_bitrate}`. Chữ ký không đổi so với stub. `Encoder` tự gọi `MFStartup` / `MFShutdown`, session không phải lo.
+- **Thứ tự mỗi ô, bắt buộc**: `write_audio` hết gói đang có, RỒI `write` khung video. Ngược lại, âm trễ > 200 ms so với `pts` bị lấp im lặng và gói về sau bị bỏ. FPS thấp dễ dính nhất.
+- **Âm im không phải lo**: không có gói nào thì `Encoder` tự lấp, `finish` lấp tới hết video. Đừng tự ghi im lặng. Lý do: gd3_04 mục 9 (Sink Writer chặn ~1 s / khung).
+- **Phải ghi ít nhất một khung trước `finish`**: không thì `Internal`. Dừng ngay sau `Start` ⇒ ghi khung ghép hiện tại một lần.
+- **`Abort`**: bỏ `Encoder` không `finish` là nhả tệp ngay, xoá `.part` được (có test).
+- **Mã lỗi**: `Encoder` đã log HRESULT và đổi mã. Đĩa đầy / hết quyền ⇒ `OutputUnwritable`, mất device ⇒ `CaptureLost`, không dựng được bộ mã hoá ⇒ `NoEncoder`, cạnh < 34 px ⇒ `RegionTooSmall`. Gọi `describe` ngay sau `new` để gửi `RecEvent::Started`.
+- **Đừng đếm giờ trước `Encoder::new`**: mở bộ mã hoá mất 20–60 ms (spike mục 7).
+- **Soát lại khi làm**: thử không cần màn thật bằng hoạ tiết như `examples/common/mod.rs` (`render`, `verify`); `mp4_verify <tệp>` đọc mã vạch nếu nguồn có mã vạch. Chi tiết: `plan/gd3_04_video-encoder.md` mục 9.
+
 ## 0. Bàn giao từ gd3_05 (30/10/2026)
 
 <!-- handoff: gd3_05 -->

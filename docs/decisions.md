@@ -30,6 +30,7 @@ Nguồn sự thật dùng chung giữa các máy (máy nhà Windows, máy công 
 | F-7 | **Video**: chỉ MP4 (H.264) bằng bộ mã hoá của OS (Media Foundation / VideoToolbox / VAAPI-GStreamer), dự phòng OpenH264 tải khi cần — KHÔNG x264. Độ nét 480 / 720 = **cạnh ngắn** của vùng chọn, giữ tỉ lệ, không phóng to, làm tròn số chẵn. FPS nhập 1–60, mặc định 30. Có / không âm thanh khi quay. | 29/10/2026 |
 | F-8 | **Lưu**: Ctrl/Cmd+S lưu nhanh vào thư mục mặc định (ảnh: Pictures, video: Videos / Movies), chỉnh được; Ctrl/Cmd+Shift+S mở hộp thoại lưu của hệ thống, nhớ thư mục cuối — tách riêng ảnh và video. | 29/10/2026 |
 | F-9 | **Tên lệnh**: exe daemon + CLI là `fst` (`fst status`, `fst run <lệnh>`, `fst autostart on`…); tiến trình con giữ tên `fastcast-ui`, `fastcast-ocr`; tên app, thư mục cấu hình, tác vụ Task Scheduler vẫn là `fastcast`. | 29/10/2026 |
+| F-10 | **Icon app**: mẫu #9 đợt 2 — ba lớp đặc chồng nhau (dáng "chồng lớp" × khối Raycast), đỏ `#FF7A7A → #E5484D` trên ô nền `#1C1C1C`. Nguồn: `design/fastcast-icon/app-icon.svg` (đầy đủ), `glyph.svg` (chỉ hình, `currentColor`; header launcher tô `#FF6363`). Các mẫu đã xem: `design/fastcast-app-icons*.html`. | 30/10/2026 |
 
 ## Câu hỏi mở
 

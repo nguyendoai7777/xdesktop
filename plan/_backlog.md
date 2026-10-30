@@ -56,6 +56,11 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   tối; Space / Enter bật tắt được (gallery `--keys` không thử được). Windows → Accessibility → Visual effects →
   Animation effects = Off, mở lại gallery ⇒ thumb nhảy thẳng, tick / chấm / vành sóng không chạy, không ripple.
   `plan/materiant-gd1_05_toggles.md` mục 9.
+- **Kiểm tay gd1_07** (C5 bằng mắt + animation — lý do: máy đang TẮT Windows "Animation effects" nên `motion` nhảy
+  thẳng, không tự đổi cài đặt hệ thống): `pwsh start.ps1 docs overlay` → bấm "Open dialog", Tab tới "More options",
+  Space mở Popover, Esc lần một đóng Popover, lần hai đóng Dialog, focus về "Open dialog"; bốn nút góc mở Popover lật
+  vào trong; nền tối Popover có viền 1 px. Bật Animation effects ⇒ Popover / Dialog / Tooltip mờ dần 140 / 160 ms;
+  `$env:GALLERY_FRAME_STATS=1` rồi mở / đóng vài lần ⇒ `FRAMES … fps` ~60. `plan/materiant-gd1_07_overlay.md` mục 9.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
 

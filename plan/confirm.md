@@ -49,6 +49,23 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   (khung 41–50 ms), bỏ trần thì 60 fps đều, khung chậm nhất 17 ms; animation của materiant chỉ xin khung lúc đang chạy nên
   nghỉ không tốn gì. Có thể đây là cảm giác "FPS thua bản web" bạn thấy; nếu vẫn thấy giật khi cửa sổ ĐANG active, chạy
   `$env:GALLERY_FRAME_STATS=1; pwsh start.ps1 docs style` rồi bấm ô ripple — dòng `FRAMES … fps` cho biết số thật.
+- [materiant-gd1_07] Dialog mở theo kiểu KHAI BÁO: app giữ `DialogHandle::new(cx)` (`open / close / is_open`) và vẽ
+  `Dialog::new(id, &handle)…` trong cây của mình — phương án khác: đúng spec `Dialog::open(window, cx, |…| …)` mở bằng
+  code — vì sao: mở bằng code cần một lớp chứa đăng ký vào `Root` TRƯỚC khi tạo cửa sổ (`Root::register_plugin` ⇒ sửa
+  `lib.rs` / gallery `main.rs`, cấm khi làm song song); kiểu khai báo giống `ng-template overlayDialog [(open)]` của web.
+  Muốn thêm `open` bằng code thì làm ở task sau (thêm `overlay::init` vào `materiant::init`).
+- [materiant-gd1_07] Tooltip là `.with_tooltip(id, text)` (bọc phần tử) thay `.tooltip(text)` — phương án khác: đúng tên
+  spec — vì sao: trùng `StatefulInteractiveElement::tooltip` của GPUI (gọi trên `div().id(…)` là lỗi biên dịch "nhiều
+  method trùng tên"), và cần `id` để giữ trạng thái rê / focus.
+- [materiant-gd1_07] Tự dựng định vị (`overlay::position::anchored`) + Popover + Dialog, KHÔNG bọc `gpui_base::Popover` /
+  `Dialog` — phương án khác: bọc style lên primitive gpui-base — vì sao: `Popup` của gpui-base neo góc, không lật cạnh
+  (spec cần lật); `gpui_base::Dialog` gán Enter = Confirm trong ngữ cảnh hộp thoại ⇒ Enter trên nút "Huỷ" chạy `on_ok`.
+  Vẫn dùng lại `FocusTrapElement` (Tab vòng) và `motion` của gpui-base. Cỡ code vì thế ~1 300 dòng (trần 900).
+- [materiant-gd1_07] Không mũi tên, hiệu ứng hiện / ẩn chỉ mờ dần (web: mờ + `scale .96`) — phương án khác: vẽ mũi tên
+  bằng path — vì sao: GPUI không xoay / co giãn được `div`; mũi tên tuỳ chọn ở web, Material không dùng.
+- [materiant-gd1_07] Bề mặt Popover nền tối có viền 1 px `border` (web: không viền) — phương án khác: đúng web — vì sao:
+  ảnh gallery nền tối: panel cùng màu `surface` với trang, bóng đen gần như không thấy ⇒ panel lẫn vào nền. Menu
+  (gd1_08) / Select dùng `popover::surface` sẽ cùng diện mạo.
 - [materiant-gd1_04] `TextField::new(id, window, cx)` / `NumberField::new(id, window, cx)` (thêm `window`) — phương án
   khác: đúng spec `new(id, cx)`, tạo `InputState` trễ ở lần vẽ đầu — vì sao: `InputState::new` của gpui-base cần
   `window`; tạo trễ thì `value()` trước khung đầu không đọc được.

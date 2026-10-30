@@ -12,6 +12,36 @@
 
 Chính là panel Ctrl+K của launcher fastcast (`plan/gd1_07_hotkey-assign.md`). Bàn giao ghi vào gd1_10.
 
+## 0. Bàn giao từ materiant-gd1_07 (30/10/2026)
+
+<!-- handoff: materiant-gd1_07 -->
+
+- **Đã có sẵn để dùng** (interface đủ: `plan/materiant-gd1_07_overlay.md` mục 9):
+  - Dropdown = `materiant::overlay::popover::Popover::new(id).trigger(nút).placement(Placement::BOTTOM_START)
+    .content(|dismiss, w, cx| …)`; chọn mục xong ⇒ `dismiss.dismiss(w, cx)` (trả focus về trigger). `.bare()` bỏ bề
+    mặt nếu menu tự vẽ; muốn cùng diện mạo thì bọc `popover::surface(window, cx)` (nền, bo 8, bóng, viền khi tối).
+  - Menu con: Popover lồng trong nội dung Popover cha là TẦNG CON tự động (cha đọc qua `stack::current_scope` lúc vẽ):
+    bấm vào menu con nằm ngoài menu cha không đóng cha, Esc đóng menu con trước, đóng cha thì con đóng theo. Đặt
+    `.placement(Placement::RIGHT_START)` — sát mép phải tự lật sang trái (`Placement::fallbacks`).
+  - Menu chuột phải: tự dựng bằng `overlay::position::anchored(cell, PlaceConfig::new(Placement::BOTTOM_START)
+    .offset(px(0.)))` với `cell: Rc<Cell<Bounds>>` = `Bounds::new(vị_trí_chuột, Size::default())`, bọc trong
+    `deferred(LayerScope::new(layer, …)).with_priority(LAYER_PRIORITY + PRIORITY_STEP * stack::depth(..))`, đăng ký tầng
+    bằng `stack::open(LayerOptions { parent: stack::current_scope(cx), .. }, close_fn, w, cx)`, ghi bounds bằng
+    `.on_placed(|b, _, w, cx| stack::set_bounds(layer, b, w, cx))`, đóng khi bấm ra ngoài nếu
+    `stack::closes_on_press(layer, pos, w, cx)` — đúng cách `popover.rs` làm (đọc nó làm mẫu).
+  - `Popover::open(bool)` + `.on_open_change(…)` cho kiểu điều khiển từ ngoài (mở menu con bằng → / hover).
+- **Bẫy đã gặp**:
+  - Nội dung Popover nằm DƯỚI trigger trong cây dispatch: phím gán ở ngữ cảnh trigger chạy cả khi focus trong panel ⇒
+    `popover.rs` gán Enter / Space = `NoAction` ở `CONTENT_CONTEXT`. ↑ ↓ Enter của menu phải gán ở ngữ cảnh RIÊNG của
+    menu (sâu hơn) — không thì ↑ ↓ rơi lên ngữ cảnh `Gallery` (đổi trang).
+  - `on_mouse_down_out` của GPUI xét bounds, không xét tầng — đừng tự dùng cho menu con, hỏi `stack::closes_on_press`.
+  - Phần tử trong `deferred` vẫn layout như con của chỗ đặt nó: `anchored` đã xử lý (bề ngang = cửa sổ), đừng bọc
+    nội dung menu trong khung có bề ngang cố định của trigger.
+  - Máy chủ dự án TẮT "Animation effects" ⇒ `motion` nhảy thẳng, `GALLERY_FRAME_STATS` không in gì.
+  - `gallery-run --keys`: sau bước chuột không nghỉ — chèn `wait@300` trước phím.
+- **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test overlay` (mẫu harness Popover lồng nhau, `settle()`
+  qua animation bằng `advance_clock`); trang gallery `overlay` (bốn góc lật cạnh, Popover trong Dialog).
+
 ## 0. Bàn giao từ materiant-gd1_03 (30/10/2026)
 
 <!-- handoff: materiant-gd1_03 -->

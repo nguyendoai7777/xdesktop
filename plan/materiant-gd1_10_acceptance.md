@@ -10,6 +10,21 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_07 (30/10/2026)
+
+<!-- handoff: materiant-gd1_07 -->
+
+- **Đã có sẵn để dùng**: `materiant::overlay::{position, stack, tooltip, popover, dialog}` — tooltip
+  `.with_tooltip(id, text)`, `Popover::new(id).trigger(…).content(…)`, `DialogHandle::new(cx)` + `Dialog::new(id,
+  &handle)`. Chi tiết `plan/materiant-gd1_07_overlay.md` mục 9.
+- **Đổi so với spec**: Dialog mở kiểu khai báo (app giữ handle), không `Dialog::open(window, cx, …)`; nợ "mở bằng
+  code" cần `Root::register_plugin` trong `materiant::init` — làm được khi hết làn song song (mục 8 của gd1_07).
+- **Nợ chuyển sang đây**: kiểm tay gd1_07 (`plan/_backlog.md`): C5 bằng mắt + animation khi bật Animation effects,
+  đo `GALLERY_FRAME_STATS` mở / đóng Popover / Dialog (mong ~60 fps).
+- **Bẫy**: launcher dùng Popover / Dialog ⇒ cửa sổ phải mở bằng `gpui_kit::open_window` (bọc `Root`) — không có
+  `Root` thì Tab không vòng trong Dialog.
+- **Soát lại khi làm**: RAM trang `overlay` 15,7 MB (release, `gallery-run.ps1`); so ảnh trang `overlay` sáng / tối.
+
 ## 0. Bàn giao từ materiant-gd1_05 (30/10/2026)
 
 <!-- handoff: materiant-gd1_05 -->

@@ -76,9 +76,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_03 · ux] Thân vùng chọn không có con trỏ "dời" trên Windows**: `gpui-pre-windows` (`util.rs`) map `OpenHand` /
   `ClosedHand` về `IDC_ARROW`, không có `IDC_SIZEALL` — lý do treo: phải vá crate ngoài (upstream) hoặc đặt con trỏ Win32
   riêng qua `platform` — M, P3.
-- **[gd1_03 · ux] Icon "Lưu thành…" riêng** (lucide `save-all` / `folder-down`) vào materiant `icon.rs`, rồi bỏ ba chấm vẽ
-  tay ở `fastcast/crates/ui/src/overlay/toolbar.rs` — lý do treo: materiant đang nghiệm thu gd1_10, session điều phối dặn
-  không sửa materiant — S, P3.
 - **[gd1_02 · ux] Spawn nguội → khung đầu overlay 496–674 ms** (> 400 ms của task): cùng hướng gạch gd1_01 "khởi động
   nguội" — daemon bật sẵn UI headless; trái F-4 ("bật khi dùng") ⇒ chờ chủ dự án chọn đánh đổi RAM.
   `plan/gd1_02_region-overlay.md` mục 10.

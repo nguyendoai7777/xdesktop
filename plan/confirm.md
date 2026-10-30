@@ -276,3 +276,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [icon F-11] 2.7 bỏ ô nền + gradient, 1.6 / 12.6 bỏ màu riêng ⇒ một màu `currentColor` — phương án khác: giữ màu, nạp bằng ảnh — vì sao: yêu cầu ăn theo theme primary.
 - [icon F-11] 15.1 giữ nét 1 / 2 / 4 — phương án khác: nét đều — vì sao: độ dày khác nhau chính là nghĩa của icon.
 - [icon F-12] Icon tuỳ chỉnh Pro chỉ đặt chỗ (quyết định + ROADMAP GĐ4), chưa viết mã — phương án khác: thêm `IconSource` vào materiant ngay — vì sao: D-4 chỉ đặt chỗ, bộ icon cũng chưa nối vào app.
+- [icon F-11] Dòng "Mở launcher" / "Settings" dùng icon materiant (`Search`, `Settings`), nút Đóng của thanh công cụ giữ `Close` — phương án khác: vẽ thêm vào bộ F-11 — vì sao: chủ dự án chưa chọn icon cho các mục này, icon materiant cùng hệ nét.
+- [icon F-11] Chip phím hiện icon trên mọi OS (Ctrl = ^, Alt = ⌥ cả trên Windows) — phương án khác: chỉ macOS — vì sao: chủ dự án chọn bộ này không phân biệt OS; đổi chỉ một chỗ ở `assets::key_icon`.
+- [icon F-11] Icon lệnh tô `primary` đúng như yêu cầu, primary mặc định hiện là hồng của materiant, khác đỏ icon app — phương án khác: đặt primary của fastcast thành đỏ `#FF6363` — vì sao: chủ dự án nói ăn theo theme, chưa đổi theme.

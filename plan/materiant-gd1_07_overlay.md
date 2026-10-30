@@ -12,6 +12,30 @@
 
 Bàn giao ghi vào gd1_08 (Menu dựng trên Popover của task này).
 
+## 0. Bàn giao từ materiant-gd1_03 (30/10/2026)
+
+<!-- handoff: materiant-gd1_03 -->
+
+- **Đã có sẵn để dùng**: hàng nút cuối Dialog = `materiant::button::Button::new(id, label)` — nút chính `.filled()`
+  (mặc định), nút phụ `.text().base()` hoặc `.outlined()`; nút nguy hiểm `.danger()`; đang gửi `.loading(true)` (khoá
+  bấm, bỏ khỏi Tab). Nút đóng góc dialog: `IconButton::new(id, IconName::CloseThin).base().size(Size::Sm)
+  .accessibility_label(…)` (dáng `text` mặc định). Cả hai `impl Styled` (`.w_full()`, `.rounded_full()`).
+- Nút tự lo focus (focus handle keyed theo id, `gpui_base::Button` bên dưới) ⇒ bẫy focus của Dialog chỉ cần Tab vòng
+  qua các tab stop; nút `disabled` / `loading` đã `tab_stop(false)`. Muốn focus sẵn nút chính khi mở dialog: hiện chưa
+  có `.track_focus(&handle)` từ ngoài — cần thì thêm vào `button.rs` (ghi mục 8 nếu làn gd1_03 đã đóng).
+- Vòng focus của nút chỉ hiện khi `window.last_input_was_keyboard()` — trả focus về phần tử neo bằng bàn phím sẽ hiện
+  vòng, bằng chuột thì không: đúng ý.
+- **Bẫy**: Tab của `Root` không chạy khi cửa sổ chưa có gì focus (UI test phải bấm chuột vào một nút trước —
+  `ui-tests/tests/button.rs`). GPUI sinh click bàn phím ở **KeyUp**: UI test gửi `KeyDownEvent` + `KeyUpEvent`
+  (`press()` trong `ui-tests/tests/button.rs`); `--keys` của `gallery-run.ps1` chỉ gửi KeyDown ⇒ Enter / Space bấm nút
+  không thử được qua gallery.
+- **Bẫy build**: các worktree dùng chung `CARGO_TARGET_DIR=materiant/target` đè `libmateriant-*.rlib` của nhau khi build
+  cùng lúc (`unresolved import` dù code đủ) ⇒ build song song với làn khác thì dùng target riêng.
+- Chữ trong khung cao cố định (`line_height = 1`) trông thấp ~2 px: `materiant::button` có `optical_lift` (pub(crate)) —
+  chi tiết + bẫy `descent` âm ở `plan/materiant-gd1_03_button-kbd.md` mục 9.
+- **Soát lại khi làm**: trang gallery `button` (mẫu mọi dáng / trạng thái); `cargo test -p materiant-ui-tests --test
+  button`.
+
 ## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
 
 <!-- handoff: materiant-gd1_06 -->

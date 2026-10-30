@@ -10,6 +10,23 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_03 (30/10/2026)
+
+<!-- handoff: materiant-gd1_03 -->
+
+- **Đã có sẵn để dùng**: launcher hiện phím tắt bằng `materiant::kbd::Kbd::new("Ctrl+K")`
+  (`.mac_symbols(cfg!(target_os = "macos"))` ⇒ ⌘ ⌥ ⇧ ⌃); nút trong launcher / Settings = `button::{Button, IconButton}`.
+- **Nợ chuyển sang đây** (mục 8 của gd1_03): dời hằng cục bộ lên `style.rs` — `button.rs`: `RADIUS` 6, `GAP` 6,
+  `SPINNER_PERIOD`, `ICON_BUTTON_ICON_RATIO` 0,625, `ICON_BUTTON_SPINNER_RATIO` 0,55, `ELEVATED_*_MIX`,
+  `SHADOW_ALPHA`; `kbd.rs`: `CHIP_*`. `button::optical_lift` (căn thân chữ trong hộp `line_height = 1`) thành helper
+  chung của `style.rs` để Select / Tabs / chip dùng.
+- So ảnh với web: chỗ lệch CÓ CHỦ ĐÍCH của nút (rem thay px, vòng focus giữ bo góc, `loading` luôn quay + thay icon trái,
+  `elevated` nền tối ngả 4 %) — danh sách ở `plan/materiant-gd1_03_button-kbd.md` mục 9, đừng tính là lỗi.
+- **Bẫy**: macOS / Ubuntu — `optical_lift` lấy `descent.abs()` vì DirectWrite trả âm; nền khác dấu khác vẫn đúng, nhưng
+  soát mắt chữ trong nút trên hai nền đó. `--keys` của gallery chỉ gửi KeyDown (GPUI click bàn phím ở KeyUp) ⇒ Enter /
+  Space không thử được qua `gallery-run.ps1`.
+- **Soát lại khi làm**: trang gallery `button` sáng / tối, RAM trang 22,6–22,9 MB (release, `-p materiant`).
+
 ## 0. Bàn giao từ materiant-gd1_04 (30/10/2026)
 
 <!-- handoff: materiant-gd1_04 -->

@@ -38,6 +38,11 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   được khi chạy thử nền): `pwsh start.ps1 docs input` → gõ Telex "Tiếng Việt có dấu" vào các ô chữ (không mất / nhân
   đôi ký tự), gõ Telex vào ô số (không chèn chữ); ô FPS gõ `99` rồi bấm ô khác ⇒ `60`; bấm nhãn "Display name" ⇒ con
   trỏ vào ô. Chi tiết `plan/materiant-gd1_04_input.md` mục 9.
+- **Kiểm tay gd1_03** (C5 — lý do: hover thật và so bằng mắt với tài liệu web không giả lập được khi chạy thử nền):
+  `cargo run --example gallery -- --page button` → rê / nhấn từng dáng × màu ở sáng / tối, so với trang button của
+  materiant web; bấm chuột vào nút thì KHÔNG có vòng focus, Tab tới thì có; Space / Enter bấm được (gallery `--keys`
+  không thử được — chỉ gửi KeyDown); chữ trong nút / chip `Kbd` nằm giữa. Chỗ lệch có chủ đích:
+  `plan/materiant-gd1_03_button-kbd.md` mục 9.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
 

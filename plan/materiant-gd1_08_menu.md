@@ -12,6 +12,24 @@
 
 Chính là panel Ctrl+K của launcher fastcast (`plan/gd1_07_hotkey-assign.md`). Bàn giao ghi vào gd1_10.
 
+## 0. Bàn giao từ materiant-gd1_03 (30/10/2026)
+
+<!-- handoff: materiant-gd1_03 -->
+
+- **Đã có sẵn để dùng**: cột phím tắt = `materiant::kbd::Kbd::new("Ctrl+Shift+P")` — tách theo `+` (`"Ctrl++"` →
+  `Ctrl` `+`), mỗi phím một chip (nền `neutral-100`, viền, chữ caption muted); `.mac_symbols(true)` ⇒ ⌘ ⌥ ⇧ ⌃ ↩ ⌫ ⎋ ⇥
+  ↑ ↓ ← →. Hàm thuần `kbd::split_keys`, `kbd::mac_symbol`, `Kbd::labels()` cho test.
+- **Chưa có**: dựng `Kbd` từ keymap GPUI — `window.keystroke_text_for(action)` trả dạng `ctrl-shift-p` (nối `-`), `Kbd`
+  chỉ tách `+` ⇒ đổi chuỗi (`-` → `+`, cẩn thận phím `-`) hoặc thêm `Kbd::from_keystroke` vào `kbd.rs` (đề xuất 3 của
+  gd1_03, chủ dự án chưa chọn — hỏi lại nếu cần).
+- Web vẽ shortcut của menu là chữ trơn (`menu.css` `.menu-item-shortcut`: 12 px, muted, `margin-left: 12px`), không phải
+  chip — chọn dáng nào cho Menu thì hỏi chủ dự án; `Kbd` chưa có biến thể chữ trơn.
+- Mục menu cao cố định ⇒ chữ trông thấp ~2 px như nút: dùng lại cách `button::optical_lift` (chi tiết + bẫy `descent` âm
+  ở `plan/materiant-gd1_03_button-kbd.md` mục 9).
+- **Bẫy**: GPUI sinh click bàn phím (Enter / Space) ở KeyUp — UI test gửi KeyDown + KeyUp (`press()` trong
+  `ui-tests/tests/button.rs`); `--keys` của gallery chỉ KeyDown.
+- **Soát lại khi làm**: hàng `Kbd` ở trang gallery `button`; `cargo test -p materiant --lib kbd`.
+
 ## 1. Làm gì
 
 - `Menu` dựng trên `Popover` + định vị của gd1_07 (gpui-base không có menu); tham khảo `menu` của gpui-component

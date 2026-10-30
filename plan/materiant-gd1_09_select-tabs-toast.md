@@ -13,6 +13,24 @@
 Task làn song song: **chỉ** sửa các tệp trên. Bàn giao ghi vào gd1_10. Nếu lúc làm gd1_06 (cuộn) đã xong thì danh
 sách của dropdown dùng `ScrollArea`; chưa xong thì dùng thanh cuộn mặc định của gpui-base + ghi mục 8.
 
+## 0. Bàn giao từ materiant-gd1_03 (30/10/2026)
+
+<!-- handoff: materiant-gd1_03 -->
+
+- **Đã có sẵn để dùng**: nút đóng toast = `materiant::button::IconButton::new(id, IconName::CloseThin).size(Size::Sm)
+  .accessibility_label(…)` (dáng `text`, màu mặc định `primary`; trên toast nhiều màu thì `.color(ink_của_toast)` hoặc
+  `.base()`); bo tròn `.rounded_full()`. `Size::{Lg, Md, Sm}.height()` = 38 / 32 / 24 px — dùng cho chiều cao Select
+  để đứng thẳng hàng với nút.
+- Màu theo loại toast: `Accent::{Primary, Success, Warning, Danger}.tokens(cx)` + bảng thuần
+  `ButtonPaint::resolve(Variant::Tonal, …)` nếu muốn toast nền nhạt cùng bậc thang với nút `tonal`.
+- Nút có ripple + vòng focus bàn phím sẵn; nút trong toast `loading` / `disabled` tự bỏ khỏi Tab.
+- **Bẫy**: chữ trong khung `line_height = 1` (trigger của Select, nhãn Tab) trông thấp ~2 px — xem `button::optical_lift`
+  (pub(crate), dời lên `style.rs` ở gd1_10); `TextSystem::descent` của DirectWrite là số âm. GPUI sinh click bàn phím ở
+  KeyUp ⇒ UI test gửi cả KeyDown + KeyUp (`press()` trong `ui-tests/tests/button.rs`); `--keys` của gallery chỉ KeyDown.
+- **Bẫy build**: worktree dùng chung `CARGO_TARGET_DIR` đè rlib `materiant` của nhau khi build cùng lúc ⇒ target riêng
+  khi có làn khác đang build.
+- **Soát lại khi làm**: trang gallery `button`; `plan/materiant-gd1_03_button-kbd.md` mục 9 (API đầy đủ).
+
 ## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
 
 <!-- handoff: materiant-gd1_06 -->

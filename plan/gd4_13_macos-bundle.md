@@ -11,6 +11,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
 
+## 0. Bàn giao từ gd4_10 (30/10/2026)
+
+<!-- handoff: gd4_10 -->
+
+- **Đã có sẵn để dùng**: `fst` chạy được làm exe chính của `.app`: `Accessory`, tìm `fastcast-ui` cạnh nó trong `Contents/MacOS/`. Autostart tự nhận `.app` (`autostart.rs::launchd::in_app_bundle`).
+- **Đổi so với spec**: `SMAppService` không có độ trễ cấu hình; bản chưa ký có thể bị từ chối và rơi về LaunchAgent `com.fastcast.daemon`. Bundle id khác thì sửa `launchd::LABEL`.
+- **Soát lại khi làm**: chưa dòng nào chạy trên Mac, trước hết làm gạch `gd4_10` trong `plan/_backlog.md`. Trong `.app` đã ký ad-hoc: `fst autostart on` in cách đăng ký, đăng nhập lại chỉ có một daemon, launcher không tự bật. Chi tiết: `plan/gd4_10_macos-daemon.md` mục 9.
+
 ## 0. Bàn giao từ gd4_07 (30/10/2026)
 
 <!-- handoff: gd4_07 -->

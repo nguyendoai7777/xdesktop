@@ -386,3 +386,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_01] Thêm Ctrl/Cmd+W + focus sẵn ở sidebar cho Settings — chờ làn UI — test đóng cửa sổ cần và người dùng dùng bàn phím cần
 - [materiant-gd4_01] Số đo Badge theo `kbd.rs` vì `xbds/materiant/projects` không có gói chip / badge — phương án khác: tự chế số mới — vì sao: cùng họ chip với Kbd.
 - [materiant-gd4_01] Badge tự trộn `ink` về màu chữ tới khi đạt 4,5 : 1 — phương án khác: sửa `AccentTokens.ink` — vì sao: `ink` còn dùng cho nút, đổi sẽ lệch bản web.
+- [gd4_10] Giữ phím mặc định Ctrl+Shift+1…5 trên macOS — đổi sang Cmd — `Cmd+Shift+3/4/5` là phím chụp màn của hệ thống, tổ hợp Ctrl không trùng `system_reserved`.
+- [gd4_10] `SMAppService` lên ngay lúc đăng nhập, không có độ trễ cấu hình — luôn dùng LaunchAgent — API không có độ trễ và F-5 chốt `SMAppService`; LaunchAgent vẫn dùng `--delay`.
+- [gd4_10] Không hạ ưu tiên daemon trên macOS — `Nice` / `ProcessType` trong plist — UI có thể thừa kế, Windows mới có cờ bật UI về ưu tiên thường.
+- [gd4_10] Thêm `dispatch2` (đã có trong lock, Zlib / Apache-2.0 / MIT) ngoài danh sách task — tự khai báo `dispatch_async_f` — khỏi viết `unsafe`.
+- [gd4_10] Nhãn LaunchAgent `com.fastcast.daemon` — theo tên người dùng như Task Scheduler — thư mục đã theo người dùng; đổi nếu gd4_13 chốt bundle id khác.

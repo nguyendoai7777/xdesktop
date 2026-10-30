@@ -5,6 +5,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd4_10 · owner-qa] Chạy daemon trên Mac** — lý do: máy nhà Windows, mã mới qua `cargo check` + clippy target `aarch64-apple-darwin`, chưa chạy dòng nào. Trên Mac: `cargo test -p fastcast-daemon -p fastcast-core`; `cargo build --release -p fastcast-daemon`, chạy `target/release/fst`: không icon Dock, khay + menu, 6 phím tắt, `fst status`, `fst quit`, `fst` lần hai; `fst autostart on` rồi đăng nhập lại, `off`; `footprint <pid>` sau ≥ 10 s phải ≤ 5 MB. Sau gd4_13: lặp autostart trong `.app`. Case C4–C7 ở `plan/gd4_10_macos-daemon.md`.
 - **[gd4_07 · owner-qa] Icon ở 100 %, 125 %, 150 % (C7)** — lý do: máy nhà không bật khay trong làn, icon khay nằm ở taskbar màn LG. Bước: cài / chạy `fst` thật ở mỗi tỉ lệ (đổi tỉ lệ rồi khởi động lại `fst`), xem icon khay nét, không ô nền, menu khay đúng cỡ; xem icon `fst.exe` trong Explorer và `fastcast-ui` ở Alt+Tab.
 - **[gd4_07 · ux P3] Icon khay theo đổi tỉ lệ khi đang chạy** — lý do: không bật được khay trên máy nhà để thử. Bắt `WM_DPICHANGED`, gọi `set_icon` với cỡ mới.
 

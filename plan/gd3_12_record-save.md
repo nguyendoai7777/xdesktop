@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | 🔄 |
 | Repo | fastcast |
 | Cỡ | S — ~350 dòng |
 | Phụ thuộc | gd3_01 |

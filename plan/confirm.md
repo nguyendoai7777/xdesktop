@@ -43,7 +43,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_06] Launcher dựng sẵn ẩn nhưng **bị đóng khi UI nhả GPU** (10 s không cửa sổ nào hiện) — phương án khác: giữ
   launcher ẩn suốt thời gian giữ ấm (không bao giờ nhả GPU) — vì sao: GPUI từ chối nhả GPU khi còn cửa sổ, giữ launcher
   thì RAM giữ ấm 14,2 MB thay vì 7,3 MB suốt 5 phút; mở lại trong 10 s sau lần dùng vẫn tức thì, sau đó trả thêm thời gian
-  gắn GPU + dựng cửa sổ ~200 ms (mục 9 của task).
+  gắn GPU + dựng cửa sổ ~200 ms (mục 9 của task). **Cập nhật**: đã giữ thêm — launcher vừa dùng được giữ ẩn (cùng GPU)
+  ít nhất 60 s (`launcher::HOLD_AFTER_USE`), đổi lại 14,7 MB trong phút đó; muốn ngắn / dài hơn thì sửa hằng này.
 - [gd1_06] Ẩn / hiện cửa sổ bằng Win32 `ShowWindowAsync` (`crates/ui/src/platform.rs`) — phương án khác: đóng / mở lại cửa
   sổ mỗi lần — vì sao: gpui-pre 0.3.10 không có `Window::set_visible` như plan ghi. macOS / Linux tạm đóng hẳn khi ẩn.
 - [gd1_06] UI **ghi** `config.json` (chỉ khoá `launcher.position`, đọc lại file rồi ghi nguyên tử như `fst autostart`)
@@ -147,3 +148,17 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [materiant-gd1_03] Thêm `.selected(bool)` cho `Button` / `IconButton`: dáng `elevated` đang bật ⇒ nền màu gốc (chip
   bật / tắt như `aria-pressed="true"` của web) — phương án khác: không có (spec không ghi) — vì sao: "làm đủ theo button
   type", web có trạng thái này ở `elevated`.
+- [materiant-gd1_08] Cột phím tắt của Menu là chip `Kbd` (`[Ctrl][C]`) — phương án khác: chữ trơn 12 px muted như web
+  (`.menu-item-shortcut`) — vì sao: phác thảo mục 7 của task vẽ chip, `Kbd` có sẵn từ gd1_03; đổi sang chữ trơn chỉ một
+  chỗ trong `menu.rs` nếu chủ dự án muốn giống web.
+- [materiant-gd1_08] Menu không dùng roving focus: focus nằm ở khung menu, con trỏ là chỉ số (`menu_nav`); rê chuột dời
+  con trỏ + kéo focus về khung đang rê — phương án khác: mỗi mục một `FocusHandle` như web — vì sao: một handle mỗi khung
+  đủ cho bàn phím, khỏi giữ N handle; hành vi người dùng thấy như web.
+- [materiant-gd1_08] Menu chuột phải = `.context_menu(|menu, window, cx| …)` trên `Stateful<Div>` + Shift+F10 (mở giữa
+  phần tử) khi focus nằm trong phần tử — phương án khác: chỉ chuột phải như web — vì sao: dùng hết bằng bàn phím (luật
+  "Xong một component"); Shift+F10 là phím menu ngữ cảnh chuẩn của Windows / Linux.
+- [materiant-gd1_08] Menu chuột phải mở sát con trỏ (khoảng hở 0, web 4 px) — phương án khác: 4 px như dropdown — vì sao:
+  giống menu hệ thống; dropdown giữ 4 px như web.
+- [materiant-gd1_08] Chọn mục ⇒ đóng cả chuỗi menu TRƯỚC rồi mới gọi `on_select` (web: emit rồi đóng) — phương án khác:
+  đúng thứ tự web — vì sao: handler mở Dialog (fastcast gd1_07 "Gán phím tắt…") thì Dialog giữ được focus, không bị
+  menu đóng sau trả focus về nút.

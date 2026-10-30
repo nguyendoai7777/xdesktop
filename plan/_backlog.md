@@ -26,7 +26,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_06 · ux] Launcher sau khi nhả GPU ~200 ms** (bản dựng sẵn 0,2 ms): giữ GPU / launcher ẩn lâu hơn khi launcher
   vừa dùng, hoặc tăng `GPU_IDLE_DEFAULT` — chờ chủ dự án chọn đánh đổi RAM giữ ấm 7,3 ⇒ 14,2 MB; gd1_02 (song song) cũng
   đo khung đầu overlay sau nhả GPU trên cùng hằng số. `plan/gd1_06_launcher.md` mục 10 (1). → gd1_02 đã tăng
-  `GPU_IDLE_DEFAULT` 10 → 60 s (gạch `confirm.md`); còn treo nếu chủ dự án muốn khác.
+  `GPU_IDLE_DEFAULT` 10 → 60 s (gạch `confirm.md`); gd1_06 thêm sàn riêng `launcher::HOLD_AFTER_USE` = 60 s (master
+  `6503d28`). Còn treo chỉ khi chủ dự án muốn đánh đổi khác.
 - **[gd1_06 · owner-qa] Kiểm launcher tay** (C7): Alt+Space thật, Telex, bấm ra ngoài, kéo sang màn khác + mở lại, sáng
   / tối, vi / en, không chớp nội dung cũ, Alt+Space không bật menu app đang dùng — bước ở `plan/gd1_06_launcher.md`
   mục 9; lỗi chớp / Alt thì làm đề xuất 4 / 2 của mục 10.
@@ -82,6 +83,16 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   `pwsh start.ps1 docs overlay` → bấm "Open dialog", Tab tới "More options", Space mở Popover, Esc lần một đóng
   Popover, lần hai đóng Dialog, focus về "Open dialog" (tooltip của nó KHÔNG tự hiện); bốn nút góc mở Popover lật vào
   trong; nền tối Popover có viền 1 px. `plan/materiant-gd1_07_overlay.md` mục 9.
+- **Kiểm tay gd1_08** (C5 bằng mắt + rê chuột thật — lý do: `gallery-run` chỉ giả lập chuột trái, không có hover OS):
+  `pwsh start.ps1 docs menu` → so với trang menu của materiant web ở sáng / tối (chip phím tắt thẳng cột); rê qua Share
+  / More mở sau ~150 ms; chuột phải sát góc phải dưới cửa sổ lật lên trên-trái; "40 items" cuộn bằng bánh xe.
+  `plan/materiant-gd1_08_menu.md` mục 9.
+- **Menu: phím tắt từ keymap** (`MenuItem::action` + `Kbd::from_keystroke`) — lý do treo: cần sửa `kbd.rs` (làn gd1_03)
+  + chủ dự án chưa chọn đề xuất 3 của gd1_03. `plan/materiant-gd1_08_menu.md` mục 10.
+- **Menu dài có thanh cuộn** (đổi `overflow_y_scroll` trần sang `ScrollArea`) và **phím Menu / Apps** mở menu chuột phải —
+  lý do treo: `ScrollArea` chưa co theo `max_h`; tên phím Apps trong GPUI phải bấm phím thật mới biết.
+- **`cargo fmt --check` đỏ ở tệp của gd1_06** (`src/scroll.rs`, `src/list.rs`, `examples/gallery/pages/scroll.rs`,
+  `ui-tests/tests/scroll.rs`) — lý do treo: tệp của làn khác; gd1_10 chạy `cargo fmt` một lượt khi nghiệm thu.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
 

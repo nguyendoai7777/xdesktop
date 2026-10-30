@@ -144,12 +144,18 @@ Xong 30/10/2026 — fastcast `claude/gd1_06` (3 commit + merge master). Chủ d�
   Enter; bấm ra ngoài ⇒ ẩn; Alt+Space lại ⇒ ô rỗng, mục đầu chọn, KHÔNG chớp nội dung lần trước; kéo thanh trên sang
   màn khác, Esc, `fst quit`, mở lại ⇒ đúng chỗ cũ; sáng / tối; `general.language` vi / en; Alt+Space không bật menu của
   app đang dùng (GPUI giả lập phím Alt để giành foreground — mục 10).
+- **Đề xuất đã làm** (D-8, theo luật mới của chủ dự án 30/10/2026 "làm hết đề xuất đáng làm"): (1) giữ launcher ẩn +
+  GPU ít nhất `launcher::HOLD_AFTER_USE` = 60 s sau lần ẩn (`Discard::{Nothing, Closed, Hold}`, `app::release_gpu` trả
+  lúc hỏi lại) — nhánh `claude/gd1_06-warm`, gộp master `6503d28`. Đo lại: ẩn 9 s vẫn 14,7 MB + hiện lại 0,2 ms; nhả GPU
+  đúng 61 s sau lần ẩn ⇒ 7,3 MB. Bản dựng sẵn chưa hiện lần nào không được giữ. Cùng lúc gd1_02 đã tăng
+  `GPU_IDLE_DEFAULT` 10 → 60 s ⇒ hai mốc trùng nhau; `HOLD_AFTER_USE` là sàn riêng cho launcher nếu sau này hạ hằng GPU.
 
 ## 10. Đề xuất cải tiến
 
-Chủ dự án vắng ⇒ Claude tự chọn: làm 6 (ghi lộ trình); còn lại vào `plan/_backlog.md` (lý do ở đó).
+Chủ dự án vắng ⇒ Claude tự chọn: làm 1 (✅ mục 9) và 6 (ghi lộ trình); 2–5 không kiểm được trên máy này (một màn, không
+bật phím tắt thật / không chụp màn) ⇒ `plan/_backlog.md`.
 
-1. `[ux]` Mở launcher sau khi UI đã nhả GPU mất ~180–210 ms (gắn GPU 158–188 ms + dựng cửa sổ) so với 0,2 ms bản dựng
+1. ✅ `[ux]` Mở launcher sau khi UI đã nhả GPU mất ~180–210 ms (gắn GPU 158–188 ms + dựng cửa sổ) so với 0,2 ms bản dựng
    sẵn; nhả GPU sau 10 s rảnh nên đa số lần Alt+Space trong giờ giữ ấm sẽ chịu mức này — bằng chứng: bảng mục 9 —
    đề xuất: giữ GPU (và launcher ẩn) lâu hơn khi launcher vừa dùng, hoặc tăng `GPU_IDLE_DEFAULT` (`app.rs`) — giá trị:
    launcher luôn tức thì — đánh đổi RAM giữ ấm 7,3 ⇒ 14,2 MB — S — P1.

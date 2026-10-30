@@ -416,3 +416,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_06] Không ghi icon F-11 vào trang giấy phép — ghi như task liệt kê — dự án tự vẽ; nếu có bộ nào lấy từ ngoài thì phải thêm vào `extra.toml`
 - [gd4_05] Dòng Pro dùng `Role::Group` + nhãn `<tên>, pro` — để trình đọc tự đọc chữ con — chữ con chưa chắc thành nút a11y, nhãn ghép đọc được chắc chắn hơn.
 - [gd4_05] Dòng `Pro` giữ nguyên tên + mô tả, chỉ bỏ huy hiệu — thêm điều khiển bật tắt — chưa có tính năng thật (D-4).
+- [gd3_13] Đo lúc gần rảnh sau 60 phút chờ, ghi tải từng bài — chờ tới khi GĐ4 xong — vì sao: chủ dự án cho GĐ4 chạy song song, gd4_08 + gd4_09 đang chờ task này.
+- [gd3_13] Mất nguồn giữa chừng còn tệp ⇒ thông báo + mở bảng như quay xong — chỉ đổi chữ thông báo — vì sao: người dùng có ngay nút giữ / lưu / bỏ cho phần đã quay.
+- [gd3_13] Dọn `.mp4.part` cũ hơn 24 giờ — dọn hết mỗi lần quay — vì sao: `.part` mới có thể là video đã quay xong mà worker không đặt được tên.
+- [gd3_13] Biến chạy thử ở bản release để `gd4_08` chặn, phải báo lỗi — chặn ở đây — vì sao: task đó đã nhận; im lặng bỏ biến sẽ làm bài đo quay màn thật.
+- [gd3_13] Xoá `C:/xdesktop-target/ocr-models`, giữ bản chép ở `fastcast/target/release/models` cho kiểm tay — giữ ở chỗ chung — vì sao: bàn giao gd3_03 dặn xoá; dựng lại cần Docker nên vẫn giữ một bản.

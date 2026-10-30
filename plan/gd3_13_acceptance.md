@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (31/10/2026) — chờ kiểm tay, xem mục 9 |
 | Repo | fastcast |
 | Cỡ | S — ~150 dòng test |
 | Phụ thuộc | gd3_01 → gd3_12 |
@@ -105,18 +105,51 @@
 
 `close-phase`: GĐ1, GĐ2 còn chờ kiểm tay. macOS / Ubuntu (GĐ4).
 
-## 2b–5
+## 2b. Phân vai
 
-Viết lúc bắt đầu task.
+Toàn `[opus]`: bài đo, sửa nợ, báo cáo. `[owner-qa]`: `fastcast/docs/gd3-report.md` mục 4.
+
+## 3–4
+
+Không kiểu / IPC mới. Khoá i18n mới: `record.kept_display_changed`, `record.kept_capture_lost`.
+
+## 5. Đo
+
+`fastcast/docs/gd3-report.md` mục 2, cách chạy mục 5.
 
 ## 6. Nghiệm thu
 
-Báo cáo có số đo + danh sách kiểm tay; bốn lệnh soát xanh trên `master`; không còn tệp trong `tmp/`; `tests/` không có lệnh nào chụp màn thật.
+| Case | Cho / Khi / Thì | Phủ | KQ |
+| --- | --- | --- | --- |
+| C1 | Exe thật, màn giả ⇒ số RAM, thời gian, tiến trình thoát | `[opus-run]` `real_*` | ✅ |
+| C2 | Danh sách kiểm tay theo thứ tự, có lệnh | báo cáo mục 4 | ✅ |
+| C3 | Bốn lệnh soát xanh | `[opus-run]` | ✅ trên nhánh ngay trước khi gộp, `master` không đi trước |
+| C4 | Không còn tệp trong `tmp/` | soát thư mục | ✅ 0 tệp |
+| C5 | `tests/` không chụp màn thật | grep `xcap::`, `freeze`, `FASTCAST_REC_BACKEND` | ✅ không có |
+| C6 | Mọi số độ trễ / CPU đo lúc không làn nào chạy | | ⚠️ một phần: GĐ4 chạy song song, chờ 60 phút không có khe; từng bài ghi rõ tải máy |
+| C7 | Kiểm tay | `[owner-qa]` | chờ |
 
 ## 7. Ghi chú UI
 
+Mất nguồn giữa chừng còn tệp: thông báo lỗi nói "phần đã quay vẫn còn" + mở bảng sau khi dừng.
+
 ## 8. Nợ chuyển task khác
+
+- `gd4_08`: chặn `FASTCAST_REC_WINDOW` ở bản release phải báo lỗi, không rơi sang quay màn. `real_*` cần `dev-env`.
 
 ## 9. Bàn giao thực tế
 
+- **Kết quả**: `fastcast/docs/gd3-report.md`; bàn giao ở `fastcast/ROADMAP.md` mục "Bàn giao GĐ3".
+- **Đã sửa ngoài bài đo**: UI không xoá `.part` worker cố ý giữ (lỗi tự phát hiện); mất nguồn còn tệp ⇒ báo + mở bảng; dọn `fastcast*.mp4.part` cũ hơn 24 giờ; test giết worker treo sau `Stop`; `ocr-e2e.ps1 -Images`; `FASTCAST_MEASURE_SECS`.
+- **Xung đột gộp**: `source_probe` sang màn phụ gd4_12 làm trùng, lấy bản `master`.
+- **Soát xanh** (đã gộp `master`): `cargo build`, clippy `-D warnings`, `cargo test --no-fail-fast` không ca đỏ, `cargo deny check licenses`.
+- **Máy bận**: số độ trễ GĐ1 đo lại không dùng được; WARP gd2_06 chưa đo lại. Không có lượt nào rảnh hẳn.
+- **Dọn**: model chép sang `fastcast/target/release/models` cho kiểm tay; xoá `C:/xdesktop-target/gd3_13`, `C:/xdesktop-target/ocr-models`.
+- Opus chọn 30/10/2026: đo ngay lúc gần rảnh sau 60 phút chờ, không chờ tiếp — vì GĐ4 được chủ dự án cho chạy song song. Chặn biến dev giao `gd4_08`, task đó đã nhận.
+
 ## 10. Đề xuất cải tiến
+
+Lăng kính Pro: không áp. Bảo mật / RAM: mục 3 báo cáo, RAM không tăng.
+
+- [ux] Đọc cả màn đầy chữ 8–21 s — báo cáo mục 2.1, ảnh 24–26 — thử giới hạn luồng / lô nhận dạng, báo tiến độ trên panel — đỡ cảm giác treo — M — P2. **Chưa làm**: đổi cấu hình engine phải đo lại CER lúc máy rảnh, GĐ4 đang chạy; ghi `plan/_backlog.md`.
+- [ram] UI đang quay 11–26 ms CPU / s dù cửa sổ đứng yên — báo cáo mục 2.3 — soi nhịp vẽ của ba cửa sổ — S — P3. Ghi `plan/_backlog.md`.

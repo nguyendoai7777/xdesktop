@@ -5,6 +5,10 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd3_13 · owner-qa] Kiểm tay GĐ3 — một danh sách, `fastcast/docs/gd3-report.md` mục 4** (gồm gd3_06 C15, gd3_07 C6, gd3_05 DXGI, gd0_05 C8, gd0_06 C8–C11, gd3_09–12) — lý do: máy dùng thật, session không quay / chụp màn, không mở micro. Xong thì xoá các gạch `owner-qa` đó; `close-phase` GĐ3 khi GĐ1, GĐ2 cũng xong.
+- **[gd3_13 · ux] Đọc cả màn đầy chữ 8–21 s**: thử giới hạn luồng / lô nhận dạng, báo tiến độ trên panel — lý do: phải đo lại CER lúc máy rảnh, GĐ4 đang chạy. `plan/gd3_13_acceptance.md` mục 10.
+- **[gd3_13 · ram] UI đang quay 11–26 ms CPU / s dù cửa sổ đứng yên**: soi nhịp vẽ — lý do: P3, không ảnh hưởng ô rớt; cần máy rảnh để đo. Số độ trễ chính thức của GĐ3 cũng chờ lượt máy rảnh (`docs/gd3-report.md` mục 5), gd4_18 có thể đo cùng.
+
 - **[gd4_02 · owner-qa] Tự khởi động + toast lỗi** — lý do: máy nhà không chạy `fst` thật, không khởi động lại máy. Đổi trễ ở Cài đặt → Chung, bật tự khởi động, khởi động lại máy: daemon lên sau đúng độ trễ. Đặt `config.json` chỉ đọc, đổi cỡ chữ: thấy toast lỗi, ô trả về số cũ.
 - **[gd4_02 phát hiện] `fastcast-video --test session` đỏ chập chờn lúc máy bận** — lý do: không thuộc làn, cần chạy lúc máy rảnh để biết do tải hay lỗi thật. `low_fps_stops_without_waiting_for_the_slot`, `source_lost_midway_reports_failed_and_keeps_the_video` (`session.rs:290`, nhận `Finished` thay vì `Failed`): 2 / 3 lần đỏ khi các làn khác đang build. Soát ở gd4_18.
 - **[gd4_02] Lỗi tự khởi động không tới UI** — lý do: `daemon.rs::reload` bỏ qua lỗi `autostart::apply`, sửa phải đổi ngữ nghĩa `ReloadConfig`, ngoài làn; chờ quyết định khi soát GĐ4. Chi tiết: `plan/gd4_02_settings-general.md` mục 10.
@@ -31,7 +35,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd3_06] Video chịu được sập giữa lượt**: `moov` ở cuối nên `.part` của tiến trình bị giết cứng không phát được; thử `MFTranscodeContainerType_FMPEG4` — lý do: đổi container phải soát lại QuickTime, cần máy Mac.
 - **[gd3_07 · owner-qa] Kiểm tay âm thanh**: `plan/gd3_07_rec-audio.md` C6 (micro + hệ thống 60 s khớp hình, rút tai nghe, đổi thiết bị mặc định, micro bị chặn) — lý do: session không được mở micro trên máy chủ dự án, không rút được thiết bị. Gộp vào danh sách của gd3_13.
 
-- **[gd2_06] CPU WARP lúc vẽ nét vượt mục tiêu**: 1,6–2,4 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd2-report.md` mục 2.3). Đo lại khi máy rảnh trước; nếu vẫn vượt, thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.
+- **[gd2_06 · gd3_13 vẫn chưa đo lại: máy bận GĐ4] CPU WARP lúc vẽ nét vượt mục tiêu**: 1,6–2,4 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd2-report.md` mục 2.3). Đo lại khi máy rảnh trước; nếu vẫn vượt, thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.
 - **[gd2_06 · owner-qa] Kiểm tay GĐ2 — một danh sách, `fastcast/docs/gd2-report.md` mục 4** (gồm `gd2_04`, `gd2_05` ở dưới). Xong ⇒ `close-phase` GĐ2 khi GĐ1 cũng xong.
 
 - **[gd2_05 · owner-qa] Con lăn + bảng màu**: `fst` thật, chụp vùng, chọn công cụ. Lăn con lăn có nấc + vuốt touchpad: mỗi nấc đổi một bước, nhãn `N px` gần con trỏ, không nhảy loạn; lăn giữa lúc kéo; lăn lúc đang gõ chữ có Unikey (con trỏ + IME không mất). Bảng màu (phím `c`): kéo ra ngoài ô vẫn bám, gõ hex không bật công cụ — lý do: máy dùng thật, session không chạy overlay thật, con lăn thật.
@@ -72,10 +76,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   5. Mở tệp bằng Media Player, QuickTime (Mac), trình duyệt; chữ có đọc được không. Thử cửa sổ có DRM: hiện đen?
   Kết quả ghi `fastcast/docs/spikes/video.md` mục 6 + chọn WGC / DXGI ở `plan/confirm.md` trước GĐ3.
 - **[gd3_05 · owner-qa] DXGI + con trỏ tự vẽ qua `source::open`** — lý do: máy dùng thật, session không quay màn của chủ dự án; `for_monitor` và `DxgiSource` mới biên dịch + test phần thuần, spike chưa có con trỏ DXGI nên bước trên không phủ. Sau gd3_06, quay màn thật bằng `fastcast-rec` với `FASTCAST_REC_BACKEND=dxgi`, xem xong xoá tệp: đúng vùng, con trỏ đúng chỗ + đúng cỡ trên từng màn, không để lại vết khi rê, chữ I-beam đảo màu, không viền vàng; log không có `dxgi unavailable`. Đổi độ phân giải giữa lúc quay ⇒ `DisplayChanged`. Không nhận viền vàng WGC ⇒ đổi mặc định ở `parse_backend`.
-- **[gd3_05 · bảo mật] `FASTCAST_REC_WINDOW` có hiệu lực ở bản release** — lý do: gd3_06, gd3_13 cần để đo; gd3_13 đo xong xử lý cùng đề xuất `exe_path` của gd3_01.
-- **[gd0_06] Test `fake_overlay_drag_across_monitors_then_close_and_reopen` đỏ một lần** (`fastcast-ui still running`, quá
-  hạn, master 7e29ba5, máy bận): chưa rõ do tải hay lỗi thật, ngoài phạm vi spike — chạy lại `cargo test -p fastcast-ui --test
-  overlay` lúc máy rảnh.
+- **[gd3_05 · bảo mật] `FASTCAST_REC_WINDOW` có hiệu lực ở bản release** — `plan/gd4_08_ipc-hardening.md` nhận; chặn phải báo lỗi, không rơi sang quay màn thật (`plan/gd3_13_acceptance.md` mục 8).
 
 - **Kiểm T3 thật**: `fst autostart on` → khởi động lại máy → daemon lên sau ~12 s, logon không chậm →
   `fst status | Out-Host`. Gộp vào gd1_11 nếu chưa làm trước.
@@ -137,7 +138,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 - **[gd3_04] Windows N**: có thể `fastcast-rec.exe` không bật nổi thay vì báo `NoEncoder` (exe nhập trực tiếp từ `mfplat.dll`; suy từ cách crate `windows` liên kết, chưa kiểm) — lý do: không có máy Windows N. Khi có máy: thử; nếu đúng thì gd3_11 coi "bật exe lỗi" như `NoEncoder`, hoặc nạp trễ DLL.
 - **[gd3_04] Vùng siêu dài**: 8000 × 720 mã hoá xong nhưng Media Foundation không giải mã lại được (`0xC00D36B4`), 5120 × 720 thì được; ngưỡng chưa dò, chưa thử trình phát khác — lý do: P3, chỉ gặp khi vắt 3–4 màn với vùng thấp, ưu tiên sau các làn GĐ3.
-- **[gd3_04 → gd3_13] RAM quay 720p30**: 44–53 MB, cao hơn spike 29,6 MB, chưa rõ nguồn; tăng chậm ~1,1 MB / phút — lý do: phải đo lúc máy rảnh, hiện các làn khác đang build. gd3_13 đo lại, vẫn trên 35 MB thì soi (`plan/gd3_04_video-encoder.md` mục 9).
 
 ## materiant
 

@@ -10,6 +10,15 @@
 | Phụ thuộc mới | Công cụ dev NSIS (zlib / libpng, cài bằng `winget install NSIS.NSIS`), không vào exe |
 | File đụng tới | MỚI `installer/windows/fastcast.nsi`, `tools/build-installer.ps1`, `tools/installer-e2e.ps1`; SỬA `tools/fetch-ocr-models.ps1`, `spikes/ocr/results/manifest.int8-mix.toml`, `crates/ocr/src/engine/mod.rs`, `crates/daemon/src/cli.rs` |
 
+## 0. Bàn giao từ gd4_07 (30/10/2026)
+
+<!-- handoff: gd4_07 -->
+
+- **Đã có sẵn để dùng**: `assets/icon/app-icon.ico` (16–256) cho `MUI_ICON` / `MUI_UNICON` và `DisplayIcon`; `fst.exe`, `fastcast-ui.exe` đã nhúng icon, hai worker thì không.
+- **Đổi so với lúc viết spec này**: `fst.exe` có manifest PerMonitorV2 (`crates/daemon/res/app.manifest`).
+- **Bẫy đã gặp**: build exe cần `rc.exe` của Windows SDK; thiếu thì build đỏ, không ra exe mất icon.
+- **Soát lại khi làm**: `cargo test -p fastcast-daemon --test exe_icon`. Chi tiết: `plan/gd4_07_app-icon.md` mục 9.
+
 ## 1. Làm gì
 
 - Chốt công cụ: **NSIS**. Vì sao: giấy phép Zlib nằm trong D-2, cài theo người dùng không cần quyền admin, một tệp `setup.exe`. Đóng câu hỏi mở ở `ROADMAP.md`; ghi `plan/confirm.md`.

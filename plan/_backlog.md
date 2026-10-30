@@ -5,6 +5,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd4_07 · owner-qa] Icon ở 100 %, 125 %, 150 % (C7)** — lý do: máy nhà không bật khay trong làn, icon khay nằm ở taskbar màn LG. Bước: cài / chạy `fst` thật ở mỗi tỉ lệ (đổi tỉ lệ rồi khởi động lại `fst`), xem icon khay nét, không ô nền, menu khay đúng cỡ; xem icon `fst.exe` trong Explorer và `fastcast-ui` ở Alt+Tab.
+- **[gd4_07 · ux P3] Icon khay theo đổi tỉ lệ khi đang chạy** — lý do: không bật được khay trên máy nhà để thử. Bắt `WM_DPICHANGED`, gọi `set_icon` với cỡ mới.
+
 - **[gd3_02 · GĐ4] Đóng gói OCR**: đưa `onnxruntime.dll` vào sổ sha256 và sửa nhãn `+int8-all` / "(all)" của `spikes/ocr/results/manifest.int8-mix.toml` (Paddle trong đó là fp32) — lý do: sổ + bản cài thuộc GĐ4; sửa bây giờ làm lệch `C:/xdesktop-target/ocr-models` các làn đang dùng chung.
 - **[gd0_05 · owner-qa] Thử OCR trên ảnh chụp thật (C8)** — lý do: máy dùng thật, session không chụp màn; số CER trong `fastcast/docs/spikes/ocr.md` chỉ là ảnh tổng hợp. Khi `fastcast-ocr` chạy được (GĐ3): chụp vùng code, chat, web sáng / tối, chữ nhỏ, xem chữ ra; dòng tiếng Việt mất dấu = `looks_like_code` chọn nhầm.
 - **[gd0_05] Đọc giấy phép dữ liệu huấn luyện của model trước khi bán** — lý do: spike chỉ tin nhãn Apache-2.0 trong sổ vnocr, không đọc giấy phép dữ liệu của `vgg_transformer` gốc + dữ liệu học thêm `vn8a30`; việc của chủ dự án, không chặn GĐ3.

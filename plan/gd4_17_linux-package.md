@@ -11,6 +11,13 @@
 | Phụ thuộc mới | — (`dpkg-deb` có sẵn) |
 | File đụng tới | MỚI `installer/linux/{control,fastcast.desktop,postrm}`, `tools/build-deb.sh` |
 
+## 0. Bàn giao từ gd4_07 (30/10/2026)
+
+<!-- handoff: gd4_07 -->
+
+- **Đã có sẵn để dùng**: `assets/icon/app-icon.png` (512) cho `/usr/share/icons/hicolor/512x512/apps/`. Cần cỡ khác thì thêm vào `tools/export-icon/src/main.rs`, chạy `pwsh tools/export-icon.ps1`.
+- **Soát lại khi làm**: `Icon=` trong `.desktop` khớp tên tệp, GNOME hiện đúng icon. Chi tiết: `plan/gd4_07_app-icon.md` mục 9.
+
 ## 1. Làm gì
 
 - `.deb` cho Ubuntu 26.04: exe vào `/opt/fastcast`, `fst` nối vào `/usr/bin`, model, giấy phép, icon, `.desktop`. Khai `Depends` đúng thứ cần lúc chạy.

@@ -11,6 +11,13 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
 
+## 0. Bàn giao từ gd4_07 (30/10/2026)
+
+<!-- handoff: gd4_07 -->
+
+- **Đã có sẵn để dùng**: `assets/icon/app-icon.icns` (`ic07`–`ic10`, 128–1024, mỗi khối là PNG): chép vào `Contents/Resources/`, trỏ `CFBundleIconFile`.
+- **Soát lại khi làm**: `.icns` ghi tay trong `tools/export-icon/src/main.rs`, chưa mở trên Mac lần nào ⇒ xem Finder hiện đúng; `iconutil` hoặc `sips` đọc được tệp. Khay macOS dùng `tray-32.rgba`, không phải template image. Chi tiết: `plan/gd4_07_app-icon.md` mục 9.
+
 ## 1. Làm gì
 
 - `fastcast.app`: `fst` là exe chính, kèm `fastcast-ui`, `fastcast-rec`, `fastcast-ocr`, `Resources/models`, `Resources/licenses`, `app-icon.icns`. `LSUIElement = true`. Có `NSScreenCaptureUsageDescription`, `NSMicrophoneUsageDescription` vi / en.

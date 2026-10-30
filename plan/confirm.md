@@ -378,3 +378,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_02] Dựng phiên lỗi sau khi sha256 đã khớp ⇒ `Internal` — phương án khác: `ModelCorrupt` — vì sao: model đã được soát là đúng, lỗi lúc này do runtime hoặc mã.
 - [gd3_02] Codec PNG / JPEG chỉ ở `dev-dependencies` — phương án khác: bật trong crate như gd3_01 gợi ý — vì sao: worker nhận RGBA thô, exe phát hành không cần giải mã ảnh.
 - [gd3_02] Dùng `toml` 1 như `core` — phương án khác: ghim 0.9 như spike — vì sao: không thêm bản trùng; CER sau khi đổi vẫn 2,45 %, chữ đọc được trùng từng byte với spike.
+- [gd4_07] Icon khay nhúng RGBA thẳng, chỉ hình, không ô nền — phương án khác: đọc từ resource ICO — vì sao: không thêm decoder, giữ đúng icon khay đang có.
+- [gd4_07] Thêm manifest PerMonitorV2 cho `fst.exe`, ngoài danh sách tệp — phương án khác: để DPI-unaware, Windows phóng to icon 16 — vì sao: không có manifest thì không biết DPI thật; menu khay cũng đổi theo, cần xem ở kiểm tay.
+- [gd4_07] Công cụ xuất là crate Rust `tools/export-icon/` ngoài workspace — phương án khác: GDI+ trong PowerShell — vì sao: đọc SVG thật bằng `resvg`, không chép hình vào script.
+- [gd4_01] `store::update` thêm bound `Send` — giữ đúng chữ ký, ghi đĩa trên luồng UI — fsync không chặn UI
+- [gd4_01] `settings-run.ps1` chỉ báo lỗi khi cửa sổ thử giành foreground — báo lỗi mọi lần foreground đổi — chủ dự án tự chuyển app thì lần chạy không nên đỏ
+- [gd4_01] Thêm Ctrl/Cmd+W + focus sẵn ở sidebar cho Settings — chờ làn UI — test đóng cửa sổ cần và người dùng dùng bàn phím cần

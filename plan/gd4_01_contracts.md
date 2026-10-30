@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) |
 | Repo | fastcast |
 | Cỡ | M — ~600 dòng, phần lớn là kiểu dữ liệu, stub, khoá i18n, dời nguyên mã |
 | Phụ thuộc | — (chủ dự án cho chạy song song với gd3_13 đang nghiệm thu, 30/10/2026; cùng sửa `CLAUDE.md`: xung đột thì giữ cả hai phía) |
@@ -99,13 +99,13 @@ pub fn pick_dir_answer() -> Option<Option<PathBuf>>;
 
 ## 6. Nghiệm thu
 
-- [ ] Bốn lệnh soát xanh, `cargo check --locked --target aarch64-apple-darwin -p fastcast-daemon -p fastcast-video -p fastcast-capture -p fastcast-ocr` xanh. `fastcast-ui` không soát chéo được: `gpui-pre-apple` chỉ dựng shader Metal trên Mac, nên stub `ui/src/platform/macos.rs` viết theo đúng chữ ký của `windows.rs`, chưa biên dịch tới gd4_11.
-- [ ] Config cũ (không có khoá mới) đọc được; `general.themePreset` lạ ⇒ mặc định, không đổi tên tệp hỏng.
-- [ ] `Entitlement::current()` luôn `Free`; `ProFeature::ALL` đủ khoá i18n ở cả hai tệp (test).
-- [ ] `tests/ipc.rs` xanh như cũ, không mở cửa sổ nào (`FASTCAST_SETTINGS_STUB`).
-- [ ] `tests/settings.rs`: mở, đổi trang bằng phím, lệnh lặp đưa cửa sổ lên chứ không mở thêm, đóng xong giữ ấm + nhả GPU đúng.
-- [ ] `settings-run.ps1` báo lỗi khi cố tình đặt cửa sổ lên màn chính (thử một lần với cờ `-SelfTest`, không mở cửa sổ thật trên LG: hàm kiểm nhận toạ độ giả).
-- [ ] Dời `platform` không đổi hành vi: `tests/overlay.rs`, launcher vẫn xanh.
+- C1 `[opus-run]` ✅ Bốn lệnh soát xanh; `cargo check --locked --target aarch64-apple-darwin -p fastcast-daemon -p fastcast-video -p fastcast-capture -p fastcast-ocr` xanh. `fastcast-ui` không soát chéo được: `gpui-pre-apple` chỉ dựng shader Metal trên Mac, stub `ui/src/platform/macos.rs` viết theo đúng chữ ký của `windows.rs`, chưa biên dịch tới gd4_11.
+- C2 `[opus-unit]` ✅ Config cũ đọc được; `general.themePreset` lạ (chuỗi, số, null, object) ⇒ mặc định, không đổi tên tệp hỏng (`config.rs`).
+- C3 `[opus-unit]` ✅ `Entitlement::current()` luôn `Free`; `ProFeature::ALL` đủ khoá i18n ở cả hai tệp (`entitlement.rs`).
+- C4 `[opus-run]` ✅ `tests/ipc.rs` xanh như cũ, không mở cửa sổ (`FASTCAST_SETTINGS_STUB`).
+- C5, C6, C7 `[opus-run]` ✅ `tests/settings.rs`: mở, đổi trang bằng phím; lệnh lặp đưa lên chứ không mở thêm; đóng xong giữ ấm + nhả GPU, lệnh sau gắn lại và mở lại.
+- C8 `[opus-run]` ✅ `settings-run.ps1 -SelfTest`: năm ca toạ độ giả (màn chính, vắt mép, ngoài màn) báo đúng, không mở cửa sổ.
+- C9 `[opus-run]` ✅ Dời `platform` không đổi hành vi: `tests/overlay.rs`, launcher xanh.
 
 ## 7. Ghi chú UI
 
@@ -136,4 +136,22 @@ Làn thiếu khoá ⇒ không sửa `i18n` trong làn (luật ở `fastcast/ROAD
 
 ## 9. Bàn giao thực tế
 
+Số đo (bản debug, máy đang chạy nhiều build, chỉ làm mốc): RAM Settings 16,1 MB (mục tiêu ≤ 25 MB), khung đầu 895 ms; cửa sổ ở `-1398,206` (màn DELL), foreground không đổi. Lấy số chính thức ở gd4_18.
+
+Soát: `cargo build`, `clippy --all-targets -D warnings`, `cargo test` toàn workspace, `cargo deny check licenses` xanh; soát chéo aarch64-apple-darwin xanh.
+
+Khác bản viết, Opus chọn 30/10/2026 (`plan/confirm.md`):
+
+- `store::update`: `change` thêm bound `Send` để đọc + ghi đĩa ở luồng nền (fsync không chặn UI), có khoá chống mất thay đổi khi hai lần đổi liền nhau.
+- `app::reload_config` thành `pub` (sửa `app.rs`, ngoài danh sách tệp) để `store` áp vào `UiState`.
+- `settings-run.ps1`: chỉ dừng khi chính cửa sổ thử giành foreground; người dùng tự chuyển app thì in `foreground_unchanged=False`, không tính lỗi.
+- `fake_daemon --hold`: hết stdin vẫn sống, cho script chạy nền.
+- Thêm `dev::settings_stub`, `dev::run_keys`; launcher `--background` bỏ qua vị trí đã nhớ (có thể nằm trên màn chính); lệnh lặp không kích hoạt cửa sổ khi `is_test_run`.
+- Thêm Ctrl/Cmd+W đóng Settings, focus sẵn ở sidebar (↑ ↓ dùng ngay), Tab / Shift+Tab đi qua điều khiển: test đóng cửa sổ cần, người dùng cũng cần.
+
+`store::update` chưa có trang nào gọi nên mới có test đơn vị phần ghi đĩa; đường `ReloadConfig` + áp `UiState` chạy thật ở gd4_02.
+
 ## 10. Đề xuất cải tiến
+
+- [bảo mật] `FASTCAST_SETTINGS_PICK_DIR`, `FASTCAST_SETTINGS_KEYS`, `FASTCAST_SETTINGS_PAGE`, `FASTCAST_SETTINGS_STUB` đọc cả ở bản release — `dev.rs`, `settings/mod.rs` — gộp vào việc khoá biến dev của gd4_08 — tiến trình cùng người dùng không đưa phím vào được — S — P2. Làn gd4_08 đang mở: đã ghi vào ghi chú chung cho nó.
+- ux: không áp thêm (đã làm phím ở mục 9). ram: không áp, daemon không đổi. pro: chỗ đặt theo D-4, gd4_05 làm.

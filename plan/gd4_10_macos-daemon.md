@@ -11,6 +11,15 @@
 | Phụ thuộc mới | `objc2`, `objc2-foundation`, `objc2-app-kit`, `objc2-service-management` (MIT, chỉ khối `[target.'cfg(target_os = "macos")']`) — `objc2` đã có trong cây; đo RAM |
 | File đụng tới | SỬA `crates/daemon/src/platform/macos.rs`, `crates/daemon/src/autostart.rs` (chỉ `mod` macOS), `crates/daemon/src/clipboard.rs` (chỉ nhánh `cfg`), `crates/daemon/Cargo.toml` |
 
+## 0. Bàn giao từ gd4_01 (30/10/2026)
+
+<!-- handoff: gd4_01 -->
+
+- **Đã có sẵn để dùng**: `settings/{mod,view,store,row,page_*}.rs`, `dev::{test_display,is_test_run,pick_dir_answer,run_keys}`, `fastcast_core::entitlement`, `general.themePreset`, `clipboard.excludeFromHistory`, đủ khoá i18n mục 7 của gd4_01. Trang là view stub: điền thân `render` + `new`, tiêu đề trang do `view.rs` vẽ.
+- **Đổi so với spec gd4_01**: `store::update` đòi `change: FnOnce(&mut Config) + Send + 'static`. `row::row(label, desc: Option<SharedString>, control)`. Tách OS: `ui/src/platform/{windows,macos,linux}.rs`, `daemon/src/platform/{macos,linux}.rs`, `video/src/{macos,linux}/mod.rs`.
+- **Bẫy đã gặp**: `#[derive(IntoElement)]` trong bin cần `use materiant::gpui_kit as gpui;` (mẫu `settings/row.rs`). `cargo fmt` đụng `record/frame.rs` của làn khác: soát `git status` trước khi commit. Máy không có Python.
+- **Soát lại khi làm**: `cargo build -p fastcast-ui --bin fastcast-ui --example fake_daemon` rồi `pwsh tools/settings-run.ps1 -Page <trang> -Keys "…" -Theme light -Lang en` (exit 1 nếu sai màn hoặc giành foreground; đọc `CARGO_TARGET_DIR`). Test tích hợp mở cửa sổ thật: đặt `("FASTCAST_SETTINGS_STUB", "0")`, mẫu `tests/settings.rs`.
+
 ## 1. Làm gì
 
 - Vòng `NSApplication` trên luồng chính, kiểu `Accessory` (không icon Dock), `Waker` đưa `Event` vào vòng.

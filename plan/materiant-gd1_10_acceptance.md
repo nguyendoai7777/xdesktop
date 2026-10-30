@@ -10,6 +10,29 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_08 (30/10/2026)
+
+<!-- handoff: materiant-gd1_08 -->
+
+- **Đã có sẵn để dùng**: `materiant::menu::{Menu, MenuItem, ContextMenuExt}` — dropdown `Menu::new(id).trigger(nút)
+  .label(…).item(MenuItem::new(id, nhãn).icon(…).shortcut("Ctrl+C").on_select(…)).separator().submenu(item, Menu)`;
+  menu chuột phải `div().id(…).context_menu(|menu, w, cx| …)`. API + cách dùng: `plan/materiant-gd1_08_menu.md` mục 9.
+- **Ctrl+K của launcher**: Menu chưa có API mở bằng code — gắn `.context_menu(…)` cho dòng kết quả rồi gán
+  `KeyBinding::new("ctrl-k", materiant::menu::OpenContextMenu, Some(<ngữ cảnh launcher>))`: mở giữa dòng, trỏ sẵn mục
+  đầu (mục 9 gạch "Cho fastcast"). Thấy cần mở theo điểm / theo code ⇒ thêm `Menu` API ở đây, ghi mục 9.
+- **Đổi so với spec**: phím tắt là chip `Kbd` (web chữ trơn) — 5 lựa chọn tự quyết của gd1_08 đang chờ ở
+  `plan/confirm.md` mục materiant; chủ dự án đổi ý thì sửa `src/menu.rs` trước khi so ảnh.
+- **Đã gỡ** hàm `todo` của `examples/gallery/pages/mod.rs` (trang menu là chỗ giữ cuối) — gallery không còn trang stub.
+- **Bẫy đã gặp**: Popover focus VỎ của nó mỗi lần mở (kể cả `.open(true)`) — nội dung có focus riêng phải tự giành lại
+  sau khung (`window.defer`), như `grab_focus` trong `menu.rs`. Phím chữ nổi từ tầng con lên tầng cha qua cây dispatch ⇒
+  `on_key_down` ở tầng cha phải kiểm `focus.is_focused(window)` trực tiếp.
+- **Bẫy**: `cargo fmt` ở gốc workspace sửa luôn tệp của gd1_06 (`scroll.rs`, `list.rs`, trang + test scroll chưa
+  rustfmt-sạch) — gd1_10 chạy `cargo fmt` một lượt rồi commit riêng (`plan/_backlog.md`).
+- **Kiểm tay còn treo**: C5 của gd1_08 (so trang `menu` với web, rê chuột thật) — gộp vào lượt so ảnh của task này.
+- **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test menu` (8 ca), `cargo test -p materiant --lib menu`
+  (5 ca); `pwsh tools/gallery-run.ps1 -Page menu -Keys "down@254,114 up@254,114 wait@300 down down down right"` ⇒
+  `MENU share open`, `PLACED share right-start`.
+
 ## 0. Bàn giao từ materiant-gd1_09 (30/10/2026)
 
 <!-- handoff: materiant-gd1_09 -->

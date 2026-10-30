@@ -10,6 +10,15 @@
 | Phụ thuộc mới | Công cụ dev NSIS (zlib / libpng, cài bằng `winget install NSIS.NSIS`), không vào exe |
 | File đụng tới | MỚI `installer/windows/fastcast.nsi`, `tools/build-installer.ps1`, `tools/installer-e2e.ps1`; SỬA `tools/fetch-ocr-models.ps1`, `spikes/ocr/results/manifest.int8-mix.toml`, `crates/ocr/src/engine/mod.rs`, `crates/daemon/src/cli.rs` |
 
+## 0. Bàn giao từ gd4_06 (30/10/2026)
+
+<!-- handoff: gd4_06 -->
+
+- **Đã có sẵn để dùng**: `pwsh tools/gen-licenses.ps1 -Out <thư mục>` ra `third-party.html`; cần `cargo install cargo-about --locked --features cli`. Không cần mạng ngoài `cargo fetch`.
+- **Việc của task này**: trang Giới thiệu tìm đúng `licenses/third-party.html` cùng thư mục `fastcast-ui` (`page_about.rs::licenses_path`); thiếu thì báo `about_licenses_missing`.
+- **Bẫy đã gặp**: `cargo install cargo-about` không kèm `--features cli` vẫn exit 0 mà không ra exe. `cargo fmt` đụng `record/frame.rs`: soát `git status`.
+- **Soát lại khi làm**: mở trang trong bản cài, bấm ba nút. Chi tiết: `plan/gd4_06_about-licenses.md` mục 9.
+
 ## 0. Bàn giao từ gd4_07 (30/10/2026)
 
 <!-- handoff: gd4_07 -->

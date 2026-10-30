@@ -29,7 +29,7 @@
 - **Đã có sẵn để dùng**: `audio_probe [--source system|mic] [--secs N] [--tone HZ] <tệp>`, rồi `mp4_verify <tệp>`. `--tone` tự phát sóng −46 dB từ giây 0,5 tới 1,5 nên máy im vẫn có gói; tệp chứa âm thật của máy ⇒ xem xong xoá.
 - **Nợ chuyển sang đây** (`[owner-qa]`, cho vào danh sách kiểm tay, `plan/gd3_07_rec-audio.md` C6): micro + âm hệ thống 60 s cùng video, tiếng khớp hình; rút tai nghe giữa chừng không treo; đổi thiết bị mặc định giữa chừng thì tiếng theo sang; micro bị tắt trong Privacy ⇒ `AudioUnavailable` hoặc im lặng (ghi lại ca nào). Máy khác 48 kHz (44,1 kHz) nên có trong lượt kiểm: nhánh đổi tần số mới phủ bằng unit test.
 - **Bẫy đã gặp**: không mở micro trên máy chủ dự án khi tự chạy; loopback chỉ 2 s. Máy im thì `packets=0` là đúng, không phải lỗi, đừng đọc nhầm thành hỏng.
-- **Soát lại khi làm**: quay thật có âm qua `fastcast-rec` phải có `first_pts` khớp hình, tức gd3_06 gọi `audio::start` ngay trước khi đếm giờ. `audio_hz` của `mp4_verify` tính trên cả track, có khoảng lặng thì ra thấp hơn tần số thật.
+- **Soát lại khi làm**: mốc `pts` 0 của `audio::start` là lúc gọi hàm, `session.rs` trừ khoảng tới khung đầu; `audio_probe --tone` cho `first_pts_ms` sau `tone_start_ms` 5–7 ms, nhưng chuỗi `fastcast-rec` có âm chưa chạy thật. `audio_hz` của `mp4_verify` tính trên cả track, có khoảng lặng thì ra thấp hơn tần số thật.
 
 ## 0. Bàn giao từ gd3_12 (30/10/2026)
 

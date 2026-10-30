@@ -9,15 +9,22 @@ vào đây. Khung tệp task, trần ước lượng, nhãn phân vai, khuôn b�
 
 Phiên chính là **Opus**. Trả lời chủ dự án **gọn**, tiếng Việt, không tường thuật từng bước.
 
+**Không hỏi, không dừng chờ (D-9).** Chủ dự án thường vắng máy ⇒ KHÔNG dùng `AskUserQuestion` ở bất kỳ bước nào. Chỗ
+nào dưới đây ghi "chọn" ⇒ tự chọn phương án tốt nhất, làm luôn, ghi lý do ở mục 9 của task + một gạch vào
+`plan/confirm.md` (`- [<task>] <việc> — <phương án khác> — <vì sao>`) để chủ dự án soát sau. Thiếu máy / dịch vụ trả
+phí / luật cấm ⇒ ghi `plan/_backlog.md` rồi đi tiếp phần còn lại.
+
 ## 0. Xác định task — theo lời chủ dự án
 
 - Một thư mục plan cho cả workspace: `plan/` ở gốc. Chủ dự án đưa **tệp** · **mã** (`gd1_03`, `materiant-gd1_02`) ·
   **"làm tiếp <repo>"** ⇒ task 🔄 của repo đó nếu có, không thì ☐ có số nhỏ nhất (gd thấp trước) mà mọi "Phụ thuộc"
   đã ✅ — nêu tên task ở câu trả lời đầu tiên.
-- "làm tiếp" không nói repo, hoặc khớp nhiều tệp ⇒ hỏi (`AskUserQuestion`). Task 🔄 có worktree `claude/<task>` đang
-  mở có thể là của session khác (làn song song) ⇒ hỏi trước khi nhận. Bắt đầu task ⇒ đổi `Trạng thái` sang 🔄 ngay.
+- "làm tiếp" không nói repo, hoặc khớp nhiều tệp ⇒ chọn task ☐ sẵn sàng có số nhỏ nhất, nêu tên. Task 🔄 có worktree
+  `claude/<task>` đang mở có thể là của session khác (làn song song) ⇒ không nhận, chọn task sẵn sàng khác. Bắt đầu
+  task ⇒ đổi `Trạng thái` sang 🔄 ngay.
 - Phụ thuộc vào task của repo khác ghi dạng `materiant-gd1_03` ⇒ soát dòng `Trạng thái` của
-  `plan/materiant-gd1_03_*.md` + `git -C materiant log`; chưa xong ⇒ báo, hỏi làm task khác hay làm tạm không có nó.
+  `plan/materiant-gd1_03_*.md` + `git -C materiant log`; chưa xong ⇒ chọn task khác đã sẵn sàng, không có thì làm phần
+  không cần nó và ghi phần chờ vào mục 9.
 
 ## 1. Nạp ngữ cảnh (không hỏi)
 
@@ -33,9 +40,9 @@ Phiên chính là **Opus**. Trả lời chủ dự án **gọn**, tiếng Việt
 
 ## 2. Chốt câu hỏi mở — TRƯỚC khi code
 
-Task ghi "Quyết định trong task", "xác nhận với chủ dự án", Q-… chưa chốt, hoặc mâu thuẫn với code thật ⇒ gom lại, hỏi
-MỘT lượt (`AskUserQuestion`, phương án khuyên dùng đứng đầu). Câu trả lời ghi vào mục 9 ("Chủ dự án chốt <ngày>: …");
-quyết định lâu dài ⇒ thêm dòng vào `docs/decisions.md` kèm ngày. Không đoán.
+Task ghi "Quyết định trong task", "xác nhận với chủ dự án", Q-… chưa chốt, hoặc mâu thuẫn với code thật ⇒ gom lại, tự
+chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật, bản web), ghi mục 9 ("Opus chọn <ngày>: … — vì …")
++ `plan/confirm.md`. Không ghi `docs/decisions.md` — chỉ chủ dự án chốt mới vào đó.
 
 ## 3. Phân vai + Case test (thiếu thì Opus viết, không chờ duyệt)
 
@@ -90,8 +97,8 @@ quyết định D-* / F-* đã chốt.
 - **Lỗi thật trong phạm vi task** ⇒ sửa luôn, ghi mục 9.
 - **Ngoài phạm vi** ⇒ `## 10. Đề xuất cải tiến`, mỗi dòng: `[bảo mật|ux|ram|pro]` vấn đề — bằng chứng — đề xuất — giá
   trị — cỡ (S/M) — ưu tiên (P1/P2/P3). Tối đa 7 dòng, xếp theo giá trị.
-- Hỏi chủ dự án NGAY sau khi viết mục 10, TRƯỚC khi đóng task (`AskUserQuestion`, `multiSelect`) đề xuất nào làm.
-  **Chọn ⇒ làm ngay trong lượt** (D-8): trên chính nhánh `claude/<task>` (chưa gộp) — code, test, soát xanh lại, ghi
+- Viết xong mục 10 ⇒ tự chọn đề xuất đáng làm (P1 / P2, cỡ S / M, không trái D-* / F-*) và **làm ngay trong lượt**
+  (D-8, D-9): trên chính nhánh `claude/<task>` (chưa gộp) — code, test, soát xanh lại, ghi
   mục 9 "Đề xuất đã làm"; đề xuất thuộc tệp của task khác chưa tới thì vẫn làm ngay nếu không đụng làn song song đang
   mở, không thì ghi thẳng vào mục 0 / mục 1 của task đó. Chỉ vào `plan/_backlog.md` khi KHÔNG làm được trong lượt
   (cần máy / thiết bị không có, dịch vụ trả phí, chờ quyết định khác) — ghi rõ lý do. Đề xuất `[pro]` (D-4 chỉ đặt
@@ -104,8 +111,9 @@ quyết định D-* / F-* đã chốt.
    task này ở dòng "Phụ thuộc" khi lộ trình có làn song song), chèn khối `## 0. Bàn giao từ <task>` + dấu
    `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `_tasking-convention.md` mục 6.
 3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
-   `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Xung
-   đột ⇒ dừng hỏi. Gỡ worktree từ shell đang đứng TRONG nó (Windows) ⇒ "Permission denied", git vẫn gỡ đăng ký nhưng
+   `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Gộp
+   `master` vào nhánh trước khi merge; xung đột ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau), soát xanh lại,
+   ghi mục 9. Gỡ worktree từ shell đang đứng TRONG nó (Windows) ⇒ "Permission denied", git vẫn gỡ đăng ký nhưng
    để lại thư mục rỗng: `cd` ra gốc trước, sót thì `git worktree prune` + xoá thư mục. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
 4. Commit plan ở repo gốc theo đường dẫn: `git commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<các task nhận>
    plan/_backlog.md` (+ `docs/decisions.md` nếu có quyết định mới; lộ trình repo commit ở repo đó).

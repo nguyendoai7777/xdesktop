@@ -10,6 +10,31 @@
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
 
+## 0. Bàn giao từ materiant-gd1_05 (30/10/2026)
+
+<!-- handoff: materiant-gd1_05 -->
+
+- **Đã có sẵn để dùng**: `materiant::checkbox::{Checkbox, CheckState}`, `materiant::radio::{Radio, RadioGroup,
+  RadioItem}`, `materiant::switch::Switch` — `.accent(Accent)`, `.label()`, `Disableable`, `on_change(Fn(&T, …))`
+  (dùng được `cx.listener`). Trang gallery `toggles`; in `CHECKBOX <id> <state>` / `RADIO <nhóm> <ix>` / `SWITCH <id> <bool>`.
+- **Nợ chuyển sang đây** (mục 8 gd1_05): gọi `materiant::radio::init(cx)` trong `materiant::init` (`lib.rs`); cân nhắc
+  dời `state_layer` / `child_id` / `fire_on_activate` (`checkbox.rs`, `pub(crate)`) và `SWITCH_WAVE_*` lên `style.rs`;
+  sửa `materiant/CLAUDE.md` "chỉ animate ripple, thumb switch, popup" ⇒ thêm dấu checkbox, chấm radio, vành sóng
+  switch (chủ dự án nới 30/10/2026).
+- **Bẫy đã gặp**: `--keys` của gallery chỉ gửi key-down, GPUI biến Space / Enter thành click ở key-UP ⇒ chạy thử bấm
+  bằng phím không ăn (dùng chuột; test UI dùng `simulate_event(KeyDown + KeyUp)`). Sửa `examples/gallery/main.rs` gửi
+  thêm `KeyUpEvent` — đề xuất P1 gd1_05 chủ dự án chưa chọn, làm nếu cần soát bàn phím launcher.
+- **Bẫy đã gặp**: binding của app thắng `on_key_down` ⇒ phím mũi tên / Esc của launcher nên là action + key context
+  (mẫu `radio.rs`: `actions!` + `KeyBinding` ở context riêng, gán lười qua cờ `Global`).
+- **Bẫy đã gặp**: `CARGO_TARGET_DIR` chung giữa worktree song song ⇒ rlib `materiant` của làn này đè làn kia, "Finished"
+  mà không build (xanh giả). Còn làn song song thì dùng target riêng (cách mồi hard link: mục 9 gd1_05).
+- **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test toggles` (3 test); trang `toggles` sáng / tối +
+  `[owner-qa]` C3 (giảm chuyển động) / C4 (so web) còn treo — `plan/materiant-gd1_05_toggles.md` mục 6, 9.
+- `cargo fmt --check` trên master (30/10) báo lệch ở `src/scroll.rs`, `src/list.rs`, `examples/gallery/pages/scroll.rs`,
+  `ui-tests/tests/scroll.rs` (gd1_06) — chạy `cargo fmt --all` một lượt.
+- Vòng focus switch ở nền tối tương phản ~1,3:1 (`ControlTokens::focus_ring`) — đề xuất gd1_05 chưa chọn; ghi vào lượt
+  so ảnh sáng / tối.
+
 ## 0. Bàn giao từ materiant-gd1_03 (30/10/2026)
 
 <!-- handoff: materiant-gd1_03 -->

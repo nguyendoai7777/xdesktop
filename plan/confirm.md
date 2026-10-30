@@ -66,6 +66,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_02] Khoá API overlay trên Windows khi chưa có spike Wayland gd0_07 — phương án khác: chờ máy Ubuntu — vì sao: GĐ1
   không bị chặn; điểm có thể vướng (cửa sổ toàn màn từng output, toạ độ toàn cục / kéo xuyên màn, chụp qua portal) ghi ở
   `plan/gd1_02_region-overlay.md` mục 8 cho gd0_07 soát.
+- [gd1_02] Mở nguội overlay 496–674 ms (> 400 ms) nhưng KHÔNG cho daemon bật sẵn UI headless — phương án khác: daemon
+  bật `fastcast-ui` lúc khởi động / sau khi UI tự thoát (~5 MB thường trực) — vì sao: trái F-4 ("UI bật khi dùng"), RAM
+  thường trực là lựa chọn của chủ dự án; đã làm phần không đụng F-4 (đóng băng song song với gắn GPU). Gạch `_backlog.md`.
 
 ## materiant
 

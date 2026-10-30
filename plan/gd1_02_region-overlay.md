@@ -132,13 +132,14 @@ vào trong khi sát mép màn. Con trỏ chữ thập.
 - **Đề xuất đã làm (D-8, trong phạm vi)**: đóng băng trước khi gắn GPU; `Route::Opening` (bấm lần hai lúc đang gắn GPU
   150–400 ms không mở bộ overlay thứ hai); cửa sổ chỉ vẽ lại khi phần của nó đổi (`Visible`); `GPU_IDLE_DEFAULT`
   10 s → 60 s (gắn lại GPU đo 150–405 ms trên GTX 1650 ⇒ overlay từ trạng thái đã nhả chậm ~3 lần; giữ thêm ~7 MB trong
-  một phút) — gạch `plan/confirm.md`.
+  một phút) — gạch `plan/confirm.md`. Lượt sau (cùng ngày, luật mới "làm hết đề xuất mục 10 đáng làm"): đóng băng ở
+  luồng nền chồng lên lúc gắn GPU (`overlay::Freezing`); thử `HeapCompact` — không ăn thua, đã gỡ (mục 10).
 - **Số đo** (release, máy nhà Windows 10, GTX 1650, màn giả — KHÔNG chụp màn thật; chụp thật cộng ~40–50 ms theo spike):
 
   | Đo | Kết quả |
   | --- | --- |
   | Lệnh IPC → khung đầu cả 2 màn, UI ấm còn GPU (màn giả nhỏ / 1080p) | 32–45 ms / 57–164 ms |
-  | Như trên, UI ấm đã nhả GPU (gắn lại 150–405 ms) | 228–608 ms |
+  | Như trên, UI ấm đã nhả GPU (gắn lại 150–405 ms) | 228–608 ms; sau khi đóng băng song song: 196–254 ms |
   | Spawn nguội → khung đầu (gồm khởi động GPUI, nối IPC) | 496–674 ms (> 400 ms ⇒ mục 10) |
   | RAM (Task Manager) 2 màn 1080p: headless trước khi dùng / overlay mở / vừa đóng (còn GPU) / đã nhả GPU | 5,3 / 46,8–50,4 / 15,1–17,5 / 9,1–9,6 MB — hai vòng không tăng ⇒ ảnh được nhả |
   | CPU kéo ~2 s (120 lần di, cả hai cửa sổ vẽ lại) | 141–359 ms (đo kèm nhiễu PowerShell; spike 62 ms / 1 cửa sổ) |
@@ -156,14 +157,16 @@ vào trong khi sát mép màn. Con trỏ chữ thập.
 
 - [ux] Spawn nguội → khung đầu 496–674 ms (> 400 ms) — bằng chứng mục 9 (`MEASURE fake_overlay_first_frame_ms
   cold_spawn`) — daemon bật sẵn `fastcast-ui` headless lúc khởi động / sau khi UI tự thoát (~5 MB) thay vì chờ lần bấm
-  đầu — lần chụp đầu nhanh như lần sau — S — P2. Không làm: đánh đổi RAM thường trực của F-4 (chủ dự án chọn) + đụng
-  daemon ⇒ `_backlog.md` + `confirm.md`.
+  đầu — lần chụp đầu nhanh như lần sau — S — P2. **Không làm**: trái F-4 ("UI bật khi dùng, giữ ấm rồi tự thoát") —
+  RAM thường trực là quyết định của chủ dự án ⇒ `_backlog.md` + `confirm.md`.
 - [ram] Sau lần mở cửa sổ đầu, RAM headless 9,1–9,6 MB thay vì 5,3 MB (không tăng thêm ở vòng sau) — đo
-  `measure_overlay_ram_and_drag_cpu` — tìm cache một lần của GPUI / DirectWrite còn giữ sau khi nhả GPU, thử thả khi
-  headless — ~4 MB lúc giữ ấm — M — P3. `_backlog.md`.
-- [ux] Gắn lại GPU 150–405 ms trên máy này (gd1_01 đo 17–26 ms) — log `gpu attached in` — đo lại khi máy rảnh, trên
-  iGPU / máy công ty; vẫn chậm thì gắn GPU song song với đóng băng (luồng nền) — 40–50 ms lúc headless — S — P3.
-  `_backlog.md`.
+  `measure_overlay_ram_and_drag_cpu` — tìm cache một lần của GPUI / DirectWrite còn giữ sau khi nhả GPU — ~4 MB lúc giữ
+  ấm — M — P3. **Đã thử** `HeapCompact(GetProcessHeap())` ngay sau khi nhả GPU: 9,2–9,4 MB, không đổi ⇒ không phải trang
+  trống của heap; gỡ, còn ở `_backlog.md` (cần đo trong GPUI).
+- [ux] Gắn lại GPU 150–405 ms trên máy này (gd1_01 đo 17–26 ms) — log `gpu attached in` — **Đã làm** (lượt sau, cùng
+  ngày): đóng băng chạy ở luồng nền `overlay-freeze` (`overlay::Freezing`), chồng lên `attach_gpu` (gpui-pre-windows
+  gắn GPU đồng bộ trên luồng chính) — log "froze" ra trước "gpu attached"; khung đầu từ trạng thái đã nhả GPU 196–254 ms
+  (trước 228–608 ms, màn giả 1080p). Gắn GPU chậm vẫn cần đo lại lúc máy rảnh / iGPU / máy công ty — `_backlog.md`.
 - [bảo mật] Không áp: ảnh đóng băng chỉ ở RAM, nhả khi đóng (C10), log chỉ có toạ độ vùng. Biến dev
   `FASTCAST_OVERLAY_FAKE` / `_SCRIPT` có cả trong bản release (để đo RAM bản release) — chỉ tiến trình cùng người dùng đặt
   được biến môi trường, tức đã chạy được mã ⇒ không mở thêm bề mặt.

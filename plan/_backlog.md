@@ -39,10 +39,12 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   đúng cỡ vật lý, không màn đen / nháy; màn 125 % / 150 % nét 1:1 không lệch; Esc ở màn có con trỏ; Alt+F4 một màn đóng
   cả hai. Bước ở `plan/gd1_02_region-overlay.md` mục 9. Máy không có màn phụ lúc làm ⇒ chưa chạy overlay thật lần nào.
 - **[gd1_02 · ux] Spawn nguội → khung đầu overlay 496–674 ms** (> 400 ms của task): cùng hướng gạch gd1_01 "khởi động
-  nguội" — daemon bật sẵn UI headless, chờ chủ dự án chọn đánh đổi RAM. `plan/gd1_02_region-overlay.md` mục 10.
+  nguội" — daemon bật sẵn UI headless; trái F-4 ("bật khi dùng") ⇒ chờ chủ dự án chọn đánh đổi RAM.
+  `plan/gd1_02_region-overlay.md` mục 10.
 - **[gd1_02 · ram] Headless sau lần dùng đầu 9,1–9,6 MB** (trước: 5,3) — cùng gốc với gạch `[gd1_06 · ram]` trên, cần đo
-  sâu GPUI / DirectWrite. **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên máy nhà (gd1_01 đo 17–26 ms) — đo lại lúc máy
-  rảnh / iGPU / máy công ty trước khi tối ưu. Mục 10 của gd1_02.
+  sâu GPUI / DirectWrite (`HeapCompact` sau khi nhả GPU đã thử: không đổi). **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên
+  máy nhà (gd1_01 đo 17–26 ms) — đóng băng đã chồng lên lúc gắn; đo lại lúc máy rảnh / iGPU / máy công ty. Mục 10 của
+  gd1_02.
 - **Dọn dữ liệu thử**: `%APPDATA%\fastcast` + `%LOCALAPPDATA%\fastcast` thật trên máy nhà do lượt chạy Task Scheduler
   29/10/2026 tạo — giữ dùng tiếp, hoặc xoá bằng Explorer (session Claude chỉ thấy bản ảo hoá, memory
   `msix-appdata-virtualization`).

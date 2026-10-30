@@ -92,7 +92,7 @@ theo cú pháp CSS Color 4 có khoảng trắng — xác nhận với chủ dự
   ■ #1E90FF   HEX · RGB · RGBA · OKLCH   (Tab)
 ```
 
-Khoá i18n: `picker.hint`, `picker.copied` (`{code}`). Tên định dạng HEX / RGB / RGBA / OKLCH là thuật ngữ, không dịch.
+Khoá i18n: `picker.hint`, `picker.copied` (`{code}`). Tên định dạng `hex` / `rgb` / `rgba` / `oklch` là thuật ngữ, không dịch; viết thường (chủ dự án yêu cầu 30/10/2026).
 
 ## 8. Nợ chuyển task khác
 

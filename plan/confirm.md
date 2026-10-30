@@ -65,3 +65,15 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   (checkbox 180 ms, radio 250 ms) — vì sao: `style.rs` ghi token này cho cả ba control; chênh 20–50 ms khó thấy.
 - [materiant-gd1_05] Tick lộ dần trái → phải bằng khung cắt; KHÔNG xoay tick ↔ trừ như web — phương án khác: vẽ nét
   thật (`stroke-dashoffset`) — vì sao: GPUI vẽ SVG thành mặt nạ, không có nét để chạy, không xoay được `div`.
+- [materiant-gd1_03] "Màu nút chưa đúng": đã so 288 ô (6 dáng × 6 màu × nghỉ / rê / nhấn / disabled × sáng / tối) với
+  Chrome chạy `btn.css` gốc — khớp ≤ 1/255, công thức KHÔNG lệch. Chỗ khác là BẢNG MÀU: gallery dùng theme mặc định Black
+  Pink (bạn chốt ở gd1_01: danger tối `#ffb4ab` hồng nhạt, warning `#f5c518`…), còn trang tài liệu web ở theme "Mặc định"
+  dùng màu dự phòng một mã cho cả hai nền (deeppink, đỏ `#ec003f`, `#faad14`, `#52c41a`). Trang `button` có nút
+  "Palette" đổi qua lại để so 1:1 — phương án khác: đổi `DEFAULT_SEEDS` của materiant sang bảng web "Mặc định" (sửa
+  `theme/`, đụng mọi trang) — vì sao: theme mặc định là quyết định của bạn ở gd1_01; muốn đổi thì báo, sửa ở gd1_10.
+- [materiant-gd1_03] Bóng `elevated` nền tối = `--shadow-1` tối của web (đen 20 %, sáng 10 %) + nền ngả 4 % màu chữ (đề
+  xuất 4 bạn chọn) — phương án khác: đậm hơn web (`--shadow-2` 40 %) — vì sao: đúng bản web; trên nền `#0f172a` bóng
+  đen nào cũng khó thấy, chỗ tách nút khỏi nền chủ yếu là nền ngả 4 %. Vẫn thấy mờ ⇒ nói, đổi `SHADOW_ALPHA_DARK`.
+- [materiant-gd1_03] Thêm `.selected(bool)` cho `Button` / `IconButton`: dáng `elevated` đang bật ⇒ nền màu gốc (chip
+  bật / tắt như `aria-pressed="true"` của web) — phương án khác: không có (spec không ghi) — vì sao: "làm đủ theo button
+  type", web có trạng thái này ở `elevated`.

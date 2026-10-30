@@ -112,7 +112,7 @@ Trang `button`: lưới hàng = dáng, cột = màu, ba khối theo cỡ; hàng 
 
 ## 9. Bàn giao thực tế
 
-Xong 30/10/2026. Commit materiant `6973d8e` (component + gallery + test), `33c2ef0` (đề xuất 4), gộp `master` ở `d8b6af2`.
+Xong 30/10/2026. Commit materiant `6973d8e` (component + gallery + test), `33c2ef0` (đề xuất 4), gộp `master` ở `d8b6af2`.ở `d8b6af2`.
 
 - **API** (`materiant::button`): `Button::new(id, label)` / `IconButton::new(id, IconName)`; dáng `.text()` `.filled()`
   `.tonal()` `.outlined()` `.dashed()` `.elevated()` / `.variant(Variant)`; màu `.primary()` `.danger()` `.warning()`
@@ -150,6 +150,31 @@ Xong 30/10/2026. Commit materiant `6973d8e` (component + gallery + test), `33c2e
   chủ dự án bấm thật vào cửa sổ ở màn phụ (các lượt sau `foreground_unchanged=True`). Có lượt màn phụ không còn
   (`--display Secondary: not found`) ⇒ cửa sổ mở ở màn chính, vẫn không giành focus.
 - Đề xuất đã làm: 4 (`elevated` nền tối). Đề xuất 1, 3 chủ dự án không chọn; 2 không chọn (nếu làm thì ở gd1_10).
+
+### Sửa sau phản hồi của chủ dự án (30/10/2026, nhánh `claude/gd1_03-fix`, commit `4bde0dc`)
+
+- **"Màu chưa đúng"** — so cả 288 ô (6 dáng × primary / base / danger / warning / success / `#0f766e` × nghỉ / rê / nhấn
+  / disabled × sáng / tối) với Chrome: trang HTML dùng `btn.css` gốc (`:hover` / `:active` đổi thành class), theme
+  Black Pink, đọc `getComputedStyle` rồi đổi oklab → sRGB. Khớp ≤ 1/255 mọi ô, trừ (a) chữ primary nền tối: web
+  `r = 1,027` ngoài gam, màn hình cắt về 1,0 — như nhau; (b) nền `elevated` tối lúc nghỉ — đề xuất 4, cố ý. 7 số tham
+  chiếu Chrome giữ lại trong `button::tests::matches_chrome_reference`. Khác thật là **bảng màu**: trang tài liệu web ở
+  theme "Mặc định" dùng màu dự phòng (deeppink, `oklch(58.6% .253 17.585)` = `#ec003f`, `#faad14`, `#52c41a`, cùng
+  mã cho hai nền), gallery dùng Black Pink (gd1_01). Trang `button` có nút **Palette** đổi bốn màu nhấn giữa hai bảng để
+  so 1:1 (ghi `plan/confirm.md`).
+- **"Đủ theo button type"** — thêm `.selected(bool)` (dáng `elevated` đang bật ⇒ nền màu gốc, rê / nhấn không đổi — như
+  `aria-pressed="true"`; `ButtonPaint::pressed`); gallery thêm hàng chip `elevated` bật / tắt và ma trận **IconButton
+  đủ 6 dáng × 6 màu × 3 cỡ** (trước chỉ 2 icon mỗi hàng).
+- **"Bóng elevated quá mờ"** — web `--shadow-1` là đen 10 % nền sáng / **20 % nền tối** (`libs/ui/styles/theme.css`),
+  bản trước dùng 10 % cho cả hai. `elevated_shadow(hover, dark)` theo đúng hai mức.
+- **Ripple bấm liên tục** — phía Button không dựng lại lớp ripple: id lớp chứa (`NamedChild(id, "ripple-layer")`) và
+  khoá `use_keyed_state` cố định, lớp chứa luôn gắn khi nút bấm được. UI test `rapid_clicks_keep_earlier_waves`: 3 lần
+  bấm cách 60 ms ⇒ 3 vòng cùng sống, 1 s sau mờ hết. Lỗi chủ dự án thấy (nếu còn) ở lõi `effect/ripple.rs` — session cha
+  soát ở `claude/ripple-multi`.
+- **Bẫy**: `cargo fmt --all` trong worktree định dạng lại cả tệp của làn khác (`scroll.rs`, `list.rs`…) — chỉ commit tệp
+  của mình, `git checkout --` phần còn lại. Build ở `CARGO_TARGET_DIR=materiant/target/gd1_03` riêng; soát exe đúng bản
+  bằng `grep -a -c "Elevated chips" …/gallery.exe`.
+- Soát: clippy sạch, `cargo test` (61 unit + 4 UI button + các làn đã gộp), `deny` ok; RAM trang `button` 22–27 MB
+  (thêm ~110 IconButton).
 
 ## 10. Đề xuất cải tiến
 

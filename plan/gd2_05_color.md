@@ -20,7 +20,7 @@
   `let c: [u8; 3] = rgb.into()`. Sự kiện `ColorPickerEvent::Change(Rgb)` chỉ phát khi mã RGB đổi.
 - Đặt thẳng trên overlay: `.floating(true)` (nền `floating_surface` D-10, đệm, bóng, `occlude`; rộng 264 px). Component
   không tự mở / đóng — view của overlay giữ `Entity<ColorPicker>` và cờ hiện, phím `c` chỉ bật cờ.
-- Đổi từ ngoài (đổi công tắc, nạp config): `set_value(color, window, cx)` — không phát sự kiện nên không lặp vòng.
+- Đổi từ ngoài (đổi công cụ, nạp config): `set_value(color, window, cx)` — không phát sự kiện nên không lặp vòng.
 - Hàng màu mẫu: `.swatches([...])` nhận `[[u8; 3]; N]`. Nhãn đọc màn hình: `ColorPickerLabels { area, hue, hex }` qua
   catalog i18n — component không có chữ hiển thị nào khác.
 - **Bẫy — phím tắt**: phím gõ trong ô hex vẫn nổi lên `on_key` của overlay (không chặn được, chặn là mất ký tự), `a`–`f`
@@ -30,7 +30,7 @@
   `picker.read(cx).dragging()` trước khi coi đó là nét vẽ / đổi vùng.
 - **Bẫy — mũi tên**: ô màu / thanh sắc độ đang focus nhận mũi tên qua keymap context `ColorPickerSlider` (thắng phím của
   cha), mũi tên dời vùng của overlay sẽ không chạy lúc đó. Đóng bảng thì trả focus về view overlay.
-- **Soát lại khi làm**: `cargo tree -p fastcast-ui -i materiant` đúng bản đã gộp; chú ý `pwsh materiant/tools/gallery-run.ps1 -Page color_picker` để so diện mạo.
+- **Soát lại khi làm**: fastcast build thấy đúng `materiant` đã gộp (có module `color_picker`); so diện mạo ở trang gallery `color_picker` (`pwsh materiant/tools/gallery-run.ps1 -Page color_picker`).
 
 ## 0. Bàn giao từ gd2_04 (30/10/2026)
 

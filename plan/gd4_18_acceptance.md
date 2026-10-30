@@ -45,6 +45,15 @@
 - **Soát**: sidebar Settings không theo cỡ chữ (mục 10 của gd4_02).
 - **Nợ**: lỗi `autostart::apply` không tới UI, khoá `settings.autostart_failed` chưa dùng.
 
+## 0. Bàn giao từ gd4_09 (31/10/2026)
+
+<!-- handoff: gd4_09 -->
+
+- **Đã có sẵn để dùng**: `pwsh tools/build-installer.ps1 -ModelsSource <model> [-Makensis <exe>]` ra `dist/fastcast-<version>-setup.exe`; `pwsh tools/installer-e2e.ps1 -Setup <setup> -Release <target>/release` cài + gỡ im lặng, `fst` là exe giả. Bản có sẵn cho kiểm tay: `fastcast/dist/` (gitignore).
+- **Số đo lấy lại lúc máy rảnh**: cỡ `setup.exe` (lần gd4_09: 65,1 MB), thời gian cài (6,2 s), `Ready` + RAM đỉnh OCR từ bản cài.
+- **Đưa vào danh sách kiểm tay**: C12 của `plan/gd4_09_windows-installer.md`, gồm `fst --version | Out-Host` và đường `fst quit` / `autostart off` thật (chưa từng chạy).
+- **Bẫy**: bộ gỡ thật xoá tác vụ tự khởi động chung của máy; đừng chạy trên máy đang dùng bản khác.
+
 ## 1. Làm gì
 
 - Số đo lúc không làn nào chạy: RAM cửa sổ Settings, UI giữ ấm sau khi đóng Settings ≥ 10 s, khung đầu, cỡ exe, cỡ `setup.exe`.

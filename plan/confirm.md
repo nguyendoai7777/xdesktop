@@ -423,3 +423,11 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_13] Xoá `C:/xdesktop-target/ocr-models`, giữ bản chép ở `fastcast/target/release/models` cho kiểm tay — giữ ở chỗ chung — vì sao: bàn giao gd3_03 dặn xoá; dựng lại cần Docker nên vẫn giữ một bản.
 - [gd4_08] Endpoint::custom không kiểm exe của server, chỉ Endpoint::daemon / guarded kiểm — kiểm mọi endpoint — vì sao: fake_daemon, exe test nằm khác thư mục với UI.
 - [gd4_08] Bản thiếu dev-env mà có biến quay cửa sổ thử thì fastcast-rec báo lỗi, so theo đuôi tên — bỏ qua im lặng — vì sao: gd3_13 yêu cầu, im lặng là quay màn thật.
+- [gd4_09] Chốt NSIS, đóng câu hỏi ở `ROADMAP.md` — WiX / Inno — giấy phép Zlib trong D-2, cài theo người dùng không cần admin, một tệp.
+- [gd4_09] Không chạy `fst --version` từ exe đã cài dù nghiệm thu gốc ghi — chạy vì lệnh tự thoát — vì sao: lần giao này cấm chạy `fst` đã cài, chỉ phủ bằng unit, chuyển kiểm tay.
+- [gd4_09] E2e thay `fst.exe` bằng exe giả ghi đối số, không thêm cờ test vào bản phát hành — cờ `/NOFST` trong bộ gỡ — vì sao: chạy đúng đường gỡ thật, `autostart off` thật sẽ xoá tác vụ chung của máy.
+- [gd4_09] Bộ cài không giết tiến trình, chờ tệp hết bị giữ 10 s rồi hỏi, im lặng thì mã 2 — `taskkill /IM` — vì sao: giết theo tên trúng bản ở thư mục khác.
+- [gd4_09] Sổ không ghi dll thì engine cho qua + log — từ chối — vì sao: Mac chưa có sha, thư mục dev cũ; bản cài Windows bị script bắt phải có mục.
+- [gd4_09] Sha ONNX Runtime soát qua digest GitHub + dll trong gói NuGet — tin lần tải đầu — vì sao: `confirm.md` gd3_03 hẹn soát lại khi đưa vào bản cài; đều khớp.
+- [gd4_09] Cài NSIS bằng tệp `winget download` + `RunAsInvoker` vào `E:\codex\tools\nsis` — `winget install` — vì sao: tránh hộp UAC trên màn LG khi chủ dự án vắng.
+- [gd4_09] Chép `setup.exe` vào `fastcast/dist/` (gitignore) sau khi gỡ worktree — bỏ cùng worktree — vì sao: để chủ dự án kiểm tay khỏi dựng lại.

@@ -97,7 +97,7 @@ Release, cửa sổ thử 1280×720 (`source_probe --serve`, tiến trình riên
 | C11 | Cửa sổ thử 720p30 60 s / đo / mục 5, `mp4_verify` đủ khung | `[opus-run]` | ✅ |
 | C12 | `pwsh` đóng vai UI giữ stdin, quay 6 s / `Stop-Process -Force` nó / rec thoát sau 259 ms, `.mp4` 159 khung đọc đủ, không `.part` | `[opus-run]` | ✅ |
 | C13 | Sau `Finished` / / tiến trình thoát, trả hết DLL | `[opus-run]` | ✅ thoát 0 |
-| C14 | Âm loopback + cửa sổ thử 3 s (`audio_probe --tone` phát sóng nhỏ) / `Stop` / track `avc1` + `mp4a`, lệch track 12 ms, `audio_rms=65`, tệp đã xoá | `[opus-run]` | ✅ |
+| C14 | Âm loopback + cửa sổ thử 3 s (`audio_probe --tone` phát sóng nhỏ) / `Stop` / track `avc1` + `mp4a`, lệch track 7 ms, `audio_rms=63`, tệp đã xoá. Chỉ soát track, chưa soát tiếng khớp hình (C15) | `[opus-run]` | ✅ |
 | C15 | Vùng thật trên màn, vắt hai màn, tiếng khớp hình bằng tai | `[owner-qa]`, gd3_13 | chờ |
 
 ## 7. Ghi chú UI
@@ -120,7 +120,7 @@ Release, cửa sổ thử 1280×720 (`source_probe --serve`, tiến trình riên
   - `res`, `fps` lạ ⇒ `Internal` + log (nợ gd3_01). `Stop` lúc còn chờ khung đầu ⇒ ghi khung ghép hiện tại, vẫn `Started` rồi `Finished` để UI thấy chuỗi đúng.
 - **Khác spec**:
   - Sửa `lib.rs` ngoài tệp sở hữu: gd3_07 gộp trước, `session.rs` bỏ stub nên `unsupported` thành `dead_code` trên Windows, clippy đỏ. Hai dòng `#[cfg(not(windows))]`.
-  - Spec viết "gọi `audio::start`" không nói thứ tự: đặt sau khi xả khung, ngay trước `Started`, đúng mốc gd3_07 (`pts` 0 = lúc hàm trả về). `offset` còn lại trừ khỏi `pts`, phần `pts` âm bị cắt.
+  - Spec viết "gọi `audio::start`" không nói thứ tự: đặt sau khi xả khung, ngay trước `Started`. `pts` 0 = lúc GỌI hàm (gd3_07 chốt lại ở `8b762a5`), nên session lấy mốc trước khi gọi, trừ `offset` khỏi `pts`, phần `pts` âm bị cắt. `offset` đo được 106 ms; bản gộp đầu lấy mốc sau khi hàm trả về, gặp mốc mới của gd3_07 thì tiếng trễ hình cỡ đó, đã sửa bằng nhánh `claude/gd3_06_origin`.
 - **Bẫy**: `cargo fmt -p fastcast-video` cũng format `audio.rs` của gd3_07 ⇒ soát `git status` trước khi commit. `cargo test --test session` một mình không build `source_probe` ⇒ dùng `cargo test -p fastcast-video`.
 - **Riêng tư**: không quay màn thật; mọi tệp thử đã xoá; loopback chỉ 3 s, không mở micro.
 - **Chờ kiểm tay**: C15, `plan/_backlog.md`.

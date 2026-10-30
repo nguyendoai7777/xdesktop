@@ -396,3 +396,11 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_12] Quyền Screen Recording thiếu ⇒ `CaptureLost` — `Unsupported` hoặc mã mới — không sửa tệp chung trong làn; mã riêng ghi backlog.
 - [gd4_12] `Part`, `validate`, `pending` chép lại ở `macos/` — gom với `session.rs` — luật làn không cho sửa nhánh Windows; gd4_16 nên gom.
 - [gd4_12] `source_probe` đổi sang mở ở màn phụ — giữ (0, 0) — (0, 0) là màn LG, trái luật màn hình; thay đổi nhỏ ở mã thử của Windows.
+- [gd4_04] Sửa một dòng `daemon.rs` để truyền cờ vào `Clipboard::submit` — để `clipboard.rs` tự đọc tệp cấu hình — task yêu cầu đọc từ cấu hình daemon đang giữ; ngoài cột tệp sở hữu nhưng tối thiểu.
+- [gd4_04] Bật tuỳ chọn thì chặn cả clipboard đám mây (`exclude_from_cloud`) — chỉ chặn lịch sử — cùng mục đích riêng tư; đồng bộ lên đám mây mà không vào Win+V là bất ngờ.
+- [gd4_04] Lỗi thư mục / lỗi ghi hiện ngay trên trang — toast — `SettingsView` chưa có `ToastViewport` (tệp của gd4_01), chữ tại chỗ cũng không tự biến mất.
+- [gd4_04] Không có tiêu đề nhóm trên trang — thêm khoá i18n — luật làn không sửa i18n; nhóm bằng khoảng cách, xem ảnh đã đủ rõ.
+- [gd4_02] `store::update` áp `UiState` trước khi chờ daemon (tệp của gd4_01) — giữ thứ tự cũ — daemon bận đăng ký lại autostart thì giao diện không phải chờ, cũng không kẹt nếu daemon treo
+- [gd4_02] `dev::run_keys` phát cả KeyUp (tệp của gd4_01) — test Switch trong bin bằng `#[gpui::test]` — Switch, nút kích hoạt lúc nhả phím, mọi làn Settings cần
+- [gd4_02] Trạng thái tự khởi động theo config — thêm trường `DaemonStatus` — GĐ4 không đổi IPC, task cho phép
+- [gd4_02] Độ trễ tự khởi động hoãn ghi 500 ms — ghi mỗi phím — gõ "120" là ba lần đăng ký tác vụ với OS

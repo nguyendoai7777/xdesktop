@@ -10,6 +10,24 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd4-report.md`; SỬA `crates/ui/tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd4_04 (30/10/2026)
+
+<!-- handoff: gd4_04 -->
+
+- **Đã có sẵn**: trang Lưu và quay; `clipboard.excludeFromHistory` chặn cả Win+V lẫn clipboard đám mây trên Windows.
+- **Nợ**: chưa có tiêu đề nhóm trên trang (thiếu khoá i18n, `gd4_04` mục 8).
+- **Soát lại**: daemon đổi `clipboard.rs` không thêm phụ thuộc, tính vào lần đo RAM daemon cuối; kiểm tay Win+V ở `_backlog.md`.
+
+## 0. Bàn giao từ gd4_02 (30/10/2026)
+
+<!-- handoff: gd4_02 -->
+
+- **Đã có sẵn để dùng**: log `settings: general applied in <ms>` để đo độ trễ đổi cài đặt, chạy `pwsh tools/settings-run.ps1 -Page general -Keys "wait@300 tab tab tab tab up up up up up up"`.
+- **Số đo chính thức cần lấy**: trần 50 ms khi đổi cỡ chữ. Số ở `plan/gd4_02_settings-general.md` mục 9 đo trên bản debug lúc máy bận.
+- **Kiểm tay thêm vào danh sách**: tắt / bật tự khởi động, khởi động lại máy, daemon lên sau đúng độ trễ; tệp cấu hình chỉ đọc ⇒ thấy toast `settings.save_failed`.
+- **Soát**: sidebar Settings không theo cỡ chữ (mục 10 của gd4_02).
+- **Nợ**: lỗi `autostart::apply` không tới UI, khoá `settings.autostart_failed` chưa dùng.
+
 ## 1. Làm gì
 
 - Số đo lúc không làn nào chạy: RAM cửa sổ Settings, UI giữ ấm sau khi đóng Settings ≥ 10 s, khung đầu, cỡ exe, cỡ `setup.exe`.

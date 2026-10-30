@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026), `[owner-qa]` Win+V chờ kiểm tay |
 | Repo | fastcast |
 | Cỡ | S — ~350 dòng |
 | Phụ thuộc | gd4_01 |
@@ -53,6 +53,21 @@ Hộp thoại chọn thư mục của OS mở ở màn chính ⇒ khi chạy th�
 
 ## 8. Nợ chuyển task khác
 
+Trang chưa có tiêu đề nhóm (`row::section`): thiếu khoá i18n, nhóm bằng khoảng cách. Thêm khoá thì gd4_18 hoặc task trau chuốt làm, không chặn.
+
 ## 9. Bàn giao thực tế
 
+- **Phân vai**: Opus làm hết, không giao Sonnet: trang ~400 dòng gắn chặt ô số + hẹn giờ, không đáng tách.
+- **Case**: C1 chọn thư mục ⇒ `save.imageDir` đúng, ảnh màn giả rơi vào đó trong cùng tiến trình · C2 `cancel` không đổi · C3 thư mục ACL chặn ghi ⇒ báo lỗi, giữ cũ · C4 FPS 0 / 61 không ghi, 45 ghi một lần · C5 `keepWarmMins` = 1 ⇒ `config reloaded`, thoát sau 60 s · C6 về mặc định ⇒ `None`, khoá khác giữ nguyên. Tất cả ở `crates/ui/tests/settings_capture.rs`. Cờ clipboard: `exclude_flag_reaches_the_backend_for_image_and_text`.
+- **Chạy thật**: `settings-run.ps1 -Page capture` sáng, tối, trạng thái lỗi, cửa sổ cao hơn tạm thời để thấy ba dòng khoá: đúng màn DELL, không giành foreground. Ảnh đã xoá. `arboard` chỉ kiểm qua build: cờ thật trên Win+V chờ chủ dự án.
+- **Quyết định**: bốn gạch `[gd4_04]` ở `plan/confirm.md`. Ô số không đặt `range` (NumberField kẹp khi rời ô, F-7 không kẹp), chờ 300 ms mới ghi để hai lần ghi không về sai thứ tự; ghi tách khỏi trang nên đóng cửa sổ ngay vẫn lưu.
+- **Ngoài cột sở hữu**: một dòng `daemon.rs`; `dev.rs` chép nguyên bản vá phát `KeyUp` của gd4_02 (Button kích hoạt lúc nhả phím, thiếu thì `tab enter` không bấm được nút).
+- **Bẫy**: xung đột `clipboard.rs` với khối `autoreleasepool` của gd4_10 lúc gộp, giữ cả hai. Chạy thử không có `FASTCAST_SETTINGS_PICK_DIR` thì nút chọn chỉ ghi log, không mở hộp thoại thật.
+- **Chờ kiểm tay** `[owner-qa]`: `plan/_backlog.md`.
+
 ## 10. Đề xuất cải tiến
+
+Soi xong. Bảo mật: tệp thử bị xoá kể cả khi ghi hỏng, log không có đường dẫn. RAM: không thêm phụ thuộc, cờ chỉ là một `bool` trên `Job`. Pro: ba dòng khoá đã đặt.
+
+- [ux] Ô FPS không theo khi bảng quay ghi `record.fps` lúc Settings đang mở — `record_panel.rs::remember` đổi thẳng `config.record`, `number_field` chỉ đặt giá trị lúc tạo — đặt lại ô khi trang vẽ — giá trị thấp, không ghi đè nhầm vì trang chỉ ghi khi người dùng gõ — S — P3. Không làm: hiếm gặp.
+- Đã làm trong lượt: chặn bấm "Chọn…" hai lần mở hai hộp thoại (`picking`).

@@ -113,7 +113,7 @@ clipboard ngay sau khi đặt, thử lại tối đa 10 lần × 20 ms.
 **Đề xuất đã làm** (mục 10): dọn tệp tạm > 10 phút lúc chép; ghi chỗ Pro vào `ROADMAP.md`.
 
 **Lệnh soát** (cwd = worktree, `CARGO_TARGET_DIR` riêng): `cargo build`, `cargo clippy --all-targets -- -D warnings`,
-`cargo test`, `cargo deny check licenses`. Số test và kết quả lần cuối trước khi gộp: báo cáo của session + commit merge.
+`cargo test`, `cargo deny check licenses`. Xanh ngay trước khi gộp: capture 11, core 42, daemon 23, ui 93 + ipc 5 + overlay 6 (2 ignored = bài đo), `licenses ok`.
 
 **An toàn máy**: chỉ chạy màn giả; clipboard thật chỉ qua `clipboard_probe` (lưu rồi trả lại). Máy đang **bật lịch sử
 clipboard Win+V** ⇒ các ảnh hoạ tiết và chữ `fastcast 320×48 #1E90FF` của lần thử còn trong lịch sử, chủ dự án xoá ở Win+V

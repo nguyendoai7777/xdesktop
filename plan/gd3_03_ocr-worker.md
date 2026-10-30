@@ -10,6 +10,16 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/ocr/src/{main,worker}.rs`; MỚI `crates/ocr/tests/worker.rs`, `tools/fetch-ocr-models.ps1` |
 
+## 0. Bàn giao từ gd0_05 (30/10/2026)
+
+<!-- handoff: gd0_05 -->
+
+- **Kết luận phát hành**: model **kèm bản cài** (78 MB + `onnxruntime.dll` 17 MB), không tải khi cần — vì tải cần máy chủ trả phí (`plan/confirm.md`).
+- **Bộ model thư mục `models/`**: det + VietOCR int8, Paddle fp32. `tools/fetch-ocr-models.ps1` **không chép thẳng được từ vnocr**, vì vnocr chỉ có fp32 (và cả chục biến thể): phải chạy `spikes/ocr/tools/quantize.py <models> <đích> mix` qua Docker (`python:3.12-slim`, cần mạng lần đầu cho `pip`), rồi soát với `spikes/ocr/results/manifest.int8-mix.toml`. Sổ đó thay cho `manifest.toml` của vnocr; thư mục spike bị xoá, không có sẵn bản đã sinh.
+- **`onnxruntime.dll`**: bản đã thử là 1.31.1 x64 chính thức của Microsoft, không còn sẵn trên máy (đã xoá theo target spike): tải từ release GitHub của `microsoft/onnxruntime` trong script dev, kèm `ThirdPartyNotices.txt` để GĐ4 đưa vào bản cài.
+- **Số để đặt kỳ vọng khi đo**: nguội ~1 s đến `Ready` (dll 50 ms, sha256 400 ms, dựng phiên 550 ms) · RAM giữ phiên ~105 MB · đỉnh 113 MB (một dòng), ~260 MB (đoạn 22 dòng), ~450 MB (cả màn) · sau khi nhả phiên còn ~19 MB, nên rảnh 60 s là thoát hẳn thì mới về 0.
+- **Bẫy**: một ca đọc có thể ~10 s (đoạn chữ nhỏ) tới ~11 s (cả màn), lúc máy bận còn lâu hơn: đừng đặt hạn đọc ngắn ở worker, và đếm rảnh 60 s tính từ lúc **xong** ca đọc.
+
 ## 0. Bàn giao từ gd3_01 (30/10/2026)
 
 <!-- handoff: gd3_01 -->

@@ -5,6 +5,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd0_05 · owner-qa] Thử OCR trên ảnh chụp thật (C8)** — lý do: máy dùng thật, session không chụp màn; số CER trong `fastcast/docs/spikes/ocr.md` chỉ là ảnh tổng hợp. Khi `fastcast-ocr` chạy được (GĐ3): chụp vùng code, chat, web sáng / tối, chữ nhỏ, xem chữ ra; dòng tiếng Việt mất dấu = `looks_like_code` chọn nhầm.
+- **[gd0_05] Đọc giấy phép dữ liệu huấn luyện của model trước khi bán** — lý do: spike chỉ tin nhãn Apache-2.0 trong sổ vnocr, không đọc giấy phép dữ liệu của `vgg_transformer` gốc + dữ liệu học thêm `vn8a30`; việc của chủ dự án, không chặn GĐ3.
 - **[gd3_10] Test `fake_picker_copies_the_pixel_retries_and_remembers_the_format` đỏ khi chuột thật nằm trên cửa sổ giả** (đọc `rgb(136 24 160)` thay vì giữa màn, chuột ở 1119,626; suy từ toạ độ, chưa kiểm bằng cách dời chuột): test giả định "con trỏ chưa di" — lý do treo: tệp của gd1_09, ngoài làn gd3_10. Sửa: màn giả bỏ qua `move` thật, hoặc đặt cửa sổ picker ngoài màn.
 - **[gd3_07] Báo UI khi mất thiết bị âm giữa cuộc quay**: hiện chỉ có log, đoạn sau im mà người dùng không biết (`audio.rs` `imp::run`). Cần `RecEvent` mới trong `worker.rs` và chữ i18n — lý do: tệp chung, luật làn GĐ3 cấm sửa trong làn; làm sau khi GĐ3 gộp xong.
 - **[gd3_06 · owner-qa] Quay vùng thật bằng `fastcast-rec`** (`plan/gd3_06_rec-worker.md` C15): một màn, vắt hai màn khác DPI, tiếng khớp hình bằng tai — lý do: máy dùng thật, session chỉ quay cửa sổ thử. Gộp vào danh sách của gd3_13.

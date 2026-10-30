@@ -28,6 +28,10 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd0_05] Cấu hình OCR cho GĐ3 là lai (det + VietOCR int8, Paddle fp32, không arena) — phương án khác: VietOCR một mình như F-6 ghi (đơn giản hơn, nhưng CER 4,65 so với 2,45, WER `code` 35,7 so với 8,3), hoặc fp32 toàn phần (184 MB, CER ngang) — vì sao: code là ca dùng chính của app chụp vùng; F-6 không nhắc Paddle làm bộ đọc nên cần chủ dự án xem. Chưa ghi `docs/decisions.md`.
+- [gd0_05] Model kèm bản cài (78 MB + dll 17 MB) — phương án khác: tải khi cần, cần máy chủ trả phí — vì sao: không tự bật dịch vụ tính tiền; đổi ý thì báo trước GĐ4.
+- [gd0_05] Chỉ đo trên ảnh tổng hợp, không chụp màn thật — phương án khác: chờ chủ dự án có ảnh — vì sao: máy dùng thật, dặn không chụp; C8 ở backlog.
+- [gd0_05] Số thời gian đo lúc máy bận ở `BelowNormal`, không đo lại khi máy rảnh — phương án khác: chờ các session GĐ2 / GĐ3 xong — vì sao: chỉ cần độ lớn để kết luận, số chính thức ở gd3_13.
 - [gd2_06] Ghi ✅ dù WARP lúc vẽ nét 1,6–2,4 nhân, vượt mục tiêu ≤ 1 — phương án khác: tối ưu ngay trong GĐ2 — vì sao: chế độ nhẹ vẫn dùng được, số đo lúc máy bận, chưa có RDP thật để biết có giật không; đã gạch backlog.
 
 - [gd2_05] Con lăn lên = tăng theo sự kiện dòng của OS (không đảo theo "natural scrolling") — phương án khác: đảo trên macOS — vì sao: chưa có máy Mac thử.

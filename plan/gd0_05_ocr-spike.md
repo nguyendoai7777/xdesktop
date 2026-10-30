@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | 🔄 |
+| Trạng thái | ✅ (30/10/2026) — chờ kiểm tay ảnh chụp thật (C8) |
 | Repo | fastcast (spike ở `fastcast/spikes/ocr/`, ngoài cargo workspace) |
 | Cỡ | M — spike, ~600 dòng vứt đi được |
 | Phụ thuộc | — (độc lập; T0–T4 của GĐ0 đã xong) |
@@ -67,4 +67,22 @@ Manager), cỡ model fp32 / int8, CER so với chữ chuẩn và so với bản 
 
 ## 9. Bàn giao thực tế
 
+Báo cáo: `fastcast/docs/spikes/ocr.md`. Số thô: `fastcast/spikes/ocr/results/` (`final/` = lượt chốt, `prior/` = session trước).
+
+- **Kết luận cho GĐ3**: lai — det + VietOCR `vn8a30` int8, Paddle small fp32 đọc trước, dòng không có dấu hiệu code thì VietOCR đọc lại; không arena, 4 luồng, batch 16, preset `screen`. CER 2,45 % (26 ảnh) · 0,86 % (ca khó). RAM giữ phiên ~105 MB, đỉnh 113 / 260 / 450 MB (dòng / đoạn / cả màn). Model 78 MB + dll 17 MB. Nguội ~1 s, dòng 0,1–0,45 s, đoạn 22 dòng chữ nhỏ ~10 s, cả màn ~8–11 s.
+- **Case**: C1, C2 xanh (42 test) · C3 xanh (26 + 12 ảnh, in từng ảnh + trung vị) · C4 đạt (Rust 60,36 so với Python 59,70 ở `scene`, lệch +0,66 điểm; 29,28 so với 31,47 khi giữ nguyên ảnh) · C5, C6 xong · C7 xong. C8 chờ kiểm tay.
+- **Soát**: trong `spikes/ocr`: `cargo build --release`, `cargo clippy --all-targets -- -D warnings` (sửa 4 cảnh báo cũ, không đổi hành vi), `cargo test` 42 / 42, `cargo deny --config ../../deny.toml check licenses` xanh.
+- **Nhận lại phần dở**: session trước biến mất giữa chừng, đã đo gần đủ nhưng chưa ghi RAM Task Manager, chưa có báo cáo. Giữ log cũ ở `results/prior/`, đo lại mọi ca chính bằng exe cuối.
+- **Đo**: `BelowNormal`, các session GĐ2 / GĐ3 / materiant build song song ⇒ thời gian nhiễu 2–5 lần, chỉ xem độ lớn; CER và RAM ổn định. Không chụp màn hình thật. `spikes/ocr/results/` ~1 MB, không có model, không có ảnh.
+- **Opus chọn 30/10/2026** (`plan/confirm.md`): cấu hình lai (F-6 chỉ nêu VietOCR); model kèm bản cài; không chờ máy rảnh để đo lại thời gian.
+- **Phát sinh so với plan**: biến thể `mix` (Paddle fp32) không có trong plan, thêm sau khi thấy int8 của Paddle làm hỏng ký hiệu code; đã đo, có ở `tools/quantize.py`, chạy lại ra giống từng byte. gd3_02 mục 1 từng ghi bỏ `paddle` ⇒ đã sửa, kèm bàn giao.
+- **Cho gd3_09 (đang 🔄 ở session khác, không chèn khối)**: một ca đọc có thể ~10 s trở lên, UI cần trạng thái đang đọc + huỷ.
+- **Chờ kiểm tay**: C8, `plan/_backlog.md`.
+
 ## 10. Đề xuất cải tiến
+
+Bảo mật / riêng tư: đã xử lý trong spike (telemetry tắt, dll theo đường dẫn tuyệt đối, sha256 + giấy phép fail-closed), cần giữ khi chuyển: gd3_02 mục 0. Pro: không có đề xuất có bằng chứng.
+
+1. `[ux]` Đoạn 22 dòng chữ nhỏ ~10 s — `results/final/one-para-mix-noarena.log` — trả từng dòng dần thay vì đợi hết, cần đổi giao thức `fastcast_core::worker` — người dùng thấy chữ sớm — M — P2. Không làm ở đây: spike chưa nối IPC, giao thức đã chốt ở gd3_01 ⇒ ghi lại đây để xét sau gd3_13, khi có số thời gian lúc máy rảnh.
+2. `[ram]` Phóng ×2 đẩy đỉnh đoạn nhỏ 113 ⇒ 263 MB và là phần lớn thời gian dò (~1,5 s so với ~20 ms) — `results/final/hard-mix-noarena.log` — thử cắt vùng thành dải trước khi phóng — vừa nhanh vừa nhẹ — M — P3. Không làm: chưa có số trên ảnh thật để biết đáng công không, xét sau C8.
+3. `[ux]` Thứ tự đọc bố cục nhiều cột: `mixed` CER 10,28 %, WER 0,2 % — `results/final/full-mix-noarena.log` — gom cột trước khi xếp hàng — chữ chép ra đọc đúng mạch — M — P3. Không làm: cần ảnh thật để biết bố cục nào hay gặp, xét sau C8.

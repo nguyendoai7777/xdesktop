@@ -10,6 +10,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd4-report.md`; SỬA `crates/ui/tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd4_03 (30/10/2026)
+
+<!-- handoff: gd4_03 -->
+
+- **Đã có sẵn**: trang Phím tắt, `hotkey_dialog.rs` dùng chung launcher; log `settings: hotkeys page in <ms>` để đo.
+- **Soát lại**: đổi trang sang Phím tắt ở bản release, chuẩn dưới 30 ms (`FASTCAST_SETTINGS_PAGE=general`, `-Keys "wait@500 down"`); bản debug đo được 35,3 ms, chưa có số release.
+- **Kiểm tay**: C9 của `gd4_03`, gán thật với `fst` thật, gạch ở `_backlog.md`.
+
 ## 0. Bàn giao từ gd4_04 (30/10/2026)
 
 <!-- handoff: gd4_04 -->

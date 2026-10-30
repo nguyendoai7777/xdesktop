@@ -404,3 +404,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_02] `dev::run_keys` phát cả KeyUp (tệp của gd4_01) — test Switch trong bin bằng `#[gpui::test]` — Switch, nút kích hoạt lúc nhả phím, mọi làn Settings cần
 - [gd4_02] Trạng thái tự khởi động theo config — thêm trường `DaemonStatus` — GĐ4 không đổi IPC, task cho phép
 - [gd4_02] Độ trễ tự khởi động hoãn ghi 500 ms — ghi mỗi phím — gõ "120" là ba lần đăng ký tác vụ với OS
+- [gd4_03] Tự làm phần `[sonnet]` — giao Sonnet — bảng dính chặt interface vừa tách và test tích hợp
+- [gd4_03] Ghi phím tắt qua cùng khoá với `store` (`store::save` thành `pub`) — để `actions` tự ghi — tránh hai lần ghi đè nhau khi trang khác đang lưu
+- [gd4_03] Dòng lỗi đăng ký là câu đầy đủ `settings.hotkeys_register_failed` — nhãn ngắn như phác thảo — không thêm khoá i18n, người dùng biết rõ lệnh và tổ hợp nào hỏng

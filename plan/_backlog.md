@@ -6,6 +6,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 ## fastcast
 
 - **[gd4_02 · owner-qa] Tự khởi động + toast lỗi** — lý do: máy nhà không chạy `fst` thật, không khởi động lại máy. Đổi trễ ở Cài đặt → Chung, bật tự khởi động, khởi động lại máy: daemon lên sau đúng độ trễ. Đặt `config.json` chỉ đọc, đổi cỡ chữ: thấy toast lỗi, ô trả về số cũ.
+- **[gd4_02 phát hiện] `fastcast-video --test session` đỏ chập chờn lúc máy bận** — lý do: không thuộc làn, cần chạy lúc máy rảnh để biết do tải hay lỗi thật. `low_fps_stops_without_waiting_for_the_slot`, `source_lost_midway_reports_failed_and_keeps_the_video` (`session.rs:290`, nhận `Finished` thay vì `Failed`): 2 / 3 lần đỏ khi các làn khác đang build. Soát ở gd4_18.
 - **[gd4_02] Lỗi tự khởi động không tới UI** — lý do: `daemon.rs::reload` bỏ qua lỗi `autostart::apply`, sửa phải đổi ngữ nghĩa `ReloadConfig`, ngoài làn; chờ quyết định khi soát GĐ4. Chi tiết: `plan/gd4_02_settings-general.md` mục 10.
 - **[gd4_12 · owner-qa] Chạy quay + OCR trên Mac** — lý do: máy nhà Windows, mã mới qua `cargo check` + clippy target `aarch64-apple-darwin`, chưa chạy dòng nào. Trên Mac: `cargo test -p fastcast-video --test macos`; `cargo test -p fastcast-video --test macos -- --ignored` (cấp quyền Screen Recording cho terminal, quay màn thật 3 s); mở MP4 bằng QuickTime; vùng vắt hai màn; `pwsh tools/fetch-ocr-models.ps1 -Vnocr <vnocr>/models -Out <đích>`, `FASTCAST_OCR_MODELS=<đích> cargo run -p fastcast-ocr --example ocr_bench`; đo 720p30. Case C3–C8 ở `plan/gd4_12_macos-video.md`.
 - **[gd4_12 · ux] `RecError::PermissionDenied`**: thiếu quyền quay đang báo chung `CaptureLost` — lý do: đụng `core/worker.rs`, `i18n` đang có làn song song; làm sau khi đợt 1 gộp.
@@ -111,6 +112,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên
   máy nhà (gd1_01 đo 17–26 ms) — đóng băng đã chồng lên lúc gắn; đo lại lúc máy rảnh / iGPU / máy công ty. Mục 10 của
   gd1_02.
+- **[gd4_03 · owner-qa] Gán phím thật từ Settings (C9)**: bật `fst` thật, Cài đặt → Phím tắt, làm các bước C7 của `plan/gd1_07_hotkey-assign.md`. Máy nhà không chạy `fst` thật khi thử nên chưa kiểm.
 - **[gd1_07 · owner-qa] Gán phím thật (C7)**: bật `fst` thật → Alt+Space → Chụp vùng → Ctrl+K → Gán phím tắt… →
   Ctrl+Shift+2 (của Thước căn; lúc ghi KHÔNG mở Thước căn) → Enter → "Lấy phím" ⇒ Ctrl+Shift+2 mở Chụp vùng; tổ hợp app
   khác giữ ⇒ báo + Quay lại; giết `fastcast-ui` lúc đang ghi ⇒ phím tắt chạy lại ngay. `plan/gd1_07_hotkey-assign.md` mục 9.

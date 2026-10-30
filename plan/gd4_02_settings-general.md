@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) — chờ kiểm tay autostart |
 | Repo | fastcast |
 | Cỡ | S — ~300 dòng |
 | Phụ thuộc | gd4_01 |
@@ -31,17 +31,25 @@
 
 Theme tuỳ biến thật (chỉ dòng khoá). Nhãn thước theo cỡ chữ lớn (`gd1_08` mục 10): soát ở gd4_18.
 
+## 2b. Phân vai
+
+| Phần | Vai |
+|---|---|
+| `page_general.rs`, `apply_general`, `tests/settings_general.rs` | `[opus]` (một trang nhỏ, không tách Sonnet) |
+| Khởi động lại máy thật | `[owner-qa]` |
+
 ## 5. Đo
 
 Đổi cỡ chữ 14 ⇒ 20: một lần vẽ lại dưới 50 ms từ log; không tăng RAM sau 10 lần đổi.
 
 ## 6. Nghiệm thu
 
-- [ ] Bốn lệnh soát xanh.
-- [ ] Mỗi điều khiển ghi đúng khoá vào `FASTCAST_CONFIG_FILE`, không đụng khoá khác (test).
-- [ ] Ghi hỏng (tệp chỉ đọc) ⇒ toast `settings.save_failed`, điều khiển trả về giá trị cũ.
-- [ ] `settings-run.ps1 -Page general` chụp vi / en × sáng / tối × cỡ 12 / 20: không tràn, không cắt chữ. Chỉ màn DELL.
-- [ ] `[owner-qa]` Bật tự khởi động, khởi động lại máy: daemon lên sau đúng độ trễ.
+- C1 `[opus-run]` Khi chạy bốn lệnh soát ⇒ xanh.
+- C2–C7 `[opus-unit]` Cho cấu hình tạm, khi đổi bằng phím ngôn ngữ / giao diện / bảng màu / cỡ chữ / tự khởi động / độ trễ ⇒ tệp chỉ khác đúng khoá đó (`tests/settings_general.rs`).
+- C8 `[opus-unit]` Cho tệp chỉ đọc, khi đổi cỡ chữ ⇒ log lỗi + `general reverted`, tệp nguyên vẹn. Toast `settings.save_failed` chưa nhìn bằng mắt: test chỉ soát log.
+- C9 `[opus-unit]` Preset về `Default` ⇒ trả màu gốc, giữ sáng / tối + cỡ chữ (`app::tests`).
+- C10 `[opus-run]` `settings-run.ps1 -Page general` chụp vi / en × sáng / tối × cỡ 12 / 20: không tràn, không cắt chữ. Chỉ màn DELL.
+- C11 `[owner-qa]` Bật tự khởi động, khởi động lại máy: daemon lên sau đúng độ trễ.
 
 ## 7. Ghi chú UI
 
@@ -49,6 +57,20 @@ Dùng hết bằng bàn phím: Tab qua từng điều khiển, Space / Enter đ�
 
 ## 8. Nợ chuyển task khác
 
+- Khoá `settings.autostart_failed` chưa dùng: `autostart::apply` của daemon chỉ ghi log, `ReloadConfig` vẫn trả `Ok`, GĐ4 không thêm IPC. Xem mục 10.
+- `gd4_18` (phụ thuộc task này): số đo chính thức.
+
 ## 9. Bàn giao thực tế
 
+- **Mã**: `settings/page_general.rs`, `app::apply_general` (reset rồi áp preset + chế độ + cỡ chữ), `tests/settings_general.rs`.
+- **Sửa ngoài tệp sở hữu (đã ghi `confirm.md`)**: `store::update` áp vào `UiState` trước khi chờ daemon, `dev::run_keys` phát cả `KeyUp`.
+- **Opus chọn 30/10/2026**: trạng thái tự khởi động theo config (`DaemonStatus` không có trường này); độ trễ hoãn ghi 500 ms; gợi ý cỡ chữ đặt ở mô tả dòng.
+- **Số đo** (debug, các làn khác đang build, không phải số chính thức): đổi cỡ chữ từ log `general applied` 17–30 ms lúc máy rảnh, có lần tới 104 ms lúc máy bận. RAM 17,6–17,9 MB chưa đổi, 19,2 MB sau 12 lần, 18,9 MB sau 48 lần: tăng một lần rồi không tăng theo số lần đổi.
+- **Lệnh soát** (sau khi gộp `master` tới `87ddfcd`): build, clippy, deny xanh; `settings_general` 7/7. `cargo test` đủ còn đỏ chập chờn ngoài phần sửa: `ocr::each_failure_code_shows_its_message` (trước khi gộp, chạy riêng xanh); `fastcast-video --test session`: `low_fps_stops_without_waiting_for_the_slot`, rồi `source_lost_midway_reports_failed_and_keeps_the_video` (3 lần chạy: 2 đỏ, 1 xanh; nhánh không sửa `crates/video`). Ghi `_backlog.md`.
+- **Chờ kiểm tay**: C11; nhìn toast của C8.
+- **Soi cải tiến**: bảo mật không áp (không IPC mới, log không ghi đường dẫn). UX: bàn phím đủ, 8 tổ hợp đạt. RAM: trên. Pro: dòng khoá `CustomTheme` đã đặt.
+
 ## 10. Đề xuất cải tiến
+
+- [ux] Bật tự khởi động hỏng mà người dùng không biết — `daemon.rs::reload` bỏ qua lỗi `autostart::apply` — trả `Message::Error` để hiện `settings.autostart_failed` — báo đúng lỗi — S — P2. Chưa làm: tệp daemon ngoài làn, đổi ngữ nghĩa `ReloadConfig`; vào `_backlog.md`.
+- [ux] Sidebar không theo cỡ chữ — ảnh cỡ 20: nhãn sidebar giữ nguyên — `Tabs` của materiant đọc `font_size` — nhất quán — S — P3. Chưa làm: repo materiant, soát cùng gd4_18.

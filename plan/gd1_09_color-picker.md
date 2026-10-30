@@ -8,7 +8,7 @@
 | Phụ thuộc | gd1_02 · gd1_05 (chép chữ) |
 | Quyết định áp dụng | F-1, F-3 |
 | Phụ thuộc mới | — (đổi màu tự viết, không thêm crate) |
-| File đụng tới | `crates/core/src/color.rs` MỚI · `crates/core/src/lib.rs` SỬA · `crates/ui/src/overlay/picker.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA — thêm so với spec: `overlay/dev.rs`, `platform.rs`, `clipboard.rs`, `tests/{picker,ipc,common}` (mục 9) |
+| File đụng tới | `crates/core/src/color.rs` MỚI · `crates/core/src/lib.rs` SỬA · `crates/ui/src/overlay/picker.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA — thêm so với spec: `overlay/dev.rs`, `platform.rs`, `clipboard.rs`, `tests/{picker,common}` (mục 9) |
 
 ## 0. Bàn giao từ gd1_08 (30/10/2026)
 
@@ -96,12 +96,12 @@ Khoá i18n: `picker.hint`, `picker.copied` (`{code}`). Tên định dạng HEX /
 
 ## 8. Nợ chuyển task khác
 
-- gd1_08: thêm `Command::Ruler` vào `commands::freezes_screen` khi thước mở overlay thật (đã ghi vào mục 0 của gd1_08).
+- Không.
 
 ## 9. Bàn giao thực tế
 
 - **Kết quả**: lấy màu chạy trên màn giả: 6 test `tests/picker.rs` + `fake_daemon` in `CLIPBOARD_TEXT oklch(0.427 0.151 265.8)`.
-  Soát xanh sau khi gộp master (gd1_10): build, clippy, test (core 54, ui 115 + ipc 5 + overlay 12 + picker 6), `deny` licenses ok.
+  Soát xanh sau khi gộp master (gd1_08, gd1_10): build, clippy, test (core 54, ui 128 + ipc 5 + overlay 14 + picker 6), `deny` licenses ok.
   Lần chạy đầu `tests/overlay.rs` đỏ 3 test (hết thời gian chờ log, lúc máy build song song); chạy lại đều xanh.
 - **Spec sai, đã sửa**: `#1E90FF` là `oklch(0.652 0.19 253.2)`, không phải `0.172 253.7`. Kiểm hai đường độc lập (ma trận
   sRGB → LMS trong code; sRGB → XYZ → OKLab bằng script ngoài); đỏ / lục / lam / vàng khớp bảng CSS.
@@ -109,16 +109,16 @@ Khoá i18n: `picker.hint`, `picker.copied` (`{code}`). Tên định dạng HEX /
   thay chế độ trong `OverlaySession`; mũi tên kéo cả con trỏ thật; nhớ định dạng lúc đóng; số 0 thừa bị bỏ (`0.19`, `1`).
 - **Thêm ngoài spec**: Shift+mũi tên 10 px, Ctrl+C, chuột phải đóng — cùng phím với chọn vùng.
 - **Ngoài dòng "File đụng tới"**: `overlay/dev.rs` (`run_script` nhận hàm lấy cửa sổ, dùng chung hai phiên), `platform.rs`
-  (`set_cursor_pos`), `clipboard.rs` (gỡ `expect(dead_code)`), `tests/ipc.rs` (`color_picker` giờ mở overlay thật ⇒ test đổi sang
-  `ocr_region`, `open_settings`), `tests/common` (`has_log`).
+  (`set_cursor_pos`), `clipboard.rs` (gỡ `expect(dead_code)`), `tests/common` (`has_log`); `tests/ipc.rs` lấy bản gd1_08 (đã thôi dùng
+  `color_picker`).
 - **Đo**: không đo RAM / độ trễ riêng; cùng đường ảnh đóng băng với overlay, gom vào lượt đo gd1_11. Khung đầu bản debug màn giả
   1,2–1,7 s lúc máy bận build, không phải số tham chiếu.
 - **Chờ kiểm tay** (C14, `plan/_backlog.md`). macOS / Ubuntu: `set_cursor_pos` chưa làm, mũi tên chỉ dời điểm nhắm, di chuột nhẹ là về con trỏ thật.
-- **Đề xuất đã làm**: lệnh đóng băng chặn nhau (`commands::freezes_screen`, test `frozen_screen_features_block_each_other`); chế độ nhẹ WARP / RDP cho lấy màu (`request_frame`, cùng nhịp với overlay); chỗ Pro ghi ở `ROADMAP.md` GĐ4.
+- **Khác khuôn gd1_08**: không thêm `Tool::Picker`; `OverlaySession` mang vùng chọn + thanh công cụ mà lấy màu không dùng, `PickerSession` đủ. View theo đúng luật `RulerView` (`render` không đọc phiên, `request_frame`).
+- **Đề xuất đã làm**: chế độ nhẹ WARP / RDP cho lấy màu (`request_frame`, cùng nhịp với overlay); chỗ Pro ghi ở `ROADMAP.md` GĐ4.
 - **Soi không ra lỗi**: log chỉ ghi toạ độ + định dạng, không ghi mã màu; chép đi qua `PrivateText`; không tệp tạm.
 
 ## 10. Đề xuất cải tiến
 
-- [ux] Bấm phím lấy màu khi overlay chọn vùng đang mở ⇒ ảnh mới chứa luôn overlay cũ — `commands.rs` `route` theo từng lệnh — lệnh đóng băng chặn nhau, đưa cửa sổ cũ lên — tránh ảnh hỏng — S — P2 — **đã làm**.
 - [ram] Lấy màu vẽ lại toàn màn mỗi lần di chuột, trên WARP / RDP tốn CPU — `render_mode.rs` chỉ áp cho `OverlayView` — chặn nhịp khung bằng `RenderMode::frame_wait` — dùng được qua RDP — S — P2 — **đã làm**.
 - [pro] Bảng màu đã lấy + thêm định dạng (HSL, Tailwind, SwiftUI) — mục 2 loại khỏi task — huy hiệu "Pro" ở GĐ4 — dev trả tiền cho quy trình — M — P3 — **đã ghi `ROADMAP.md`**.

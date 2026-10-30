@@ -10,16 +10,6 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `crates/ui/src/overlay/ruler.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA · thêm: `overlay/view.rs` (2 `pub(super)`), `overlay/dev.rs` (bước `shift`), `clipboard.rs`, `tests/{ipc,overlay}.rs`, `CLAUDE.md` |
 
-## 0. Bàn giao từ gd1_09 (30/10/2026)
-
-<!-- handoff: gd1_09 -->
-
-- **Nợ chuyển sang đây**: khi thước mở overlay thật, thêm `Command::Ruler` vào `commands::freezes_screen` (đóng băng + chặn nhau với
-  chụp vùng / lấy màu); test `repeated_command_focuses_existing_window` đang coi Ruler và ColorPicker độc lập thì đổi cặp lệnh.
-- **Đã có sẵn để dùng**: `overlay::window_placements(fake, layout, cx)`, `dev::run_script(hàm lấy cửa sổ, cx)` dùng được cho phiên riêng
-  (mẫu `overlay/picker.rs`). `tests/ipc.rs` đã bỏ `color_picker`, dùng `ocr_region` / `open_settings`.
-- **Bẫy đã gặp**: `Root` của gpui-base nuốt Tab ⇒ `cx.intercept_keystrokes`. Gộp sau gd1_09 có thể xung đột nhỏ ở `commands.rs`, `overlay/mod.rs`.
-
 ## 0. Bàn giao từ gd1_05 (30/10/2026)
 
 <!-- handoff: gd1_05 -->

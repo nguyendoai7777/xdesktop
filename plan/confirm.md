@@ -136,11 +136,10 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_09] Chuỗi `rgb` giữ cú pháp CSS Color 4 có khoảng trắng `rgb(30 144 255)` — phương án khác: có dấu phẩy — vì sao: đúng spec; `rgba` đã là dạng dấu phẩy cho ai cần.
 - [gd1_09] Sửa ví dụ spec: `#1E90FF` = `oklch(0.652 0.19 253.2)` — phương án khác: giữ `0.172 253.7` — vì sao: tính độc lập hai đường đều ra `0.19 253.2`.
 - [gd1_09] Bỏ số 0 thừa trong OKLCH (`0.19`, không `0.190`) — phương án khác: luôn 3 chữ số — vì sao: spec đòi `oklch(1 0 0)`.
-- [gd1_09] Lấy màu dùng phiên + view riêng (`PickerSession`) — phương án khác: chế độ `Picker` trong `OverlaySession` như spec viết — vì sao: không có vùng chọn / thanh công cụ, không đụng `view.rs` của gd1_10 đang chạy song song.
+- [gd1_09] Lấy màu dùng phiên + view riêng (`PickerSession`) — phương án khác: `Tool::Picker` trong `OverlaySession` như spec và bàn giao gd1_08 — vì sao: `OverlaySession` mang vùng chọn / thanh công cụ không dùng tới; phiên riêng ít nhánh hơn.
 - [gd1_09] Mũi tên kéo cả con trỏ thật (`SetCursorPos`) — phương án khác: chỉ dời điểm nhắm — vì sao: kính lúp + chữ thập phải cùng chỗ; GPUI không ẩn được con trỏ.
 - [gd1_09] Nhớ định dạng lúc đóng overlay — phương án khác: ghi mỗi lần đổi — vì sao: Tab liên tiếp không ghi đĩa từng lần.
 - [gd1_09] Thêm Shift+mũi tên, Ctrl+C, chuột phải đóng — phương án khác: đúng phím spec — vì sao: cùng phím với chọn vùng.
-- [gd1_09] Lệnh đóng băng chặn nhau: bấm lấy màu lúc overlay đang mở chỉ đưa overlay lên — phương án khác: đóng cái cũ, mở cái mới — vì sao: không mất vùng đang chọn dở.
 
 ## materiant
 

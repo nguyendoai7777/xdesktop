@@ -10,6 +10,18 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `fastcast/docs/gd1-report.md` MỚI · `fastcast/ROADMAP.md` SỬA (mục bàn giao GĐ1) |
 
+## 0. Bàn giao từ gd1_09 (30/10/2026)
+
+<!-- handoff: gd1_09 -->
+
+- **Đã có sẵn để dùng**: lấy màu ở `overlay/picker.rs`; log `picker: first frame on <n> monitor(s) in <ms>`, `picker: monitor <i>
+  rendered <n> times`; `FASTCAST_OVERLAY_FAKE` + `FASTCAST_OVERLAY_SCRIPT` chạy được với `--command color_picker`.
+- **Đổi so với lúc viết spec này**: `#1E90FF` = `oklch(0.652 0.19 253.2)`.
+- **Nợ chuyển sang đây**: gom kiểm tay C14 (`plan/gd1_09_color-picker.md` mục 6) vào danh sách; thêm RAM + khung đầu của lấy màu vào
+  bảng số đo (task chưa đo, bản debug không tính).
+- **Bẫy đã gặp**: `color_picker` giờ mở overlay thật ⇒ test / lệnh thử không có `FASTCAST_OVERLAY_FAKE` là chụp màn thật.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui --test picker`.
+
 ## 0. Bàn giao từ gd1_10 (30/10/2026)
 
 <!-- handoff: gd1_10 -->

@@ -10,6 +10,28 @@
 | Phụ thuộc mới | `image` (MIT / Apache-2.0, chỉ PNG) — đã có trong cây qua xcap |
 | File đụng tới | `crates/ui/src/save.rs` MỚI · `crates/core/src/naming.rs` MỚI · `crates/core/src/lib.rs` SỬA · `crates/ui/src/overlay/view.rs` SỬA · `i18n/{vi,en}.toml` SỬA |
 
+## 0. Bàn giao từ gd1_03 (30/10/2026)
+
+<!-- handoff: gd1_03 -->
+
+- **Đã có sẵn để dùng**: phím + nút đã nối — `OverlaySession` là `EventEmitter<ToolbarAction>` (`overlay/toolbar.rs`:
+  `Save | SaveAs | Copy | Close`); Ctrl/⌘+S ⇒ `Save`, Ctrl/⌘+Shift+S ⇒ `SaveAs`, nút trên thanh cũng vậy (log
+  `overlay: action save`). Chỉ cần `cx.subscribe(&session, …)` trong `overlay::open` (cạnh `dev::run_script`) rồi gọi
+  `save.rs` — **không** cần sửa `view.rs` cho phím nữa.
+- Vùng: `session.selection.selected()` (đã chọn xong, kể cả lúc đang kéo chỉnh — `action` đã chặn khi `grabbing()`), cắt
+  bằng `session.crop(rect)` (RGBA, ghép nhiều màn, khe trong suốt) — gỡ `#[cfg_attr(not(test), expect(dead_code))]` của
+  `crop`. Đóng overlay: `session.close(cx)` (đã hoãn `defer`).
+- **Đổi so với spec này**: phím đã ở `view.rs::on_key` qua `ToolbarAction::for_key`; dòng "File đụng tới" sửa
+  `view.rs` có lẽ không cần — thêm `overlay/mod.rs` (subscribe) thay vào. Vùng chỉnh có thể nằm một phần trong khe giữa
+  các màn (kẹp theo hình bao desktop) — PNG giữ phần đó trong suốt.
+- **Huỷ hộp thoại ⇒ quay lại overlay**: overlay thật luôn-trên-cùng có thể đè hộp thoại hệ thống — soát `prompt_for_new_path`
+  khi cửa sổ PopUp topmost đang mở (màn giả không lộ được lỗi này ⇒ [owner-qa]).
+- **Bẫy đã gặp**: kịch bản dev `key` giờ phát cả key-up (nút GPUI chỉ bấm bằng Enter / Space lúc nhả phím) — test bấm nút
+  bằng bàn phím: `key 0 tab` ×n rồi `key 0 enter`; Esc khi focus ở nút phải trả focus về gốc (đã sửa). Thanh công cụ
+  chỉ dựng ở cửa sổ của màn chứa góc dưới phải vùng, log `overlay: toolbar on <màn> at x,y size WxH`.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui --test overlay` (5 test màn giả, mẫu `fake_overlay_edit_selection_and_toolbar`
+  dùng `key 0 ctrl-s`); chi tiết `plan/gd1_03_selection-edit.md` mục 9.
+
 ## 1. Làm gì
 
 - **Ctrl/Cmd+S** (và nút Lưu): cắt `Frozen::crop(vùng)` → PNG vào `save.imageDir` (mặc định Pictures của OS) tên

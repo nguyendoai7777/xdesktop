@@ -5,6 +5,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd2_06] CPU WARP lúc vẽ nét vượt mục tiêu**: 1,6–2,4 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd2-report.md` mục 2.3). Đo lại khi máy rảnh trước; nếu vẫn vượt, thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.
+- **[gd2_06 · owner-qa] Kiểm tay GĐ2 — một danh sách, `fastcast/docs/gd2-report.md` mục 4** (gồm `gd2_04`, `gd2_05` ở dưới). Xong ⇒ `close-phase` GĐ2 khi GĐ1 cũng xong.
+
 - **[gd2_05 · owner-qa] Con lăn + bảng màu**: `fst` thật, chụp vùng, chọn công cụ. Lăn con lăn có nấc + vuốt touchpad: mỗi nấc đổi một bước, nhãn `N px` gần con trỏ, không nhảy loạn; lăn giữa lúc kéo; lăn lúc đang gõ chữ có Unikey (con trỏ + IME không mất). Bảng màu (phím `c`): kéo ra ngoài ô vẫn bám, gõ hex không bật công cụ — lý do: máy dùng thật, session không chạy overlay thật, con lăn thật.
 
 - **[gd2_04 · owner-qa] Gõ tiếng Việt vào ô chữ**: chạy `fst` thật, chụp vùng, phím `t`, click, gõ Telex + VNI qua Unikey / EVKey: không mất / nhân đôi chữ, ô ứng viên đúng chỗ; thử cả màn scale khác 100 % + vùng vắt hai màn khác scale (chữ không đổi cỡ vật lý, ảnh lưu khớp) — lý do: máy dùng thật, session không gõ phím thật; màn giả luôn theo scale màn chính.

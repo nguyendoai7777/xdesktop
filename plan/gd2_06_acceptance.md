@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ |
 | Repo | fastcast |
 | Cỡ | S — ~120 dòng test |
 | Phụ thuộc | gd2_01 → gd2_05 |
@@ -40,6 +40,13 @@ Báo cáo có số đo, danh sách kiểm tay.
 
 ## 8. Nợ chuyển task khác
 
+CPU WARP lúc vẽ nét: `plan/_backlog.md`. Không có task GĐ2 nào nhận.
+
 ## 9. Bàn giao thực tế
+
+Gộp `master` ở `747f90d`. Bài đo `measure_annotated_{stress,typical}`; báo cáo `fastcast/docs/gd2-report.md`; bàn giao GĐ2 ở `fastcast/ROADMAP.md`.
+
+- Máy bận suốt buổi đo (tải 51–100 %), đã ghi trong báo cáo.
+- GĐ2 **chưa đóng**: chờ chủ dự án kiểm tay; không chạy `close-phase`.
 
 ## 10. Đề xuất cải tiến

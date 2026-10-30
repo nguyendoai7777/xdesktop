@@ -28,6 +28,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd2_06] Ghi ✅ dù WARP lúc vẽ nét 1,6–2,4 nhân, vượt mục tiêu ≤ 1 — phương án khác: tối ưu ngay trong GĐ2 — vì sao: chế độ nhẹ vẫn dùng được, số đo lúc máy bận, chưa có RDP thật để biết có giật không; đã gạch backlog.
+
 - [gd2_05] Con lăn lên = tăng theo sự kiện dòng của OS (không đảo theo "natural scrolling") — phương án khác: đảo trên macOS — vì sao: chưa có máy Mac thử.
 - [gd2_05] Một sự kiện dòng = một nấc, bất kể cài đặt số dòng của Windows; touchpad 30 px một nấc — phương án khác: chia theo 3 dòng — vì sao: cài đặt OS không làm đổi cảm giác; 30 px là ước lượng, chờ kiểm tay.
 - [gd2_05] Mỗi công cụ nét nhớ độ dày riêng cả trong config; không nhớ đậm / nghiêng / gạch chân qua lần mở sau — phương án khác: nhớ cả ba — vì sao: yêu cầu chỉ nêu màu, độ dày, cỡ chữ; bật đậm lần trước dễ gây bất ngờ.

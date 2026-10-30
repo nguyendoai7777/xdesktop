@@ -85,7 +85,17 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   acrylic Windows 10 có thể trễ — kiểm tay.
 - [dark-neutral] Ô tìm của launcher vẫn là `TextField` có khung, nền `surface` ĐẶC (không phủ alpha) — phương án khác:
   nền ô alpha / ô trần không khung kiểu Raycast — vì sao: ô nhập vẽ vòng hover / focus bằng `ring_shadow` (bóng dưới
-  nền) ⇒ nền alpha bị ám hồng khi focus; ô trần là đổi bố cục (ngoài phạm vi) — mục 10 của task.
+  nền) ⇒ nền alpha bị ám hồng khi focus; ô trần là đổi bố cục (ngoài phạm vi) — mục 10 của task. **Đã thay** ở lượt
+  sửa sau kiểm: ô trần `InputBase` theo yêu cầu header kiểu Raycast.
+- [dark-neutral] Nhấp ra ngoài launcher tự ẩn: ngoài `AllowSetForegroundWindow` từ daemon, UI còn đọc foreground + nút
+  chuột mỗi 50 ms khi launcher hiện — phương án khác: hook chuột toàn cục `WH_MOUSE_LL` / chỉ dựa sự kiện mất active
+  của GPUI — vì sao: hook toàn cục làm chậm chuột cả máy khi luồng UI bận; sự kiện GPUI không tới khi cửa sổ không
+  giành được foreground (nguyên nhân lỗi). Nhịp 50 ms chỉ chạy lúc launcher hiện.
+- [dark-neutral] Giữ `focus_search` trong `on_select` của launcher (khuyến nghị là bỏ) — vì sao: dòng của `VirtualList`
+  lấy focus ở `on_click` lúc nhả chuột, sau handler nhấn chuột của cha ⇒ bỏ thì nhấp dòng mất con trỏ chữ (test bắt).
+- [dark-neutral] Icon app tạm: ba lớp chồng tự vẽ (`fastcast/crates/ui/assets/app-icon.svg`, nét `currentColor`, tô
+  theo màu chữ) — phương án khác: lấy icon `layers` của lucide (ISC) — vì sao: tự vẽ khỏi soát giấy phép; đổi icon chỉ
+  thay tệp.
 
 - [ripple / window] `materiant::window::window_options()` = `WindowOptions` mặc định với `inactive_frame_interval:
   None`; gallery + mọi cửa sổ materiant nên trải `..window_options()` — phương án khác: giữ mặc định GPUI (cửa sổ không

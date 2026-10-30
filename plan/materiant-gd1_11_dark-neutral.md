@@ -132,15 +132,51 @@ Xong 30/10/2026. materiant `bf55fe9` (nhánh `1722dbf`), fastcast `7928d81` (nh�
   (`fastcast-ui --endpoint dev --command open_launcher` với `fake_daemon`, hoặc Alt+Space của bản thật) đặt trên một
   cửa sổ sáng / ảnh nền sặc sỡ ⇒ thấy nền đen hơi trong, phía sau nhoè; kéo thanh trên không giật; chữ vẫn nét.
 - Opus chọn 30/10/2026 (D-9, ghi `plan/confirm.md`): màu nền cụ thể, `layer` thay vì đổi cả thang sang alpha, `Blurred`
-  + sáng giữ đục, ô tìm launcher vẫn nền đặc.
+  + sáng giữ đục, ô tìm launcher vẫn nền đặc (đã thay bằng ô trần ở lượt sửa dưới).
+
+### Sửa sau kiểm (30/10/2026, cùng lượt — chủ dự án báo qua session điều phối)
+
+materiant `09857b9` (nhánh `ee94406`), fastcast `ccfe42f` (nhánh `3017173` + `e8b6d34`).
+
+- **Viền focus hồng quanh danh sách khi nhấp khoảng trống**: (a) materiant `list.rs` — vòng focus chỉ khi
+  `focused && window.last_input_was_keyboard()` (như Button / Tabs), `debug_selector` `list::FOCUS_RING_SELECTOR`; test
+  `ui-tests/tests/scroll.rs::focus_ring_only_after_keyboard` (đỏ khi bỏ bản sửa). (b) launcher: vùng kết quả
+  `on_mouse_down` trả focus về ô tìm (handler của danh sách chạy trước). **Giữ** `focus_search` trong `on_select` —
+  khác khuyến nghị bỏ: dòng gọi `window.focus(danh sách)` ở `on_click` (lúc NHẢ chuột, sau mouse-down của cha) ⇒ bỏ thì
+  nhấp dòng lại mất focus ô tìm (test bắt được). Test `clicking_results_keeps_caret_in_search` (đỏ khi bỏ handler).
+- **Header kiểu Raycast** (`launcher/view.rs`): ô tìm = `gpui_base::input::{InputState, Input}` trần (không khung /
+  nền / vòng), chữ `1rem` (16 px), placeholder màu `muted` (theme gpui-base đồng bộ); cao 56, lề 18, icon app 22 cách
+  chữ 12; vạch ngăn `border` (trắng 8 %) hết bề ngang; ô `.occlude()`, phần còn lại `.drag_region()`. Placeholder đổi
+  ngôn ngữ đặt thẳng `set_placeholder` (không dựng lại ô). Nhãn trợ năng `Role::TextInput` + placeholder.
+- **Icon app**: `crates/ui/assets/app-icon.svg` (tạm: ba lớp chồng, nét `currentColor`, tự vẽ — không chép bộ icon
+  nào) nhúng qua `crates/ui/src/assets.rs` (`AssetSource` của fastcast: `fastcast/app-icon.svg` + ủy quyền mọi icon
+  materiant; `app.rs` `.with_assets(crate::assets::Assets)`). Đổi icon = thay tệp SVG.
+- **Nhấp ra ngoài tự ẩn** — nguyên nhân khả dĩ nhất (1): UI nhận lệnh qua IPC nên Windows chặn `SetForegroundWindow`
+  (chỉ tiến trình vừa nhận input — daemon — được phép); GPUI có mẹo `SendInput(Alt)` trong `activate()` nhưng không
+  chắc ăn ⇒ cửa sổ không active ⇒ GPUI không bao giờ báo "mất active", `LauncherView` không ẩn. (2) loại: GPUI có xử lý
+  `WM_ACTIVATE` cho popup (`events.rs:787`). (3) loại: `was_active` chỉ đặt trong observer. Sửa hai lớp:
+  - daemon `platform::allow_foreground(pid)` (`AllowSetForegroundWindow`) trước mỗi lần gửi lệnh cho UI (đang nối,
+    vừa nối, vừa bật) — không thêm phụ thuộc / RAM.
+  - UI `platform::{DismissWatch, dismiss_sample}`: khi launcher hiện (không `--background`) đọc mỗi 50 ms foreground +
+    nút chuột (`GetAsyncKeyState`) + cửa sổ dưới con trỏ (`WindowFromPoint`, cùng tiến trình ⇒ không tính — IME);
+    ẩn khi từng active rồi app khác lên trước, hoặc vừa NHẤN chuột ngoài cửa sổ của mình (nút giữ sẵn lúc mở không
+    tính). Huỷ vòng khi ẩn. 3 test thuần trong `platform::tests`; test cũ `losing_focus_hides_only_after_being_active`
+    giữ.
+- Đo lại (release, `--background`): RAM hiện 14,1–14,2 MB, khung đầu cửa sổ mới 52–65 ms, hiện lại 0,2 ms — như trước.
+- Soát xanh: materiant 171 test + clippy + deny; fastcast 118 test + clippy + deny + `fmt --check -p fastcast-ui -p
+  fastcast-daemon`. `foreground_unchanged=True`.
+- **Kiểm tay thêm** (không tự nhấp thật trên máy chủ dự án): chạy `fst` thật, Alt+Space ⇒ gõ được ngay (launcher
+  active); nhấp ra desktop / cửa sổ khác ⇒ launcher ẩn; Alt+Tab ⇒ ẩn; kéo thanh trên ⇒ không ẩn; nhấp khoảng trống dưới
+  "Settings" ⇒ không viền hồng, gõ tiếp vẫn lọc; nhìn header: icon ba lớp, ô trần, vạch mảnh dưới.
 
 ## 10. Đề xuất cải tiến
 
-Bảo mật / riêng tư: không áp (chỉ màu / nền cửa sổ). RAM: không thêm (bảng mục 9).
+Bảo mật / riêng tư: `GetAsyncKeyState` / `WindowFromPoint` chỉ đọc trạng thái nút + cửa sổ dưới con trỏ, không ghi
+log, chỉ lúc launcher hiện. RAM: không thêm (bảng mục 9).
 
-- [ux] Ô tìm của launcher có khung + nền đặc, Raycast dùng ô trần trên nền mờ — `launcher/view.rs` `TextField` +
-  `field/shell.rs:208` nền `f.bg` đặc — thêm `TextField::bare()` (không viền, nền trong, không vòng `ring_shadow`) và
-  dùng ở launcher — giống mẫu hơn — S — P3 (đổi bố cục, để chủ dự án chọn sau khi nhìn bản này).
+- [ux] ~~Ô tìm launcher có khung + nền đặc~~ — đã làm ở lượt sửa (ô trần InputBase).
+- [ux] Nhấp icon khay khi launcher đang hiện ⇒ vòng theo dõi ẩn nó (nhấn chuột ngoài) rồi lệnh mở của khay hiện lại
+  (nháy) — `launcher/mod.rs::watch_dismiss` + `toggle` — bỏ qua lần mở trong ~300 ms sau khi ẩn vì nhấp ngoài — S — P3.
 - [ux] Dựng cửa sổ launcher mới chậm thêm ~27 ms với nền mờ — bảng mục 9 — chấp nhận (bản dựng sẵn 0,2 ms); nếu thấy
   trễ khi mở lần đầu sau nhả GPU thì đặt acrylic sau khung đầu — S — P3.
 - [pro] Độ mờ / màu nền launcher tuỳ chỉnh (Settings → Appearance) — chỗ hợp huy hiệu "Pro" — chỉ ghi (D-4).

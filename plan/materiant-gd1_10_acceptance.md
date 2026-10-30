@@ -17,7 +17,8 @@
 - **Đã có sẵn để dùng**: launcher kiểu Raycast nên mở bằng `WindowOptions { .., ..materiant::window::translucent_window_options() }`
   (nền `Blurred` — acrylic) + nền gốc `materiant::window::translucent_surface(cx)`; nền hàng hover / chọn, chip phím
   dùng `cx.theme().colors().layer(Neutral::N…)` (trắng phủ alpha) — `VirtualList` và `Kbd` đã dùng sẵn. Mẫu thật:
-  `fastcast/crates/ui/src/launcher/{mod,view}.rs`.
+  `fastcast/crates/ui/src/launcher/{mod,view}.rs` — header kiểu Raycast dùng ô trần `gpui_base::input::{InputState,
+  Input}` (không `TextField`), icon app qua `AssetSource` riêng; `VirtualList` giờ chỉ vẽ vòng focus khi bàn phím.
 - **Đổi so với lúc viết spec này**: tông tối mặc định giờ là đen trung tính (`DARK_SURFACE` `#1c1c1c`, chữ `#f5f5f5`, phụ
   `#a3a3a3`, viền trắng 8 %) — ảnh so với spike / bản web ở nền tối sẽ khác (spike slate) — so theo ảnh mẫu Raycast.
   Tông sáng không đổi.

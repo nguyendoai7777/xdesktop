@@ -10,6 +10,18 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_06 (30/10/2026)
+
+<!-- handoff: gd3_06 -->
+
+- **Đã có sẵn để dùng**: `fastcast-rec` thật. Chạy thử không quay màn: `source_probe --serve --size 1280x720` in `hwnd=<số>`, đặt `FASTCAST_REC_WINDOW=<số>`. Mẫu đo một lượt 60 s: `plan/gd3_06_rec-worker.md` mục 5 (3,9 %, 26,7 MB, 0 ô rớt, máy bận 61 %) ⇒ lấy số chính thức ở đây, lúc không làn nào chạy.
+- **Nợ chuyển sang đây** (`[owner-qa]`, C15): vùng thật trên một màn, vắt hai màn khác DPI, tiếng khớp hình bằng tai. Đường theo màn chưa chạy lần nào.
+- **Nợ chuyển sang đây** (`[ux]`, P2): `DisplayChanged`, `CaptureLost` giữa chừng ⇒ worker vẫn chốt tệp đích rồi `Failed`, nhưng UI chỉ báo lỗi, không nói video còn. Soát `record/mod.rs` của gd3_11 khi đã gộp; `fake_rec --fail-after` hiện xoá `.part` nên không tái hiện được ca này.
+- **Nợ chuyển sang đây** (`[bảo mật]`, P3): rec bị giết cứng để lại `.mp4.part` không phát được. Dọn ở UI khi bắt đầu quay, trong `save.videoDir`.
+- **Đối chiếu**: gạch backlog `[gd3_04 → gd3_13]` ghi RAM quay 44–53 MB qua `Encoder`; lượt 60 s của `fastcast-rec` đọc 26,7 MB ở cùng cách đo (`WorkingSetPrivate`). Đo lại rồi xoá gạch đó nếu vẫn dưới 35 MB.
+- **Bẫy đã gặp**: `Finished.secs` là số giây tròn xuống (60,9 s báo 60). Chạy `cargo test -p fastcast-video`, không `--test session` một mình: thiếu `source_probe`.
+- **Soát lại khi làm**: bật UI thật với `FASTCAST_REC_EXE` bỏ trống, `FASTCAST_REC_WINDOW` đặt sẵn, `FASTCAST_OVERLAY_FAKE=1` ⇒ chuỗi UI ↔ worker thật chưa ai chạy (gd3_11 chỉ thử bằng `fake_rec`).
+
 ## 0. Bàn giao từ gd3_07 (30/10/2026)
 
 <!-- handoff: gd3_07 -->

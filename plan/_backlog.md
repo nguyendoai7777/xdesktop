@@ -6,6 +6,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 ## fastcast
 
 - **[gd3_07] Báo UI khi mất thiết bị âm giữa cuộc quay**: hiện chỉ có log, đoạn sau im mà người dùng không biết (`audio.rs` `imp::run`). Cần `RecEvent` mới trong `worker.rs` và chữ i18n — lý do: tệp chung, luật làn GĐ3 cấm sửa trong làn; làm sau khi GĐ3 gộp xong.
+- **[gd3_06 · owner-qa] Quay vùng thật bằng `fastcast-rec`** (`plan/gd3_06_rec-worker.md` C15): một màn, vắt hai màn khác DPI, tiếng khớp hình bằng tai — lý do: máy dùng thật, session chỉ quay cửa sổ thử. Gộp vào danh sách của gd3_13.
+- **[gd3_06] Video chịu được sập giữa lượt**: `moov` ở cuối nên `.part` của tiến trình bị giết cứng không phát được; thử `MFTranscodeContainerType_FMPEG4` — lý do: đổi container phải soát lại QuickTime, cần máy Mac.
 - **[gd3_07 · owner-qa] Kiểm tay âm thanh**: `plan/gd3_07_rec-audio.md` C6 (micro + hệ thống 60 s khớp hình, rút tai nghe, đổi thiết bị mặc định, micro bị chặn) — lý do: session không được mở micro trên máy chủ dự án, không rút được thiết bị. Gộp vào danh sách của gd3_13.
 
 - **[gd2_06] CPU WARP lúc vẽ nét vượt mục tiêu**: 1,6–2,4 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd2-report.md` mục 2.3). Đo lại khi máy rảnh trước; nếu vẫn vượt, thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.

@@ -1,4 +1,5 @@
 - [Chủ dự án](user-profile.md) — nói tiếng Việt, dev web chuyển sang Rust desktop, làm ở máy nhà Windows + công ty Ubuntu + Mac; quyết định ghi ở docs/decisions.md
 - [AppData ảo hoá MSIX](msix-appdata-virtualization.md) — exe chạy từ app Claude ghi config/log vào LocalCache của gói, khác AppData thật
 - [Không dừng hỏi](feedback-no-blocking-questions.md) — session nào cũng tự chọn, ghi plan/confirm.md, không AskUserQuestion (D-9)
+- [Chạy thử ở màn DELL](feedback-test-on-dell.md) — cửa sổ thử chỉ mở ở màn phụ DELL, màn LG để chủ dự án dùng
 - [Hạn chế chữ hoa trên UI](feedback-avoid-uppercase-ui.md) — nhãn giao diện viết thường, chủ dự án thấy chữ hoa khó chịu

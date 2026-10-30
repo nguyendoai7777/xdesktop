@@ -93,6 +93,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   29/10/2026 tạo — giữ dùng tiếp, hoặc xoá bằng Explorer (session Claude chỉ thấy bản ảo hoá, memory
   `msix-appdata-virtualization`).
 
+- **Kiểm tay gd1_04 (C8, C9 — `plan/gd1_04_save-image.md` mục 6)**: Lưu thành… trên overlay thật (hộp thoại phải nổi trên overlay, huỷ thì về overlay, phím vẫn nhận); bấm thông báo "Đã lưu" mở Explorer đúng tệp, ✕ chỉ đóng, rê chuột dừng đếm giờ — lý do: máy dùng thật, session không chạy overlay thật / không mở Explorer.
+- **Chỉnh `save.imageDir` trong Settings** (F-8 ghi "chỉnh được", gd1_04 mục 10): hiện chỉ sửa tay `config.json` — lý do: Settings thuộc GĐ4, chưa có.
+
 ## materiant
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).

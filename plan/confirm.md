@@ -113,6 +113,16 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_07] Không giao Sonnet — phương án khác: giao phần ghép hộp thoại / i18n — vì sao: dính chặt pha capture phím của
   `LauncherView` + interceptor, interface đổi trong lượt.
 
+- [gd1_04] Mã hoá PNG mức `Fast` (ảnh nhiễu 3840 × 1080: 89 ms, 6,1 MB) — phương án khác: `Default` (1 129 ms, 4,7 MB) — vì sao: overlay đứng tới khi tệp xuống đĩa; đổi lại tệp lớn hơn ~30 %. Đổi ở `crates/ui/src/save.rs::encode`.
+- [gd1_04] Overlay chỉ đóng SAU khi tệp đã xuống đĩa — phương án khác: đóng ngay rồi ghi nền — vì sao: spec đòi lỗi thì không mất vùng chọn.
+- [gd1_04] "Đã lưu" dùng cửa sổ thông báo riêng (`notice::show_saved`), không dùng `materiant::toast` như spec — phương án khác: thêm hành động bấm + cửa sổ trong suốt cho Toast ở materiant — vì sao: overlay đóng rồi thì Toast không còn cửa sổ để gắn, và Toast chưa có hành động bấm. Lỗi lưu vẫn dùng Toast vì overlay còn mở.
+- [gd1_04] Thư mục `imageDir` người dùng tự chọn mà mất ⇒ báo lỗi, không tạo lại; Pictures mặc định chưa có thì tạo — phương án khác: luôn tạo — vì sao: tạo lại khi ổ USB đã rút sẽ ghi ảnh sang chỗ người dùng không ngờ.
+- [gd1_04] Tên gõ trong hộp thoại có đuôi khác `.png` ⇒ nối thêm (`a.jpg` ⇒ `a.jpg.png`), trùng thì `_2` — phương án khác: giữ nguyên tên — vì sao: nội dung là PNG; hộp thoại chỉ hỏi ghi đè cho tên người dùng thấy.
+- [gd1_04] `platform::exit_now` (`TerminateProcess`) ngay sau `ui stopped` — phương án khác: tìm gốc treo trong GPUI rồi vá — vì sao: treo chập chờn, tiến trình nằm mãi; không còn gì cần dọn lúc thoát. Chưa rõ gốc treo.
+- [gd1_04] Thêm biến môi trường `FASTCAST_CONFIG_FILE` vào `paths::config_file` (daemon cũng đọc) — phương án khác: tham số dòng lệnh chỉ ở UI — vì sao: test phải không đụng cấu hình + Pictures thật; biến cùng người dùng đặt nên không mở thêm quyền.
+- [gd1_04] Cửa sổ thông báo bật `WDA_EXCLUDEFROMCAPTURE` — phương án khác: chờ nó đóng rồi mới chụp — vì sao: không làm chậm lệnh chụp; đổi lại app khác (ghi hình, chia sẻ màn) cũng không thấy thông báo.
+- [gd1_04] Mẫu tên tệp + JPEG / WebP đặt chỗ "Pro" ở `ROADMAP.md` GĐ4 — phương án khác: miễn phí — vì sao: D-4 chỉ đặt chỗ.
+
 ## materiant
 
 - [dark-neutral] Tông tối mặc định: nền `#1c1c1c`, chữ `#f5f5f5`, chữ phụ `#a3a3a3`, viền trắng 8 %, viền ô nhập

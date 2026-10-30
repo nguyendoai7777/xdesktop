@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | S — ~150 dòng |
-| Phụ thuộc | gd4_01 |
+| Phụ thuộc | — (không đụng tệp của gd4_01, chạy cùng đợt 0) |
 | Quyết định áp dụng | F-10, D-2 |
 | Phụ thuộc mới | `build-dependency`: `embed-resource` (MIT, chỉ lúc build); soát `cargo deny`. Icon khay giải mã bằng `resvg` hay PNG sẵn: chọn cách không thêm crate vào daemon lúc chạy |
 | File đụng tới | MỚI `assets/icon/app-icon.{ico,icns,png}`, `tools/export-icon.ps1`, `crates/daemon/build.rs`, `crates/ui/build.rs`, `crates/daemon/res/app.rc`, `crates/ui/res/app.rc`; SỬA `crates/daemon/src/tray.rs`, `crates/daemon/Cargo.toml`, `crates/ui/Cargo.toml`, `Cargo.lock` |

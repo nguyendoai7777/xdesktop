@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | materiant |
 | Cỡ | S — ~80 dòng |
-| Phụ thuộc | gd3_13 đã gộp `master` (chủ dự án chốt 30/10/2026); song song với gd4_01, khác repo |
+| Phụ thuộc | — (song song với gd4_01, khác repo) |
 | Quyết định áp dụng | D-4, D-6, D-10 |
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `src/badge.rs`, `examples/gallery/pages/badge.rs`; SỬA `src/lib.rs`, `examples/gallery/{main,pages/mod}.rs`, `CLAUDE.md` (bảng module) |

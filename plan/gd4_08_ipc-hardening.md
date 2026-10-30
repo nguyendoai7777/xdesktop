@@ -5,7 +5,7 @@
 | Trạng thái | ☐ |
 | Repo | fastcast |
 | Cỡ | M — ~350 dòng |
-| Phụ thuộc | gd4_01; soát gd3_13 trước (backlog gd3_05 giao gd3_13 xử lý `FASTCAST_REC_WINDOW`) |
+| Phụ thuộc | — (không đụng tệp của gd4_01, chạy cùng đợt 0). Phần chặn biến dev ở bản release gộp SAU gd3_13: nó đang đo bản release bằng `FASTCAST_REC_WINDOW` (backlog gd3_05 giao nó xử lý biến này); gd3_13 chưa gộp thì gộp phần pipe trước |
 | Quyết định áp dụng | F-4, D-9 |
 | Phụ thuộc mới | — (thêm feature của `windows-sys` có sẵn) |
 | File đụng tới | SỬA `crates/core/src/ipc.rs`, `crates/daemon/src/ipc_server.rs`, `crates/ui/src/ipc.rs`, `crates/ui/src/{ocr,record}/client.rs`, `crates/video/src/source/mod.rs`, `crates/ocr/src/main.rs` (biến `FASTCAST_OCR_MODELS`), `crates/{core,ui,video,ocr}/Cargo.toml` (feature `dev-env`); MỚI `crates/core/tests/ipc_security.rs` |

@@ -42,6 +42,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   4. `--rect 100,100,1280,720 --secs 60 c.mp4` trên từng màn: dòng `MEASURE` (`skipped_slots`, CPU, RAM), `--verify c.mp4`.
   5. Mở tệp bằng Media Player, QuickTime (Mac), trình duyệt; chữ có đọc được không. Thử cửa sổ có DRM: hiện đen?
   Kết quả ghi `fastcast/docs/spikes/video.md` mục 6 + chọn WGC / DXGI ở `plan/confirm.md` trước GĐ3.
+- **[gd3_05 · owner-qa] DXGI + con trỏ tự vẽ qua `source::open`** — lý do: máy dùng thật, session không quay màn của chủ dự án; `for_monitor` và `DxgiSource` mới biên dịch + test phần thuần, spike chưa có con trỏ DXGI nên bước trên không phủ. Sau gd3_06, quay màn thật bằng `fastcast-rec` với `FASTCAST_REC_BACKEND=dxgi`, xem xong xoá tệp: đúng vùng, con trỏ đúng chỗ + đúng cỡ trên từng màn, không để lại vết khi rê, chữ I-beam đảo màu, không viền vàng; log không có `dxgi unavailable`. Đổi độ phân giải giữa lúc quay ⇒ `DisplayChanged`. Không nhận viền vàng WGC ⇒ đổi mặc định ở `parse_backend`.
+- **[gd3_05 · bảo mật] `FASTCAST_REC_WINDOW` có hiệu lực ở bản release** — lý do: gd3_06, gd3_13 cần để đo; gd3_13 đo xong xử lý cùng đề xuất `exe_path` của gd3_01.
 - **[gd0_06] Test `fake_overlay_drag_across_monitors_then_close_and_reopen` đỏ một lần** (`fastcast-ui still running`, quá
   hạn, master 7e29ba5, máy bận): chưa rõ do tải hay lỗi thật, ngoài phạm vi spike — chạy lại `cargo test -p fastcast-ui --test
   overlay` lúc máy rảnh.

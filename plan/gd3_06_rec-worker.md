@@ -10,6 +10,19 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/video/src/session.rs`, `crates/video/src/bin/fastcast-rec.rs`; MỚI `crates/video/tests/session.rs` |
 
+## 0. Bàn giao từ gd3_05 (30/10/2026)
+
+<!-- handoff: gd3_05 -->
+
+- **Đã có sẵn để dùng**: `source::open(&job, &d3d) -> Result<Vec<Box<dyn Source>>, RecError>`; `source::rec_error(&windows::core::Error) -> RecError` đổi lỗi của `poll` (bố cục đổi ⇒ `DisplayChanged`, còn lại ⇒ `CaptureLost`, có log sẵn); `source::{create_device, create_bgra, monitors}`.
+- **Biến dev**: `FASTCAST_REC_WINDOW=<hwnd>` ⇒ `open` quay cửa sổ đó, cắt theo `job.region.w/h`, bỏ qua `x`, `y`. Lấy HWND: `source_probe --serve --size 1280x720` in `hwnd=<số>`, giữ cửa sổ tới khi stdin đóng; tiến trình riêng nên CPU của luồng vẽ không lẫn vào `fastcast-rec`. Mã vạch giống spike, `mp4_verify` đọc được.
+- **Đổi so với spec**: `WgcSource::for_window` thêm tham số `canvas: (u32, u32)`. `source::open` tự khai DPI per-monitor, bin không cần khai.
+- **Chưa làm phần `.part` / khung ghép**: canvas do vòng quay tạo bằng `create_bgra(region.w, region.h)`; khe giữa các màn dựa vào texture mới là đen (D3D11 chưa cam kết trên giấy, thực tế đúng).
+- **Bẫy**: `poll == true` không có nghĩa ảnh mới: WGC cửa sổ đưa ~140 khung / s dù cửa sổ vẽ 60 Hz. Đừng đếm `stale_ticks` theo đó để suy ra rớt khung; rớt khung thật tính bằng `Pacer` + mã vạch.
+- **Bẫy**: chờ khung đầu như spike (tối đa 2 s, thoát khi mọi nguồn có khung). DXGI bật con trỏ chỉ đưa lên khi đã có khung màn. `poll` trả `Ok(false)` khi mất quyền (UAC, khoá màn), không phải lỗi; rút màn thì `Watched` báo trong ≤ 500 ms.
+- **Bẫy**: nguồn theo màn chưa chạy lần nào (`plan/gd3_05_video-source.md` mục 9). Session không quay màn thật ⇒ nếu thấy lỗi ở đường theo màn, đó là `[owner-qa]`, không tự thử trên màn chủ dự án.
+- **Soát lại khi làm**: `source_probe` (đọc đủ), `source_probe --resize` (`DisplayChanged`), rồi `fastcast-rec` với `FASTCAST_REC_WINDOW` giết giữa chừng theo mục 6.
+
 ## 0. Bàn giao từ gd3_01 (30/10/2026)
 
 <!-- handoff: gd3_01 -->

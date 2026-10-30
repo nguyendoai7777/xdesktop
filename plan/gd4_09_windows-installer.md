@@ -10,6 +10,14 @@
 | Phụ thuộc mới | Công cụ dev NSIS (zlib / libpng, cài bằng `winget install NSIS.NSIS`), không vào exe |
 | File đụng tới | MỚI `installer/windows/fastcast.nsi`, `tools/build-installer.ps1`, `tools/installer-e2e.ps1`; SỬA `tools/fetch-ocr-models.ps1`, `spikes/ocr/results/manifest.int8-mix.toml`, `crates/ocr/src/engine/mod.rs`, `crates/daemon/src/cli.rs` |
 
+## 0. Bàn giao từ gd4_08 (31/10/2026)
+
+<!-- handoff: gd4_08 -->
+
+- **Đã có sẵn để dùng**: `pwsh tools/check-no-dev-env.ps1 -Dir <target>/release` soát bốn exe, thấy tên biến dev thì thoát 1. Build không `dev-env` mới qua.
+- **Việc của task này**: `build-installer.ps1` gọi script đó sau bước build, thoát khác 0 thì dừng.
+- **Bẫy**: client của `Endpoint::daemon()` từ chối server khác thư mục ⇒ `fst.exe`, `fastcast-ui.exe` phải cài cùng thư mục.
+
 ## 0. Bàn giao từ gd4_06 (30/10/2026)
 
 <!-- handoff: gd4_06 -->

@@ -76,7 +76,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   5. Mở tệp bằng Media Player, QuickTime (Mac), trình duyệt; chữ có đọc được không. Thử cửa sổ có DRM: hiện đen?
   Kết quả ghi `fastcast/docs/spikes/video.md` mục 6 + chọn WGC / DXGI ở `plan/confirm.md` trước GĐ3.
 - **[gd3_05 · owner-qa] DXGI + con trỏ tự vẽ qua `source::open`** — lý do: máy dùng thật, session không quay màn của chủ dự án; `for_monitor` và `DxgiSource` mới biên dịch + test phần thuần, spike chưa có con trỏ DXGI nên bước trên không phủ. Sau gd3_06, quay màn thật bằng `fastcast-rec` với `FASTCAST_REC_BACKEND=dxgi`, xem xong xoá tệp: đúng vùng, con trỏ đúng chỗ + đúng cỡ trên từng màn, không để lại vết khi rê, chữ I-beam đảo màu, không viền vàng; log không có `dxgi unavailable`. Đổi độ phân giải giữa lúc quay ⇒ `DisplayChanged`. Không nhận viền vàng WGC ⇒ đổi mặc định ở `parse_backend`.
-- **[gd3_05 · bảo mật] `FASTCAST_REC_WINDOW` có hiệu lực ở bản release** — `plan/gd4_08_ipc-hardening.md` nhận; chặn phải báo lỗi, không rơi sang quay màn thật (`plan/gd3_13_acceptance.md` mục 8).
+- **[gd4_08 · owner-qa] Pipe thật** — lý do: làn không được chạy `fst` thật. Cài vào `%LOCALAPPDATA%`, bật `fst`, `fst status | Out-Host` trả trạng thái, phím tắt mở được UI (`ui.log` có `ipc: connected`). Trên Mac / Ubuntu: `cargo test -p fastcast-core guarded_socket_is_private`.
+- **[gd4_08 · lỗi test] `fake_wheel_needs_a_tool_and_adds_up_touchpad_deltas` đỏ trên `master` ecbebf7** — `crates/ui/tests/overlay.rs:750` thấy log `overlay: size` trước `mark before`; đỏ 6/6 lần ở bản không có gd4_08, 1 lần xanh ở bản có gd4_08. Chưa tìm nguyên nhân, ngoài phạm vi; làm bốn lệnh soát của mọi làn đỏ.
 
 - **Kiểm T3 thật**: `fst autostart on` → khởi động lại máy → daemon lên sau ~12 s, logon không chậm →
   `fst status | Out-Host`. Gộp vào gd1_11 nếu chưa làm trước.
@@ -86,10 +87,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   giấy phép) hay `libappindicator` (GTK, LGPL — phải hỏi) — gd0_07.
 - **Daemon macOS / Linux**: `crates/daemon/src/platform/other.rs` trả lỗi — vòng sự kiện macOS (NSApplication) + Linux
   (sau gd0_07). Autostart macOS (`SMAppService`) cùng bản cài GĐ4.
-- **[gd1_01 · bảo mật] Pipe IPC giả mạo được**: tạo pipe `fastcast-<user>` với `FILE_FLAG_FIRST_PIPE_INSTANCE` + DACL
-  chỉ người dùng hiện tại; UI / CLI kiểm `GetNamedPipeServerProcessId` là `fst` — chưa làm vì phải chạy daemon thật để
-  kiểm + đo RAM daemon, mà bật `fst` thật là đăng ký phím tắt toàn cục trên máy khi chủ dự án vắng. Chi tiết:
-  `plan/gd1_01_ui-process.md` mục 10.
 - **[gd1_01 · ux] Khởi động nguội UI ~300 ms**: đo từng bước khởi động GPUI, hoặc daemon bật sẵn UI headless (~4,2 MB)
   sau đăng nhập — chờ chủ dự án chọn đánh đổi RAM. `plan/gd1_01_ui-process.md` mục 10.
 - **[gd1_01 · owner-qa] Kiểm UI cùng daemon thật**: `fst run capture_region` → `ui.log` có `run capture_region`; để

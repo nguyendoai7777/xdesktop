@@ -421,3 +421,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_13] Dọn `.mp4.part` cũ hơn 24 giờ — dọn hết mỗi lần quay — vì sao: `.part` mới có thể là video đã quay xong mà worker không đặt được tên.
 - [gd3_13] Biến chạy thử ở bản release để `gd4_08` chặn, phải báo lỗi — chặn ở đây — vì sao: task đó đã nhận; im lặng bỏ biến sẽ làm bài đo quay màn thật.
 - [gd3_13] Xoá `C:/xdesktop-target/ocr-models`, giữ bản chép ở `fastcast/target/release/models` cho kiểm tay — giữ ở chỗ chung — vì sao: bàn giao gd3_03 dặn xoá; dựng lại cần Docker nên vẫn giữ một bản.
+- [gd4_08] Endpoint::custom không kiểm exe của server, chỉ Endpoint::daemon / guarded kiểm — kiểm mọi endpoint — vì sao: fake_daemon, exe test nằm khác thư mục với UI.
+- [gd4_08] Bản thiếu dev-env mà có biến quay cửa sổ thử thì fastcast-rec báo lỗi, so theo đuôi tên — bỏ qua im lặng — vì sao: gd3_13 yêu cầu, im lặng là quay màn thật.

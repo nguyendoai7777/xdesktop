@@ -142,6 +142,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_09] Thêm Shift+mũi tên, Ctrl+C, chuột phải đóng — phương án khác: đúng phím spec — vì sao: cùng phím với chọn vùng.
 
 ## materiant
+- [D-10] "trong suốt tầm 75%" đọc là độ đục 0,75 (nền còn đặc 75%) — hoặc trong suốt thật 75% (alpha 0,25, chữ khó đọc trên ảnh sáng) — vì chữ phải đọc được trên mọi ảnh nền; đổi một hằng `FLOATING_SURFACE_ALPHA` là xong. Dialog, toast giữ nền đặc — hoặc áp cả hai — vì yêu cầu chỉ nói popover và khối nổi trên overlay. Chữ phụ tông tối trên nền trắng tinh còn ~2,9:1.
 
 - [dark-neutral] Tông tối mặc định: nền `#1c1c1c`, chữ `#f5f5f5`, chữ phụ `#a3a3a3`, viền trắng 8 %, viền ô nhập
   `#424242` — phương án khác: `#202020` / nền đen hẳn `#0a0a0a` như Black Pink — vì sao: gần nhất ảnh mẫu Raycast, chữ

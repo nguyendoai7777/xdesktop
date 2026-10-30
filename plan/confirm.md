@@ -411,3 +411,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_19] Khoá `AVFormatIDKey`… dùng chuỗi — thêm `objc2-avf-audio` — chỉ cần bốn hằng, giá trị đúng bằng tên; chạy trên Mac sẽ xác nhận.
 - [gd4_19] Thêm `objc2-core-audio-types` vào khối macOS (đã có trong lock, Zlib / Apache-2.0 / MIT) ngoài dòng "Phụ thuộc mới" — tự khai báo struct — `AudioBufferList`, `AudioStreamBasicDescription` bắt buộc cho API của `objc2-core-media`.
 - [gd4_19] Mất nguồn âm giữa lượt quay thành im lặng, không mở lại — mở lại như Windows — không thử được trên máy này.
+- [gd4_06] Mở trang giấy phép bằng `open_with_system` — `open_url` như spec — khỏi mã hoá `file://` cho đường dẫn có dấu cách
+- [gd4_06] Chép văn bản giấy phép ONNX Runtime vào repo (344 KB) — đọc từ thư mục model lúc sinh — script chạy được không cần mạng, ra cùng nội dung
+- [gd4_06] Không ghi icon F-11 vào trang giấy phép — ghi như task liệt kê — dự án tự vẽ; nếu có bộ nào lấy từ ngoài thì phải thêm vào `extra.toml`

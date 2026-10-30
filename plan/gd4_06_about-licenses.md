@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) |
 | Repo | fastcast |
 | Cỡ | S — ~300 dòng |
 | Phụ thuộc | gd4_01 |
@@ -46,6 +46,24 @@ Không in đường dẫn đầy đủ của người dùng ra log.
 
 ## 8. Nợ chuyển task khác
 
+gd4_09, gd4_13, gd4_17: chép `third-party.html` vào `licenses/` cạnh `fastcast-ui` (khối bàn giao ở từng task).
+
 ## 9. Bàn giao thực tế
 
+- **Có**: `tools/gen-licenses.ps1 -Out <thư mục>` ra `third-party.html` 910 KB, 582 crate, nhãn 0BSD, Apache-2.0, BSD-2/3, BSL-1.0, CC0-1.0, ISC, MIT, MPL-2.0, Unicode-3.0, Zlib; không GPL / AGPL. Script tự dừng nếu: `cargo deny` đỏ (đã thử bằng cách bỏ MIT khỏi `deny.toml`), target lệch `deny.toml`, nhãn GPL, thiếu `gpui-pre`, `gpui-kit`, `xcap`, `ort`, `windows`, `objc2`.
+- **Soát**: chạy hai lần cùng sha256. Đối chiếu `cargo tree` của 6 target (`-e normal,build`): không thiếu crate nào ngoài crate nội bộ; trang có thêm 21 crate vì `cargo about` tính rộng hơn.
+- **Bốn lệnh soát xanh**. `settings-run.ps1 -Page about` sáng / tối: đúng màn DELL, không giành foreground, 17,7 MB. Test `settings_about` phủ: nút chỉ ghi log, log không lộ đường dẫn, thiếu tệp thì báo.
+- **Opus chọn 30/10/2026**:
+  - `cx.open_with_system(path)` thay `cx.open_url`: khỏi mã hoá `file://` cho `C:\Program Files`.
+  - Chép `LICENSE` + `ThirdPartyNotices.txt` của ONNX Runtime 1.31.1 vào `tools/licenses/texts/onnxruntime/` (344 KB): script không cần mạng hay thư mục model.
+  - `cargo about --frozen`: không gọi ClearlyDefined, kết quả không đổi theo mạng.
+  - Model đọc từ sổ `manifest.int8-mix.toml`: gd4_09 sửa nhãn `+int8-all` là trang đổi theo.
+  - Icon F-11 không vào trang: dự án tự vẽ, không phải bên thứ ba (tra `design/fastcast-icons` không thấy nguồn ngoài). GPUI, `gpui-kit` nằm ở phần crate, không ở `extra.toml`.
+  - Ba nút thành hàng, không dùng nhãn + nút: không thêm khoá i18n.
+  - Biến thử `FASTCAST_ABOUT_LICENSES` chỉ đọc khi `is_test_run`.
+- **Chờ kiểm tay** `[owner-qa]`: bản cài bấm ba nút mở đúng trình duyệt / Explorer; máy nhà không được mở trong làn. Ghi ở `_backlog.md`.
+- **Chưa chạy** trên Mac, Ubuntu: `licenses/` cạnh exe mới chỉ soát bằng unit test.
+
 ## 10. Đề xuất cải tiến
+
+Soi bốn lăng kính, không có đề xuất mới. Bảo mật: chỉ mở đường dẫn cố định, log không ghi đường dẫn. UX: dùng hết bằng phím, sáng / tối đã xem. RAM: HTML không nhúng vào exe, trang không giữ dữ liệu. Pro: không áp.

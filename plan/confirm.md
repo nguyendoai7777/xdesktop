@@ -28,6 +28,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd1_10] Nền tối chế độ nhẹ nửa độ phân giải — phương án khác: đủ độ phân giải (+~6 MB mỗi màn 1080p) — vì sao: phần bị tối không cần nét, RAM là tính năng; nhìn thấy hơi mềm khi dùng RDP thì đổi `DARK_DOWNSCALE`.
+- [gd1_10] Chế độ nhẹ vẽ 25 fps ở 1080p, giãn tới 10 fps ở 4K — phương án khác: 30 fps cố định (1,09–1,30 nhân) — vì sao: mục tiêu ≤ 1 nhân; mức giãn theo diện tích chưa đo được trên màn thật lớn.
+- [gd1_10] Phiên RDP có GPU thật cũng vào chế độ nhẹ — phương án khác: chỉ theo adapter phần mềm — vì sao: đúng spec của task; chưa thử RDP thật nên chưa biết có cần không.
 - [gd0_06] Quay theo vùng dùng Windows.Graphics.Capture (TẠM, đường theo màn chưa chạy thật) — phương án khác: DXGI Desktop
   Duplication — vì sao: có con trỏ sẵn, chạy được laptop 2 GPU, màn xoay; cái giá: **Windows 10 hiện viền vàng quanh cả màn,
   không tắt được**. Nhìn ở bước kiểm tay (`plan/_backlog.md`); không chấp nhận viền ⇒ DXGI + tự vẽ con trỏ.

@@ -10,6 +10,21 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `fastcast/docs/gd1-report.md` MỚI · `fastcast/ROADMAP.md` SỬA (mục bàn giao GĐ1) |
 
+## 0. Bàn giao từ gd1_10 (30/10/2026)
+
+<!-- handoff: gd1_10 -->
+
+- **Đã có sẵn để dùng**: `overlay/render_mode.rs`; log `overlay: render mode …` cho biết adapter + chế độ; `overlay: monitor <i>
+  rendered <n> times` khi đóng; `FASTCAST_OVERLAY_RENDER=light|full`; `FASTCAST_OVERLAY_FAKE=1080p-offscreen`.
+- **Đổi so với lúc viết spec này**: `OverlayView` không đọc phiên trong `render` (giữ `visible`); viền vùng chọn là bốn thanh
+  cho cả hai chế độ. Chế độ nhẹ: nền tối nửa độ phân giải, 25 fps ở 1080p, tới 10 fps ở 4K.
+- **Nợ chuyển sang đây**: gom kiểm tay RDP (`plan/gd1_10_light-overlay.md` C7) vào báo cáo; ghi số CPU 0,90 nhân là của WARP ép,
+  chưa có RDP thật, chưa đo 1440p / 4K.
+- **Bẫy đã gặp**: cửa sổ đủ cỡ lớn hơn màn thật có thể bị OS kẹp ⇒ số đo 4K giả không tin được. Chụp PrintWindow bằng bản
+  release: bản debug mở console và giành focus.
+- **Soát lại khi làm**: lệnh đo WARP ở `fastcast/CLAUDE.md`, trả lại `Cargo.lock` sau khi đo; đo lại lúc máy rảnh RAM sau khi nhả
+  GPU trên GPU thật (12–13 MB so với 9,1–9,6 MB ở gd1_02, chưa truy nguyên).
+
 ## 1. Làm gì
 
 - Chạy lại toàn bộ luồng GĐ1 trên bản release, máy nhà Windows 2 màn (DELL 60 Hz + LG 144 Hz), thêm một lượt đặt một

@@ -56,7 +56,7 @@ phải đổi trong thiết kế (F-3 đóng băng trước, F-4 ba tiến trìn
 
 ## 8. Nợ chuyển task khác
 
-- Daemon Linux đầy đủ + autostart kiểm thật: GĐ4 (macOS + Ubuntu đầy đủ).
+- Daemon Linux đầy đủ + autostart kiểm thật: gd4_14. Task này chặn `gd4_14`–`gd4_17`, phải làm trên máy Ubuntu (máy nhà không biên dịch chéo được Linux).
 
 ## 9. Bàn giao thực tế
 

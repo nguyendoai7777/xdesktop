@@ -28,6 +28,12 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [plan GĐ4] Pro chỉ là dòng khoá trên Settings, không làm thật theme tuỳ biến / `customIcons`, không có đường bật Pro — phương án khác: làm thật F-12 và theme tuỳ biến, khoá sau — vì sao: D-4 "chỉ đặt chỗ", không ai dùng được thì chưa đáng. Các mục Pro "chờ xác nhận" ở `ROADMAP.md` vẫn chờ.
+- [plan GĐ4] Bản cài Windows dùng NSIS, cài theo người dùng — phương án khác: WiX / MSI, Inno Setup — vì sao: giấy phép Zlib nằm trong D-2, không cần admin, một tệp. Chưa ký mã: SmartScreen sẽ cảnh báo tới khi bạn mua chứng chỉ.
+- [plan GĐ4] `gd4_10`, `gd4_12` viết trên máy nhà, soát bằng `cargo check --target`, ghi `✅ mã — chờ chạy trên Mac`; `gd4_11` phải làm trên Mac vì `fastcast-ui` không biên dịch chéo được — phương án khác: cả ba làm trên Mac — vì sao: nhanh hơn, nhưng mã FFI chưa chạy dễ phải sửa khi lên Mac thật. Đã cài thêm `rust-std` của `aarch64-apple-darwin`, `x86_64-unknown-linux-gnu` vào toolchain máy nhà.
+- [plan GĐ4] Linux đóng gói `.deb` cho Ubuntu 26.04, không AppImage / Flatpak — phương án khác: AppImage — vì sao: D-3 chỉ nhắm GNOME Ubuntu, Flatpak đổi cách portal chạy.
+- [plan GĐ4] Thêm `gd4_08` siết pipe + biến dev dù `ROADMAP.md` không nêu — phương án khác: phát hành như hiện tại — vì sao: bản cài là lần đầu tới máy người khác, pipe giả mạo được đang treo ở backlog.
+
 - [gd0_05] Cấu hình OCR cho GĐ3 là lai (det + VietOCR int8, Paddle fp32, không arena) — phương án khác: VietOCR một mình như F-6 ghi (đơn giản hơn, nhưng CER 4,65 so với 2,45, WER `code` 35,7 so với 8,3), hoặc fp32 toàn phần (184 MB, CER ngang) — vì sao: code là ca dùng chính của app chụp vùng; F-6 không nhắc Paddle làm bộ đọc nên cần chủ dự án xem. Chưa ghi `docs/decisions.md`.
 - [gd0_05] Model kèm bản cài (78 MB + dll 17 MB) — phương án khác: tải khi cần, cần máy chủ trả phí — vì sao: không tự bật dịch vụ tính tiền; đổi ý thì báo trước GĐ4.
 - [gd0_05] Chỉ đo trên ảnh tổng hợp, không chụp màn thật — phương án khác: chờ chủ dự án có ảnh — vì sao: máy dùng thật, dặn không chụp; C8 ở backlog.

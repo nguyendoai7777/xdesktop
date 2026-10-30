@@ -271,3 +271,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   lười ở lần vẽ đầu — vì sao: nợ gd1_05 / gd1_06; keymap đủ ngay từ đầu cho chip phím `MenuItem::action`.
 - [materiant-gd1_10] Nợ "dời token lên `style.rs` / `icon.rs`" không làm ở gd1_10, gom một task GĐ2 — phương án khác:
   làm luôn — vì sao: chạm ~10 module, vượt cỡ S; đóng GĐ1 dù C3 (macOS / Ubuntu) / C4 (so web) chờ kiểm tay (D-9).
+- [icon F-11] Chủ dự án gõ "25..9" ⇒ đọc là 25.9 (chữ DEL) — phương án khác: hỏi lại — vì sao: chỉ có bản 25.9 khớp.
+- [icon F-11] Bản đặc đã chọn (1.6, 11.6, 12.6, 13.2, 31.2) giữ đặc, chỉ đưa về cùng khung; chỉ bản nét mới thống nhất nét 2 — phương án khác: đổi hết sang nét — vì sao: chủ dự án viết "các icon dạng outline thì đưa về chung", và đã tự chọn các bản đặc.
+- [icon F-11] 2.7 bỏ ô nền + gradient, 1.6 / 12.6 bỏ màu riêng ⇒ một màu `currentColor` — phương án khác: giữ màu, nạp bằng ảnh — vì sao: yêu cầu ăn theo theme primary.
+- [icon F-11] 15.1 giữ nét 1 / 2 / 4 — phương án khác: nét đều — vì sao: độ dày khác nhau chính là nghĩa của icon.
+- [icon F-12] Icon tuỳ chỉnh Pro chỉ đặt chỗ (quyết định + ROADMAP GĐ4), chưa viết mã — phương án khác: thêm `IconSource` vào materiant ngay — vì sao: D-4 chỉ đặt chỗ, bộ icon cũng chưa nối vào app.

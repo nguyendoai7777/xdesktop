@@ -329,3 +329,10 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_04] AAC 128 kbps — phương án khác: 96 / 160 / 192 kbps — vì sao: ~1 MB / phút, đủ cho âm hệ thống + giọng nói.
 - [gd3_04] Thêm `examples/common/mod.rs` ngoài danh sách tệp của task — phương án khác: chép hoạ tiết vào từng example — vì sao: hai example + test cần chung; đúng trần 7 tệp.
 - [gd3_04] Dừng trước khung đầu ⇒ `Internal`, không tự ghi khung giả — phương án khác: `Encoder` tự ghi một khung — vì sao: `Encoder` không biết nội dung, gd3_06 ghi khung ghép hiện tại.
+- [gd3_12] Esc ở bảng sau khi quay = giữ + báo "đã lưu" như Ctrl+S — phương án khác: đóng im lặng — vì sao: tệp nằm lại trong thư mục, người dùng cần biết nó ở đâu; Alt+F4 thì đóng im.
+- [gd3_12] Hộp Lưu thành… gợi ý tên hiện có của video, không sinh tên theo giờ mới — phương án khác: `file_name_now` như ảnh — vì sao: tên đã theo giờ lúc quay, sinh lại chỉ làm lệch.
+- [gd3_12] Chọn đúng tệp đang có trong hộp thoại ⇒ không làm gì, báo đã lưu — phương án khác: báo lỗi — vì sao: chép đè lên chính nó rồi xoá bản cũ là mất video; người dùng chọn vậy nghĩa là giữ.
+- [gd3_12] Chép sang ổ khác xong mà không xoá được bản cũ (app khác đang mở) ⇒ tính là thành công, chỉ log — phương án khác: báo lỗi — vì sao: video đã tới nơi, báo lỗi dễ khiến người dùng tưởng hỏng; đổi lại còn thừa một bản.
+- [gd3_12] Không xoá được khi Bỏ ⇒ bảng vẫn mở, báo lỗi — phương án khác: đóng bảng — vì sao: người dùng đóng app đang giữ tệp rồi thử lại được.
+- [gd3_12] Bảng cách đáy vùng làm việc 120 px, loại khỏi ảnh chụp, không có phím tắt riêng cho Bỏ — phương án khác: sát đáy như `notice`, thêm phím Delete — vì sao: chừa chỗ cho thông báo lỗi ngay dưới bảng; bảng để đó không lọt vào lần chụp / quay sau; xoá video không nên có phím nhanh.
+- [gd3_12] Nút huỷ trong hộp xác nhận là khoá mới `record.discard_keep` ("giữ lại") — phương án khác: dùng lại `hotkey.cancel` ("Huỷ" / "Cancel") — vì sao: rõ nghĩa hơn cạnh nút "bỏ", đúng luật viết thường.

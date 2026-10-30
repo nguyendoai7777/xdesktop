@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_12 (30/10/2026)
+
+<!-- handoff: gd3_12 -->
+
+- **Đã có sẵn để dùng**: `record::finish::show`; `FASTCAST_RECORD_FINISH_KEYS="tab enter wait@300 ctrl-s"` đưa phím vào bảng (chỉ cùng `FASTCAST_OVERLAY_FAKE`, chi tiết `plan/gd3_12_record-save.md` mục 9).
+- **Nợ chuyển sang đây** (`[owner-qa]`, cho vào danh sách kiểm tay): hộp thoại Lưu thành… nổi đúng trên bảng; popup thật ở đáy màn có con trỏ, thông báo lỗi nằm ngay dưới bảng, không đè; chép video lớn sang ổ khác, ổ mạng; Tab / Enter trên từng nút.
+- **Bẫy đã gặp**: lúc nhiều làn build, `tests/overlay.rs` đỏ hàng loạt ở `wait_exit` 5 s (`common/mod.rs:115`) dù `ui stopped` đã ghi. Đây là tiến trình thoát chậm khi máy bận, không phải lỗi logic: chạy lại riêng thì 32/32 xanh. Lượt này máy rảnh thì không nên gặp; còn đỏ thì mới là lỗi thật.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui --test record_save`.
+
 ## 0. Bàn giao từ gd3_01 (30/10/2026)
 
 <!-- handoff: gd3_01 -->

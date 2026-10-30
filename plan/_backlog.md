@@ -5,6 +5,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd3_07] Báo UI khi mất thiết bị âm giữa cuộc quay**: hiện chỉ có log, đoạn sau im mà người dùng không biết (`audio.rs` `imp::run`). Cần `RecEvent` mới trong `worker.rs` và chữ i18n — lý do: tệp chung, luật làn GĐ3 cấm sửa trong làn; làm sau khi GĐ3 gộp xong.
+- **[gd3_07 · owner-qa] Kiểm tay âm thanh**: `plan/gd3_07_rec-audio.md` C6 (micro + hệ thống 60 s khớp hình, rút tai nghe, đổi thiết bị mặc định, micro bị chặn) — lý do: session không được mở micro trên máy chủ dự án, không rút được thiết bị. Gộp vào danh sách của gd3_13.
+
 - **[gd2_06] CPU WARP lúc vẽ nét vượt mục tiêu**: 1,6–2,4 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd2-report.md` mục 2.3). Đo lại khi máy rảnh trước; nếu vẫn vượt, thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.
 - **[gd2_06 · owner-qa] Kiểm tay GĐ2 — một danh sách, `fastcast/docs/gd2-report.md` mục 4** (gồm `gd2_04`, `gd2_05` ở dưới). Xong ⇒ `close-phase` GĐ2 khi GĐ1 cũng xong.
 

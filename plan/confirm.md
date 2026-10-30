@@ -40,6 +40,20 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_01] UI chỉ đọc `config.json` (thiếu / hỏng ⇒ mặc định, không ghi), `keepWarmMins: 0` ⇒ 1 phút, `fontSize` kẹp
   10–32 — phương án khác: UI cũng tạo file; 0 = không giữ ấm — vì sao: daemon là bên tạo / sửa file (tránh hai bên cùng
   ghi); giữ đúng hành vi GĐ0.
+- [gd1_06] Launcher dựng sẵn ẩn nhưng **bị đóng khi UI nhả GPU** (10 s không cửa sổ nào hiện) — phương án khác: giữ
+  launcher ẩn suốt thời gian giữ ấm (không bao giờ nhả GPU) — vì sao: GPUI từ chối nhả GPU khi còn cửa sổ, giữ launcher
+  thì RAM giữ ấm 14,2 MB thay vì 7,3 MB suốt 5 phút; mở lại trong 10 s sau lần dùng vẫn tức thì, sau đó trả thêm thời gian
+  gắn GPU + dựng cửa sổ ~200 ms (mục 9 của task).
+- [gd1_06] Ẩn / hiện cửa sổ bằng Win32 `ShowWindowAsync` (`crates/ui/src/platform.rs`) — phương án khác: đóng / mở lại cửa
+  sổ mỗi lần — vì sao: gpui-pre 0.3.10 không có `Window::set_visible` như plan ghi. macOS / Linux tạm đóng hẳn khi ẩn.
+- [gd1_06] UI **ghi** `config.json` (chỉ khoá `launcher.position`, đọc lại file rồi ghi nguyên tử như `fst autostart`)
+  — phương án khác: gửi IPC cho daemon ghi — vì sao: không thêm thông điệp IPC; daemon không giữ bản sao trong bộ nhớ để
+  ghi đè. Đổi lại lựa chọn gd1_01 "UI chỉ đọc".
+- [gd1_06] Bấm `open_launcher` khi launcher đang hiện ⇒ ẩn (bật / tắt như Raycast); nhấp một dòng = chọn, nhấp đúp /
+  Enter = chạy — phương án khác: lệnh lặp đưa cửa sổ lên trước như tính năng khác; nhấp một lần là chạy — vì sao: giống
+  Raycast / Spotlight; nhấp một lần chạy dễ chạy nhầm khi chỉ định rê chuột.
+- [gd1_06] Chân launcher chưa có "Ctrl+K Hành động" (khoá `launcher.actions` đã có trong catalog) — phương án khác: hiện
+  sẵn như bố cục mục 7 — vì sao: Ctrl+K làm ở gd1_07, hiện nhãn mà bấm không gì xảy ra gây khó hiểu.
 
 ## materiant
 

@@ -10,6 +10,32 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `crates/ui/src/launcher/actions.rs` MỚI · `crates/ui/src/launcher/recorder.rs` MỚI · `crates/core/src/ipc.rs` SỬA · `crates/daemon/src/daemon.rs` SỬA · `crates/daemon/src/hotkeys.rs` SỬA · `i18n/{vi,en}.toml` SỬA |
 
+## 0. Bàn giao từ gd1_06 (30/10/2026)
+
+<!-- handoff: gd1_06 -->
+
+- **Đã có sẵn để dùng**: `crates/ui/src/launcher/view.rs` — `LauncherView` (ô tìm `materiant::field::TextField` giữ
+  focus, `VirtualList`, chọn = vị trí trong danh sách đang hiện; `visible_commands()` / `selected()` hiện là
+  `#[cfg(test)]` — bỏ cfg nếu actions cần lệnh đang chọn). Phím bắt ở `LauncherView::on_key` (pha capture): hiện bỏ qua
+  mọi phím có Ctrl / Alt / Win ⇒ thêm nhánh `ctrl-k` ở đó (hay `on_action`) rồi `cx.stop_propagation()`.
+- `LauncherEvent::{Run(Command), Hide}` → `launcher/mod.rs::on_event`; thêm biến thể cho actions nếu cần. Mất focus ⇒
+  `Hide` (`observe_window_activation`) — menu / dialog Ctrl+K mở trong CÙNG cửa sổ (popup của gpui-base, cửa sổ bọc
+  `Root` bằng `gpui_kit::open_window`) để không làm launcher mất focus rồi tự ẩn.
+- Chip phím mỗi dòng đọc `UiState.config.hotkeys` mỗi lần hiện (`launcher::content`, `view::hotkey_label`). Gán xong
+  ⇒ cập nhật `UiState.config` (hoặc chờ `ReloadConfig` từ daemon) rồi `view.set_entries(...)` để chip đổi ngay.
+- **Đổi so với spec**: chân launcher CHƯA vẽ "Hành động Ctrl K" (khoá `launcher.actions` đã có trong catalog) — vẽ ở
+  task này (nợ mục 8 của gd1_06).
+- Ghi `config.json` từ UI đã có tiền lệ: `launcher::save_position` (đọc lại file → đổi một khoá → `config::save`, luồng
+  nền) — cùng kiểu cho `hotkeys` nếu UI ghi; nhớ cập nhật bản trong `UiState` trước.
+- **Bẫy đã gặp**: ẩn / hiện cửa sổ chỉ qua `platform::{hide, show}` (`ShowWindowAsync` — `ShowWindow` đồng bộ làm GPUI
+  mất sự kiện). Launcher ẩn vẫn nằm trong `cx.windows()`; giữ ấm đếm bằng `app::windows_open`. Đang ghi phím mà mất
+  focus ⇒ launcher ẩn ⇒ phải `ResumeHotkeys` ở nhánh `Hide`.
+- Enter của ô tìm vẫn chạy action của `InputState` rồi mới tới capture của launcher — chế độ ghi phím nên chặn ở pha
+  capture của gốc view (test: `launcher::view::tests`, mẫu `#[gpui::test]` trong bin).
+- **Soát lại khi làm**: `cargo test -p fastcast-ui launcher`; chạy thử `fastcast-ui --endpoint dev --command
+  open_launcher --background` với `fake_daemon` (gõ `open_launcher` vào stdin để bật / tắt) — không bật `fst` thật khi
+  chủ dự án vắng (đăng ký phím toàn cục). Chi tiết: `plan/gd1_06_launcher.md` mục 9.
+
 ## 1. Làm gì
 
 - Chọn lệnh trong launcher, Ctrl+K ⇒ menu: Gán phím tắt · Gỡ phím · Lịch sử… · Về mặc định.

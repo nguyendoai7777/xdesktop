@@ -10,6 +10,17 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_09 (30/10/2026)
+
+<!-- handoff: gd3_09 -->
+
+- **Đã có sẵn để dùng**: OCR chạy đủ với `fake_ocr`: `ocr::recognize`, `ocr::cancel`, `overlay/ocr_panel.rs`, `tests/ocr.rs` (15 ca, ~70 s, nối tiếp). Log để đo: `overlay: panel selection` → `ocr: show text, <n> chars` là thả chuột → chữ; `ocr: worker ready in <ms>` là nạp model; `ocr: read <n> chars in <ms>` là một lần đọc.
+- **Đổi so với spec**: chỗ dành cho panel cao 300 px thay vì 280. Biến mới `FASTCAST_OCR_IDLE_SECS`, `FASTCAST_OCR_REPLY_SECS`. Khoá `ocr.result_title` không dùng.
+- **Nợ chuyển sang đây**: RAM giữ ấm của UI sau khi dùng OCR; độ trễ thả chuột → chữ với engine thật. Chưa chạy lần nào với engine thật.
+- **Soát**: `fastcast-ocr` thật lúc chưa có engine trả `Failed { id: None, code: Internal }`, panel báo lỗi chung thay vì "thiếu model". Chưa điều tra, xem lại khi đủ engine + model.
+- **Bẫy**: `tests/overlay.rs::spawn_panel_tool` cố ý trỏ `FASTCAST_OCR_EXE` vào exe không có. `tests/ocr.rs` soát `<data_dir>/tmp` thật (không tách theo test được), đừng chạy song song với thứ khác đang OCR.
+- **Kiểm tay** (`[owner-qa]`): engine thật, ảnh thật, tiếng Việt có dấu, nền tối, chữ 11–12 px, vùng vắt hai màn; thêm Tab tới nút thử lại trên màn thật.
+
 ## 0. Bàn giao từ gd3_10 (30/10/2026)
 
 <!-- handoff: gd3_10 -->

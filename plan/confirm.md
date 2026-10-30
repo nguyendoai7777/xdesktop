@@ -360,3 +360,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_10] Ô FPS không đặt `range`, số sai báo đỏ + khoá nút — phương án khác: `range(1..=60)` — vì sao: `NumberField` kẹp khi rời ô, trái "không kẹp lặng lẽ"; cái giá: ↑ ↓ vượt 60 không dừng mà báo lỗi.
 - [gd3_10] Độ nét dùng `RadioGroup` — phương án khác: hai nút như bản vẽ — vì sao: mũi tên chọn sẵn, một điểm dừng Tab, Enter ở nhóm là bắt đầu.
 - [gd3_10] Chờ tối đa 1 s cho overlay gỡ, quá hạn vẫn quay + ghi log — phương án khác: huỷ quay — vì sao: bấm mà không có gì xảy ra tệ hơn; cái giá: khung đầu có thể dính overlay ở ca hiếm.
+- [gd3_09] Opus tự làm phần vẽ panel — phương án khác: giao Sonnet theo mục 2b — vì sao: cùng tệp với logic chép / huỷ.
+- [gd3_09] Hàng đợi OCR một chỗ, mới thay cũ — phương án khác: gửi mọi ảnh cho worker, bỏ trả lời cũ — vì sao: chỉnh vùng liên tục không dồn ảnh cũ, engine thật mỗi ảnh tốn cả giây.
+- [gd3_09] Thiếu exe `fastcast-ocr` báo "hãy cài lại" — phương án khác: lỗi chung kèm thử lại — vì sao: thử lại không giúp được gì.
+- [gd3_09] Thêm hạn 60 s khi worker không trả lời, giết + báo lỗi — phương án khác: chờ mãi như spec — vì sao: không thì panel kẹt "đang đọc" và giữ ảnh đóng băng.
+- [gd3_09] Sửa `tests/overlay.rs` (tệp của gd3_08): panel test luôn trỏ exe OCR không có — phương án khác: bỏ nút thử lại khỏi thứ tự Tab — vì sao: giữ dùng được bằng bàn phím, test không còn phụ thuộc `fastcast-ocr` thật trong `target/`.

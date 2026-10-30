@@ -60,6 +60,14 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   sâu GPUI / DirectWrite (`HeapCompact` sau khi nhả GPU đã thử: không đổi). **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên
   máy nhà (gd1_01 đo 17–26 ms) — đóng băng đã chồng lên lúc gắn; đo lại lúc máy rảnh / iGPU / máy công ty. Mục 10 của
   gd1_02.
+- **[gd1_07 · owner-qa] Gán phím thật (C7)**: bật `fst` thật → Alt+Space → Chụp vùng → Ctrl+K → Gán phím tắt… →
+  Ctrl+Shift+2 (của Thước căn; lúc ghi KHÔNG mở Thước căn) → Enter → "Lấy phím" ⇒ Ctrl+Shift+2 mở Chụp vùng; tổ hợp app
+  khác giữ ⇒ báo + Quay lại; giết `fastcast-ui` lúc đang ghi ⇒ phím tắt chạy lại ngay. `plan/gd1_07_hotkey-assign.md` mục 9.
+- **[gd1_07 · ux] PrintScreen không ghi được từ launcher trên Windows** (GPUI không báo `VK_SNAPSHOT`): subclass HWND
+  launcher bắt `WM_KEYUP VK_SNAPSHOT` khi đang ghi — chưa làm vì cần bấm phím thật để kiểm (Win11 có thể giữ PrtSc cho
+  Snipping). Mục 10 (1) của gd1_07.
+- **[gd1_07 · ux] Menu Ctrl+K mở giữa launcher** — materiant `ContextMenuExt` nhận điểm mở bằng phím (góc dưới phải như
+  Raycast); chờ materiant mở lại sau nghiệm thu gd1_10. Mục 10 (2).
 - **Dọn dữ liệu thử**: `%APPDATA%\fastcast` + `%LOCALAPPDATA%\fastcast` thật trên máy nhà do lượt chạy Task Scheduler
   29/10/2026 tạo — giữ dùng tiếp, hoặc xoá bằng Explorer (session Claude chỉ thấy bản ảo hoá, memory
   `msix-appdata-virtualization`).

@@ -83,6 +83,18 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   đã nhấn — vì sao: nhấn ở màn A nhả ở màn B thì Tab không tới được nút trên thanh (owner-qa của task).
 - [gd1_03] Không giao Sonnet (i18n + ghép nút ~80 dòng) — phương án khác: giao theo D-5 — vì sao: dính interface đang
   chốt cùng lượt, giao đi tốn hơn tự làm.
+- [gd1_07] UI gửi yêu cầu tới daemon trên chính kết nối nhận lệnh (trả lời FIFO) — phương án khác: mở kết nối `Cli` riêng
+  mỗi yêu cầu — vì sao: UI chết ⇒ daemon thấy rớt và đăng ký lại phím tắt ngay, không chờ hạn 30 s.
+- [gd1_07] Ctrl+K mở menu GIỮA launcher (`context_menu` trên gốc) — phương án khác: góc dưới phải như Raycast — vì sao:
+  `Menu` của materiant chưa mở được theo neo từ code, materiant đang nghiệm thu gd1_10; gạch `_backlog.md`.
+- [gd1_07] Thôi tạm gỡ phím tắt ngay khi bắt được tổ hợp (trước bước hỏi "Lấy phím") — phương án khác: giữ tạm gỡ tới lúc
+  ghi xong — vì sao: hỏi / ghi không cần phím tắt tắt, giảm thời gian phím tắt chết.
+- [gd1_07] Lịch sử là menu con (thời điểm tương đối + chip tổ hợp); Gỡ / Lịch sử / Mặc định trùng lệnh khác ⇒ cùng hộp
+  thoại "Lấy phím" — phương án khác: hộp thoại danh sách riêng — vì sao: ít bước, dùng lại Menu.
+- [gd1_07] Ký tự Shift của GPUI Windows (`@`) đổi ngược theo bố cục US — phương án khác: chờ GPUI lộ scan code — vì sao:
+  bàn phím tiếng Việt dùng bố cục US; AZERTY… ghi mục 10.
+- [gd1_07] Không giao Sonnet — phương án khác: giao phần ghép hộp thoại / i18n — vì sao: dính chặt pha capture phím của
+  `LauncherView` + interceptor, interface đổi trong lượt.
 
 ## materiant
 

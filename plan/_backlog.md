@@ -11,6 +11,14 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   launcher, không sửa daemon / khay (session điều phối dặn); chọn công cụ xuất ico + soát giấy phép crate nhúng resource
   là việc riêng.
 
+- **Kiểm tay gd1_05** (`plan/gd1_05_clipboard.md` C11): overlay thật, Ctrl+C / Enter / nút Chép → dán vào Paint / Word / trình
+  duyệt (đúng ảnh, đúng cỡ); đợi UI thoát rồi dán lại; thông báo hiện ở màn có con trỏ, không lấy focus — lý do: máy dùng thật,
+  session chỉ chạy màn giả.
+- **Clipboard Linux Wayland** (gd1_05): bật `wayland-data-control` của `arboard` + thử trên GNOME, soát `cargo deny` — lý do:
+  không có máy Ubuntu trong lượt.
+- **Không lưu ảnh chụp vào lịch sử Win+V** (gd1_05 mục 10): tuỳ chọn dùng `exclude_from_history` của `arboard` — lý do: chờ màn
+  Settings (GĐ4).
+
 ### GĐ0 (T0–T4 xong 29/10/2026 — chi tiết `fastcast/ROADMAP.md` mục GĐ0)
 
 - **Kiểm T3 thật**: `fst autostart on` → khởi động lại máy → daemon lên sau ~12 s, logon không chậm →

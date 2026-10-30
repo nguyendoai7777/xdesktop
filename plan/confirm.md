@@ -28,6 +28,16 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd1_05] Overlay đóng sau khi daemon báo đã chép — phương án khác: đóng ngay rồi chép nền — vì sao: hỏng thì còn vùng chọn để thử
+  lại; đổi lại overlay còn thêm ~60–110 ms với ảnh 3840 × 1080.
+- [gd1_05] Thông báo "Đã chép" là cửa sổ popup riêng (`crates/ui/src/notice.rs`) — phương án khác: `materiant::toast` — vì sao:
+  toast cần cửa sổ còn mở, overlay đã đóng; giao diện đơn giản hơn toast, chưa có animation.
+- [gd1_05] Thêm feature biên dịch `isolated` + `clipboard_probe` để đo RAM / chạy clipboard thật không đăng ký phím — phương án
+  khác: cờ / biến môi trường lúc chạy — vì sao: bản phát hành không có đường tắt phím tắt.
+- [gd1_05] `ClipboardText.text` là `PrivateText` thay vì `String` — phương án khác: đúng spec — vì sao: `{msg:?}` có ở nhiều chỗ
+  log, kiểu riêng chặn nội dung lọt vào log; dây vẫn là chuỗi JSON.
+- [gd1_05] Linux chưa bật `wayland-data-control` của `arboard` — phương án khác: bật sẵn — vì sao: không có máy Ubuntu để thử.
+
 - [gd1_01] `fastcast-ui` nhả GPU (DirectX device + luồng vsync, `request_windowing(Headless)`) sau 10 s không cửa sổ,
   gắn lại khi có lệnh — phương án khác: giữ GPU suốt thời gian giữ ấm — vì sao: giữ ấm 9,7 → 4,2 MB (Task Manager),
   private bytes 51,7 → 12,5 MB; cái giá là lệnh đầu sau khi nhả chậm thêm 17–26 ms. Muốn lệnh nào cũng nhanh tuyệt đối

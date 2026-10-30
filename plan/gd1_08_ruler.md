@@ -10,6 +10,21 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `crates/ui/src/overlay/ruler.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA |
 
+## 0. Bàn giao từ gd1_05 (30/10/2026)
+
+<!-- handoff: gd1_05 -->
+
+- **Việc của task này**: Ctrl/Cmd+C chép `W×H`: `crate::clipboard::copy_text(text, &requests).await`, `requests = cx.global::<UiState>().daemon.clone()` (không chặn vòng GPUI: chạy trong `cx.spawn`). Thông báo chung `clipboard::report(ok, cx)` ("Đã chép" / lỗi).
+- **Đã có sẵn để dùng**: `Message::ClipboardText { text: PrivateText(String) }` tối đa `ipc::MAX_CLIPBOARD_TEXT` (64 KiB), daemon
+  giữ clipboard trên luồng riêng; `crates/ui/src/notice.rs` — popup không lấy focus, dùng được sau khi overlay đóng
+  (`materiant::toast` thì cần cửa sổ còn mở). Gỡ `#[cfg_attr(not(test), expect(dead_code…))]` của `copy_text` khi dùng.
+- **Đổi so với lúc viết spec này**: trường `text` là `PrivateText`, không phải `String` — `Debug` chỉ in độ dài. Đừng log nội dung chép.
+- **Chạy thử không đụng clipboard của máy**: `fake_daemon` in `CLIPBOARD_TEXT <chữ>`, trả `Ok`; test tích hợp đọc `Message` từ
+  `conn.recv()` — mẫu `fake_overlay_copy_through_the_daemon` ở `tests/overlay.rs`.
+- **Bẫy đã gặp**: yêu cầu chép chờ daemon trả lời ⇒ giữ cờ "đang chép" để bấm lặp không gửi hai lần (mẫu `OverlaySession::begin_copy`).
+  Máy đang bật lịch sử Win+V ⇒ clipboard thật chỉ thử qua `clipboard_probe`, đừng chạy lặp.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui --test overlay`; chi tiết `plan/gd1_05_clipboard.md` mục 9.
+
 ## 0. Bàn giao từ gd1_07 (30/10/2026)
 
 <!-- handoff: gd1_07 -->

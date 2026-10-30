@@ -10,6 +10,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `overlay/{mod,view,toolbar}.rs`, `commands.rs`, `crates/ui/tests/overlay.rs`; MỚI (stub) `overlay/{ocr_panel,record_panel}.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `commands::dispatch` đầu hàm gọi `record::stop_if_recording(cx) || record::dev_hook(cx)` với `RecordRegion`: **giữ nguyên** khi nối overlay, gd3_11 và gd3_12 dựa vào. Tệp `overlay/` không bị gd3_01 đụng.
+- **Đổi so với spec**: `crates/ui/tests/ipc.rs` đã dùng `open_settings`, hai lệnh OCR / quay không còn trong `tests/`. Test trong `commands.rs` vẫn dùng `Command::OcrRegion` ở ca "other features are independent": task này sửa.
+- **Bẫy**: mở overlay cho hai lệnh đó ⇒ từ đây chúng chụp màn thật nếu thiếu `FASTCAST_OVERLAY_FAKE`, test của task phải luôn đặt biến.
+
 ## 1. Làm gì
 
 Điểm nối duy nhất trong overlay. Xong task, gd3_09 và gd3_10 chỉ sửa một tệp panel của mình.

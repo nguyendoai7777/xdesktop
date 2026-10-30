@@ -10,6 +10,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/ui/src/record/finish.rs`; MỚI `crates/ui/tests/record_save.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: stub `record/finish.rs`: `Finished { path, secs, bytes }`, `show`. Lệnh `record_region` + `FASTCAST_OVERLAY_FAKE` + `FASTCAST_RECORD_FINISHED=<tệp>` gọi `show` (giả 42 s, `bytes` theo tệp). `save.rs`: `Target`, `Target::dir`, `Failure` (kèm trường), `ask_path`, `dialog_target`, `report_failure` đã `pub(crate)`.
+- **Bẫy**: `dialog_target` cố định đuôi `png`, `report_failure` cần `Entity<OverlaySession>` mà bảng này không có ⇒ bản video viết trong `finish.rs`, dùng `notice::show` khi không có overlay. `show` chạy thẳng từ `dispatch`, mở cửa sổ phải tự bọc `app::with_gpu`.
+- **Đã có khoá**: `record.finish_title`, `save`, `save_as`, `discard`, `discard_confirm`, `saved` (`{name}`). Không có khoá báo lỗi lưu riêng: `save.failed` dùng được (`{dir}`).
+
 ## 1. Làm gì
 
 Tệp đã nằm trong `save.videoDir` lúc quay xong; bảng này quyết định số phận của nó:

@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/ocr/src/{main,worker}.rs`; MỚI `crates/ocr/tests/worker.rs`, `tools/fetch-ocr-models.ps1` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `fastcast_core::worker::{OcrRequest, OcrReply, OcrError, send, recv}`; stub `crates/ocr/src/worker.rs` (chữ ký `run`), `crates/ocr/src/main.rs` (đã có `windows_subsystem`, `IDLE` 60 s).
+- **Nợ chuyển sang đây**: `main.rs` đang truyền `"models"` tương đối, chỉ để biên dịch ⇒ đổi sang `<thư mục exe>/models/` + `FASTCAST_OCR_MODELS`.
+- **Đã chốt trong giao thức**: nạp hỏng ⇒ `Failed { id: None }` rồi thoát, `fake_ocr` thoát mã 1 ⇒ worker thật giữ cùng mã. JSON lạ ⇒ `Failed { id: None, code: Internal }`, đọc tiếp.
+- **Bẫy**: stdout chỉ để nói giao thức, không `println!`. Cả dòng `Text` phải vừa `ipc::MAX_LINE` (1 MiB), `worker::recv` bên UI từ chối dòng dài hơn ⇒ chữ quá dài trả `Internal`.
+
 ## 1. Làm gì
 
 - `worker::run`: gửi `Ready` sau khi nạp model; nhận `Recognize`, đọc tệp RGBA, **xoá tệp ngay cả khi lỗi**, trả `Text` / `Failed`.

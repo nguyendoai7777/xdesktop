@@ -10,6 +10,13 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/video/src/audio.rs`; MỚI `crates/video/examples/audio_probe.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: stub `crates/video/src/audio.rs` (`AudioPacket { pcm: Vec<i16>, pts: i64 }`, `AudioCapture`, `start`). Feature `Win32_Media_Audio`, `Win32_Media_KernelStreaming`, `Win32_Media_Multimedia`, `Win32_Devices_FunctionDiscovery`, `Win32_System_Com_StructuredStorage`, `Win32_System_Variant` đã khai, chưa dùng thử: thiếu thì commit nhỏ riêng.
+- **Đã chốt**: `pts` đơn vị 100 ns, cùng `Encoder::write_audio`. `audio` là module đa nền ⇒ thân WASAPI bọc `#[cfg(windows)]`, OS khác trả `Unsupported`.
+
 ## 1. Làm gì
 
 - `audio::start`: WASAPI, `System` = loopback thiết bị phát mặc định, `Mic` = thiết bị thu mặc định. Luồng riêng, gửi `AudioPacket { pcm, pts }` qua kênh.

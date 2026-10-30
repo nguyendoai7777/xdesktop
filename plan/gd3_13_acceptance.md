@@ -10,6 +10,12 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Soát lại khi làm**: `cargo tree -p fastcast-daemon` không đổi ở gd3_01 (đã so `master`), không đo lại RAM daemon vì hợp đồng. Trên `master` hậu GĐ3: `cargo tree -p fastcast-ui` vẫn không có `fastcast-video`, `fastcast-ocr`. Nhánh OS khác chưa biên dịch thử (máy thiếu target): soát ở GĐ4.
+
 ## 1. Làm gì
 
 - **Chạy một mình, máy rảnh**: mọi số đo độ trễ / CPU của lượt này, không làn nào build song song.

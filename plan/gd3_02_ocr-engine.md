@@ -10,6 +10,14 @@
 | Phụ thuộc mới | `ort` =2.0.0-rc.15 `load-dynamic` (MIT / Apache-2.0), `ndarray`, `sha2`, `toml` — bản ghim theo `fastcast/spikes/ocr/Cargo.toml` sau gd0_05 |
 | File đụng tới | MỚI `crates/ocr/src/engine/{det,rec,imgops,manifest,pipeline}.rs`, `crates/ocr/examples/ocr_bench.rs`; SỬA `crates/ocr/src/engine/mod.rs`, `crates/ocr/Cargo.toml`, `Cargo.lock` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `crates/ocr/src/lib.rs` (`Recognizer`, re-export `RgbaImage`, `OcrError`), stub `engine/mod.rs` (`Engine::load`, `impl Recognizer`). `image` 0.25 đã khai trong `crates/ocr/Cargo.toml`, không codec: spike cần `png` / `jpeg` thì bật feature khi thêm `ort`.
+- **Đổi so với spec**: `crates/ocr` có `[lib] fastcast_ocr` + `[[bin]] fastcast-ocr`.
+- **Soát lại khi làm**: `cargo clippy -p fastcast-ocr --all-targets -- -D warnings`, `cargo test -p fastcast-ocr`, `cargo deny check licenses`. Chi tiết: `plan/gd3_01_contracts.md` mục 9.
+
 ## 1. Làm gì
 
 - Chuyển `spikes/ocr/src/{det,rec,imgops,manifest,pipeline}.rs` sang `engine/`, bỏ nhánh chỉ phục vụ đo (`paddle`, cờ đảo màu bộ dò, preset `scene`), chỉ giữ preset `screen` + model fp32 / int8 theo kết luận `docs/spikes/ocr.md`.

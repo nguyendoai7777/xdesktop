@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/video/src/session.rs`, `crates/video/src/bin/fastcast-rec.rs`; MỚI `crates/video/tests/session.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `fastcast_core::worker::{RecRequest, RecordJob, RecEvent, RecError, MIN_RECORD_EDGE, RECORD_FPS, RECORD_RES, send, recv}`; `bin/fastcast-rec.rs` là khung tối thiểu, **chưa có luồng đọc stdin** cho `Stop` / `Abort` (mẫu: `crates/ui/examples/fake_rec.rs`, đứt kênh = `Stop`).
+- **Đã chốt**: `Abort` không có sự kiện nào nữa; `Failed` là sự kiện cuối; đích đã có ⇒ `OutputUnwritable`.
+- **Nợ chuyển sang đây**: `res`, `fps` ngoài `RECORD_RES` / `RECORD_FPS` (config sửa tay) ⇒ từ chối trước khi mở; `RecError` chưa có mã riêng nên dùng `Internal` + log.
+- **Bẫy**: stdout chỉ để nói giao thức. `fake_rec` thoát 1 khi `Failed`, stub bin hiện thoát 2 ⇒ UI không được dựa vào mã thoát.
+
 ## 1. Làm gì
 
 - Vòng quay một luồng kiểu kéo theo `docs/spikes/video.md` mục 4, luồng `ABOVE_NORMAL`, không MMCSS.

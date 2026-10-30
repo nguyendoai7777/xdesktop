@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) |
 | Repo | fastcast |
 | Cỡ | M — ~600 dòng, phần lớn là kiểu dữ liệu + stub (`todo` có kiểu, không logic) |
 | Phụ thuộc | — (làm được ngay, song song với gd2_04 / gd2_05 vì không đụng `overlay/`) |
@@ -150,4 +150,28 @@ Thân hàm: bảng làn ở `fastcast/ROADMAP.md` mục GĐ3.
 
 ## 9. Bàn giao thực tế
 
+**Kết quả** (30/10/2026, Windows 10 máy nhà): C1, C2, C3, C5, C6 xanh. Soát sau khi gộp `master` (có gd2_04, gd2_05): `cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test --no-fail-fast` (`core` 64, `ui` 189 + `ipc` 5 + `overlay` 32 + `picker` 6; phần bị bỏ qua là các bài đo `--ignored`), `cargo deny check licenses`. `cargo tree -p fastcast-ui` không có `fastcast-video`, `fastcast-ocr`.
+
+- **C4** chạy tay qua stdin: `fake_ocr` đủ 5 mã `--fail`, sai cỡ ⇒ `image_unreadable`, tệp ảnh bị xoá, `--text ""`, `--die-after` thoát 3. `fake_rec` đủ 8 mã, `Stop`, stdin đóng ⇒ chốt tệp, đích đã có, `Abort` không còn `.part`, `--fail-after`, `--die-after`, vùng 33 px ⇒ `region_too_small`. Stub thật: `fastcast-ocr` ra `failed / internal`, `fastcast-rec` ra `failed / unsupported`, cùng thoát 2.
+- **C5**: `grep` `ocr_region`, `record_region` trong `crates/ui/tests/` không còn dòng nào. Một test `record_dev_hooks_run_on_fake_overlay` đã viết và xanh (`FASTCAST_RECORD_REGION`, `FASTCAST_RECORD_FINISHED` trên màn giả) rồi **gỡ** để giữ đúng điều kiện này; biến chạy thử sẽ được `tests/record_control.rs`, `tests/record_save.rs` phủ lại.
+- **Đo**: `cargo tree -p fastcast-daemon` giống hệt `master` (đã bỏ đường dẫn rồi so md5) ⇒ không đo lại RAM daemon.
+- **Test đỏ một lần, lúc máy đang build song song**: `fake_save_writes_exact_pixels_across_monitors` (hết giờ chờ log; riêng 2 lần xanh), `fake_color_panel_picks_a_color_and_hex_typing_does_not_trigger_tools` của gd2_05 (hết giờ chờ thoát; riêng 3 lần xanh). Chạy lại cả tệp `overlay` đều xanh. Đúng loại đã ghi ở `ROADMAP.md`; `save.rs` chỉ đổi visibility.
+- **Gộp `master`**: xung đột `crates/core/src/config.rs` (`record` cạnh `annotate` của gd2_05), giữ cả hai.
+- **Chưa kiểm**: nhánh OS khác của `crates/video`, `crates/ocr` chưa biên dịch thử (máy không có target Linux / macOS). Không có việc kiểm tay.
+
+**Khác spec, Opus chọn 30/10/2026 (D-9, đã ghi `plan/confirm.md`)**
+
+- `target_size` là mã thật ở `fastcast_core::worker`, `video::size` re-export: spec tự mâu thuẫn, gd3_10 cần hàm này trong UI mà UI không được phụ thuộc `fastcast-video`.
+- `source::{D3d, create_device, create_bgra}` là mã thật: gd3_04 chạy song song với gd3_05 cần device.
+- `crates/ocr/Cargo.toml` phải sửa (dòng "File đụng tới" thiếu): thêm `[lib]`, `fastcast-core`, `image`, `log`. `crates/video` thêm `fastcast-capture` để dùng `geometry`.
+- Thêm ngoài mục 3: `worker::{send, recv, parse_code, exe_path, target_size}`, hằng `OCR_EXE_VAR`, `REC_EXE_VAR`, `OCR_EXE`, `REC_EXE`, `RECORD_FPS`, `RECORD_RES`; `record::dev_hook`; `encoder::Options`; `audio::{AudioPacket, AudioCapture}`; `pacer::Tick`; `compose::Blit`; `finish::Finished`.
+- Exe giả có thêm cờ cho ca của làn sau: `fake_ocr --text`, `--die-after`; `fake_rec --fail-after`, `--die-after`, `--software`, `--skipped`.
+- Hai biến `FASTCAST_RECORD_*` kích hoạt qua lệnh `record_region` trong `commands::dispatch`, vì `app.rs` không thuộc tệp của task.
+- `OcrError` không có `Unsupported` (đúng mục 3) ⇒ stub OCR trả `Internal`. Hàm không trả `Result` (`Pacer`, `default_bitrate`) dùng `todo!`, chưa ai gọi tới.
+- Hai exe con đặt `windows_subsystem = "windows"` ở bản release như `fst`, `fastcast-ui`.
+
+**Soi cải tiến**: bảo mật / riêng tư: `Text` chỉ log độ dài, log không ghi đường dẫn. UI/UX: không áp, chưa có giao diện; khoá i18n viết thường. RAM: daemon không đổi. Pro: không áp.
+
 ## 10. Đề xuất cải tiến
+
+- `[bảo mật]` `worker::exe_path` nhận `FASTCAST_OCR_EXE` / `FASTCAST_REC_EXE` ở cả bản release (`crates/core/src/worker.rs`, hàm `exe_path`) — đề xuất: gd3_13 đo xong thì cân nhắc chỉ cho bản debug hoặc đi cùng `FASTCAST_OVERLAY_FAKE` — giá trị: bớt một đường chạy exe lạ, thấp vì kẻ đặt được biến môi trường đã chạy được mã — cỡ S — P3. Không làm trong lượt: làm bây giờ thì gd3_13 không đo được; đã ghi `plan/confirm.md`.

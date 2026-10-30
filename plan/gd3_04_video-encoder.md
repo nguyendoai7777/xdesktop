@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — (đã khai ở gd3_01) |
 | File đụng tới | SỬA `crates/video/src/{size,pacer,encoder}.rs`; MỚI `crates/video/tests/encoder.rs`, `crates/video/examples/{pattern,mp4_verify}.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đổi so với spec**: `target_size` đã là mã thật ở `fastcast_core::worker` (cùng test), `video/src/size.rs` chỉ re-export, vì UI (gd3_10) cũng cần mà không phụ thuộc `fastcast-video`. Task này chỉ còn `default_bitrate` + `Pacer`.
+- **Đã có sẵn để dùng**: `source::{D3d, create_device, create_bgra}` là mã thật (`crates/video/src/source/mod.rs`) để chạy hoạ tiết, không phải chờ gd3_05. Stub `encoder::{Options, Encoder}`, `Options` đã bỏ `Samples` (mẫu GPU), thêm `audio: bool`.
+- **Đã chốt**: API `Encoder` trả `Result<_, RecError>`, HRESULT log và đổi mã ngay trong `encoder.rs` (< 34 px ⇒ `RegionTooSmall`). Đổi chữ ký thì ghi mục 9 cho gd3_06.
+- **Soát lại khi làm**: `-p fastcast-video`; không sửa `Cargo.toml`, feature `windows` đã đủ theo spike + audio. Thiếu thì commit nhỏ riêng theo luật làn.
+
 ## 1. Làm gì
 
 - `target_size`, `default_bitrate`, `Pacer`: chép từ `spikes/video/src/plan.rs` cùng test.

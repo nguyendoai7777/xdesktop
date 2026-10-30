@@ -10,6 +10,13 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `overlay/record_panel.rs`; MỚI `crates/ui/tests/record_setup.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đổi so với spec**: `target_size` gọi từ `fastcast_core::worker` (UI không phụ thuộc `fastcast-video`). Có sẵn `MIN_RECORD_EDGE`, `RECORD_FPS`, `RECORD_RES` cùng chỗ, `config.record` (`RecordPrefs`, mặc định 720 / 30 / none / true).
+- **Đã có sẵn để dùng**: `record::start` stub ghi log `record: start <x>,<y> <w>x<h> res <n> fps <n> audio <None|System|Mic> cursor <bool>`, không ghi đường dẫn: test so dòng này.
+
 ## 1. Làm gì
 
 - Panel cạnh vùng: độ nét 480 / 720, FPS (`NumberField` 1–60), âm thanh (`Select`), con trỏ (`Switch`), nút bắt đầu. Hiện cỡ ra thật theo `target_size`.

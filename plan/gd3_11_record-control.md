@@ -10,6 +10,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/ui/src/record/{mod,client,frame,controls}.rs`; MỚI `crates/ui/tests/record_control.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `crates/ui/examples/fake_rec.rs`: `--delay-ms`, `--fail <code>`, `--fail-after <giây>`, `--die-after <giây>` (chết không chốt tệp, thoát 3), `--software`, `--skipped <n>`; ghi `.part` rồi đổi tên thật. `worker::exe_path(REC_EXE_VAR, REC_EXE)`.
+- **Đã nối**: lệnh `record_region` + `FASTCAST_OVERLAY_FAKE` + `FASTCAST_RECORD_REGION=x,y,w,h` gọi `record::start` qua `record::dev_hook` (`commands::dispatch`). Stub `start` có hai dòng log: giữ dòng `record: start …` (gd3_10 test), bỏ dòng `not implemented`. Field `output` đang `allow(dead_code)`: gỡ.
+- **Bẫy**: bật con cần `CREATE_NO_WINDOW`. `dev_hook` chạy thẳng trong `dispatch`, chưa bọc `with_gpu`: mở cửa sổ phải tự bọc. `RecEvent::Finished` không có đường dẫn: lấy từ `RecordStart.output`.
+
 ## 1. Làm gì
 
 - `record/client.rs`: bật `fastcast-rec` (`FASTCAST_REC_EXE` đè), gửi `Start`, đọc `RecEvent` ở luồng nền.

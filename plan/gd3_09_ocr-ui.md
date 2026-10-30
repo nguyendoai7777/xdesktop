@@ -10,6 +10,13 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/ui/src/ocr/{mod,client}.rs`, `overlay/ocr_panel.rs`; MỚI `crates/ui/tests/ocr.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `crates/ui/src/ocr/mod.rs` stub `recognize` (`#![allow(dead_code)]`, gỡ khi nối panel); `worker::exe_path(OCR_EXE_VAR, OCR_EXE)`; `crates/ui/examples/fake_ocr.rs`: `--delay-ms`, `--fail <code>`, `--text ""` (không chữ), `--die-after <n>` (con chết giữa chừng). Mã nạp hỏng ra `Failed { id: None }` rồi thoát, mã còn lại `Ready` rồi hỏng từng ảnh. Xoá tệp ảnh như worker thật.
+- **Bẫy**: bật con cần `CREATE_NO_WINDOW`. `ocr.copy_hint` có tham số `{copy}`, như `ruler.copy_hint`.
+
 ## 1. Làm gì
 
 - `ocr/client.rs`: bật `fastcast-ocr` cạnh exe (`FASTCAST_OCR_EXE` đè), đọc stdout ở luồng nền, giữ tiến trình giữa các lần đọc. Con chết ⇒ bật lại một lần, vẫn hỏng thì báo lỗi.

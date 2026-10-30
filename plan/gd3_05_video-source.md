@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/video/src/source/{mod,wgc,dxgi,compose}.rs`; MỚI `crates/video/examples/source_probe.rs` |
 
+## 0. Bàn giao từ gd3_01 (30/10/2026)
+
+<!-- handoff: gd3_01 -->
+
+- **Đã có sẵn để dùng**: `source/mod.rs` có `D3d`, `create_device`, `create_bgra` mã thật (giữ nguyên, gd3_04 dùng); stub `Source`, `open`, `monitors`, `wgc::WgcSource`, `dxgi::DxgiSource`, `compose::{Blit, plan}`.
+- **Đổi so với spec**: `DxgiSource::new` thêm `cursor: bool` (tự vẽ con trỏ); `compose::plan` trả `Result<_, RecError>`, spike trả `String`. Vùng ngoài desktop: khuyên `DisplayChanged`, ghi mục 9.
+- **Đã có**: `fastcast-capture` đã là phụ thuộc của `fastcast-video`, chỉ để dùng `geometry`; không gọi `xcap`.
+- **Bẫy**: bỏ `println!` của spike (`wgc: viền vàng…`): stdout của `fastcast-rec` là giao thức ⇒ dùng `log`.
+
 ## 1. Làm gì
 
 - `Source`, `WgcSource`, `DxgiSource`, `D3d`, `monitors()`: chuyển từ `spikes/video/src/capture.rs`.

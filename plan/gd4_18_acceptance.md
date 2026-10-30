@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (31/10/2026) — chờ kiểm tay, Mac, Ubuntu; GĐ4 chưa đóng |
 | Repo | fastcast |
 | Cỡ | S — ~100 dòng test + báo cáo |
 | Phụ thuộc | gd4_02 → gd4_09 (phần Windows); gd4_10 → gd4_17 (phần macOS, Ubuntu, báo cáo ghi rõ phần chưa chạy) |
@@ -66,11 +66,36 @@
 
 Tự ghi đạt cho phần macOS, Ubuntu chưa chạy. `close-phase`: chờ chủ dự án kiểm tay.
 
+## 2b. Phân vai
+
+Opus làm hết: số đo + báo cáo phải do người chạy viết, mã sửa ~60 dòng, không đáng giao. `[owner-qa]`: `docs/gd4-report.md` mục 4.
+
 ## 6. Nghiệm thu
 
-- [ ] Bốn lệnh soát xanh trên `master`; `cargo check --locked --target aarch64-apple-darwin -p fastcast-daemon -p fastcast-video -p fastcast-capture -p fastcast-ocr` xanh.
-- [ ] Bảng số có cách đo; thử Settings chỉ ở màn DELL.
+- [x] Bốn lệnh soát xanh trên bản đã gộp (nhánh không có commit nào khác `master`); `cargo check --locked --target aarch64-apple-darwin -p fastcast-daemon -p fastcast-video -p fastcast-capture -p fastcast-ocr` xanh.
+- [x] Bảng số có cách đo; thử Settings chỉ ở màn DELL (lúc đó là màn duy nhất).
 
 ## 9. Bàn giao thực tế
 
+Commit fastcast: `808216a`, `3d60e3d`, `9d6bc81`, gộp `39baa90`; báo cáo `fastcast/docs/gd4-report.md`, bàn giao `fastcast/ROADMAP.md`.
+
+**Soát trên `9d6bc81`, thấy xanh**: `cargo build`; clippy `-D warnings`; `cargo test --no-fail-fast -- --test-threads=4` 34 bộ, 644 passed, 0 failed; `cargo deny check licenses`; `cargo check --locked --target aarch64-apple-darwin` bốn crate.
+
+**Test overlay `fake_wheel_needs_a_tool_and_adds_up_touchpad_deltas`**: đua trong test, không phải máy bận, không phải sản phẩm. Trước khi sửa, lúc rảnh: 6 / 10 đỏ chạy riêng, 2 / 4 đỏ cả bộ. Sau: 30 / 30, 5 / 5, cộng hai lượt cả workspace. Chi tiết: báo cáo mục 3.
+
+**Chưa rõ gốc**: `real_ocr` đỏ 1 / 4 lần lúc rảnh, panic `common/mod.rs:103` (hết 20 s chờ log); bộ lọc của lượt đó làm mất tên dòng log. `_backlog.md`.
+
+**Màn hình**: lúc chạy Windows chỉ báo một màn, DELL S2319H, thành màn chính, LG không có. Không rõ từ lúc nào, nên có thể từ đầu lượt. Lần `settings-run` đầu tiên bị script từ chối 15 lần vì "nằm trên màn chính": cửa sổ đã mở trên DELL rồi đóng ngay, đây là màn duy nhất. Sau đó thêm `-AllowOnlyScreen` và soát "đúng một màn, tên DELL" trước mỗi bài. Không chạy `fst` thật, `isolated`, bộ cài có giao diện.
+
+**Sửa ngoài danh sách tệp**: `overlay/ruler.rs` (nợ nhãn thước), `settings/view.rs` (PageUp / PageDown), `tests/common`, `tests/overlay.rs`, `tests/settings_pro.rs`, `tools/settings-run.ps1`.
+
+**Đề xuất đã làm**: `[gd4_05 · ux P2]` PageUp / PageDown; nhãn thước theo cỡ chữ. Bản cài mới nhất ở `fastcast/dist/` (gitignore), sha256 `5ea6f34c…`, e2e im lặng xanh.
+
+**Chưa đo**: RAM daemon thật (W2); thời gian cài; `ocr_bench`.
+
+**Soi cải tiến**: bảo mật không áp, chỉ thêm phím cuộn và test. UI/UX: mục 10. RAM: không thêm phụ thuộc; giữ ấm sau Settings 6,9–7,5 MB. Pro: không áp.
+
 ## 10. Đề xuất cải tiến
+
+- [ux] Shift+Tab kẹt trong ô số — khả nghi `gpui-base` `input/base/state.rs:197` — chặn ở `materiant` `NumberField` — S — P2. Chưa làm: `materiant` đang có thay đổi chưa commit ở `src/overlay/popover.rs` (không phải của lượt này), và chặn ở Settings dễ đụng hộp thoại gán phím. Ở `_backlog.md`.
+- [ram] Lấy màu mở lần hai 59 MB, lần đầu 50 MB — báo cáo mục 2.4 — soi phần giữ lại giữa hai lần — S — P3. Ở `_backlog.md`.

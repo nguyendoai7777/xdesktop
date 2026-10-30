@@ -28,6 +28,11 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd4_18] Ghi ✅ task dù GĐ4 chưa đóng, Mac + Ubuntu chưa chạy, báo cáo ghi rõ — phương án khác: để 🔄 — vì sao: đúng mục 2 của task, `close-phase` mới chờ kiểm tay.
+- [gd4_18] Thêm `settings-run.ps1 -AllowOnlyScreen` để đo khi máy chỉ còn DELL — phương án khác: chờ cắm lại LG — vì sao: chủ dự án vắng, LG không có trong danh sách màn; cờ vô tác dụng khi có từ hai màn, mỗi bài có soát trước đúng một màn tên DELL.
+- [gd4_18] Làm PageUp / PageDown, nhãn thước theo cỡ chữ trong task nghiệm thu — phương án khác: chỉ ghi nhận — vì sao: P2 / nợ cỡ S, D-8; mã sản phẩm ~40 dòng.
+- [gd4_18] Không đo lại `ocr_bench`, thời gian cài — phương án khác: đo đủ — vì sao: engine không đổi; cài chỉ đo được qua `installer-e2e`, không in số.
+- [gd4_18] Thay `fastcast/dist/fastcast-0.1.0-setup.exe` (gitignore) bằng bản dựng từ `master` mới — phương án khác: giữ bản gd4_09 — vì sao: kiểm tay V6, V7 cần mã mới.
 - [plan GĐ4] Pro chỉ là dòng khoá trên Settings, không làm thật theme tuỳ biến / `customIcons`, không có đường bật Pro — phương án khác: làm thật F-12 và theme tuỳ biến, khoá sau — vì sao: D-4 "chỉ đặt chỗ", không ai dùng được thì chưa đáng. Các mục Pro "chờ xác nhận" ở `ROADMAP.md` vẫn chờ.
 - [plan GĐ4] Bản cài Windows dùng NSIS, cài theo người dùng — phương án khác: WiX / MSI, Inno Setup — vì sao: giấy phép Zlib nằm trong D-2, không cần admin, một tệp. Chưa ký mã: SmartScreen sẽ cảnh báo tới khi bạn mua chứng chỉ.
 - [plan GĐ4] `gd4_10`, `gd4_12` viết trên máy nhà, soát bằng `cargo check --target`, ghi `✅ mã — chờ chạy trên Mac`; `gd4_11` phải làm trên Mac vì `fastcast-ui` không biên dịch chéo được — phương án khác: cả ba làm trên Mac — vì sao: nhanh hơn, nhưng mã FFI chưa chạy dễ phải sửa khi lên Mac thật. Đã cài thêm `rust-std` của `aarch64-apple-darwin`, `x86_64-unknown-linux-gnu` vào toolchain máy nhà.

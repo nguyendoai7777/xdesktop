@@ -6,16 +6,18 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 ## fastcast
 
 - **[gd3_13 · owner-qa] Kiểm tay GĐ3 — một danh sách, `fastcast/docs/gd3-report.md` mục 4** (gồm gd3_06 C15, gd3_07 C6, gd3_05 DXGI, gd0_05 C8, gd0_06 C8–C11, gd3_09–12) — lý do: máy dùng thật, session không quay / chụp màn, không mở micro. Xong thì xoá các gạch `owner-qa` đó; `close-phase` GĐ3 khi GĐ1, GĐ2 cũng xong.
+- **[gd4_18 · lỗi test] `real_ocr` (`tests/measure.rs`) đỏ 1 / 4 lần lúc máy rảnh** — panic `common/mod.rs:103` hết 20 s chờ log; tên dòng log mất vì bộ lọc của lượt đo. Bài `--ignored`, không nằm trong bốn lệnh soát. Lý do treo: 3 lần sau xanh, chưa tái hiện; lần sau đỏ giữ nguyên log.
+- **[gd4_18 · ram] Lấy màu mở lần hai 59,3–59,7 MB, lần đầu 50,4 MB** — về 8,4–8,7 MB sau nhả GPU, không rò; P3, chưa truy.
+- **[gd4_18 · owner-qa] Kiểm tay GĐ4 — MỘT danh sách, `fastcast/docs/gd4-report.md` mục 4** (W, V, T, X, rồi M, U trên máy tương ứng). Gom các gạch `owner-qa` gd4_02 → gd4_19 và trỏ tới danh sách GĐ1, GĐ2, GĐ3. Xong thì xoá các gạch đó; `close-phase` theo thứ tự GĐ1 → GĐ4. Chưa làm vì thiếu máy: `gd4_11`, `gd4_13`, `gd0_07`, `gd4_14`–`17`.
 - **[gd3_13 · ux] Đọc cả màn đầy chữ 8–21 s**: thử giới hạn luồng / lô nhận dạng, báo tiến độ trên panel — lý do: phải đo lại CER lúc máy rảnh, GĐ4 đang chạy. `plan/gd3_13_acceptance.md` mục 10.
-- **[gd3_13 · ram] UI đang quay 11–26 ms CPU / s dù cửa sổ đứng yên**: soi nhịp vẽ — lý do: P3, không ảnh hưởng ô rớt; cần máy rảnh để đo. Số độ trễ chính thức của GĐ3 cũng chờ lượt máy rảnh (`docs/gd3-report.md` mục 5), gd4_18 có thể đo cùng.
+- **[gd3_13 · gd4_18 · ram] UI đang quay 3,4 ms CPU / s, không đồng hồ 1,5 ms / s lúc rảnh** (11–26 ms trước đây là số lúc bận): P3, không đáng soi tiếp trừ khi chủ dự án thấy cần.
 
 - **[gd4_02 · owner-qa] Tự khởi động + toast lỗi** — lý do: máy nhà không chạy `fst` thật, không khởi động lại máy. Đổi trễ ở Cài đặt → Chung, bật tự khởi động, khởi động lại máy: daemon lên sau đúng độ trễ. Đặt `config.json` chỉ đọc, đổi cỡ chữ: thấy toast lỗi, ô trả về số cũ.
-- **[gd4_02 phát hiện] `fastcast-video --test session` đỏ chập chờn lúc máy bận** — lý do: không thuộc làn, cần chạy lúc máy rảnh để biết do tải hay lỗi thật. `low_fps_stops_without_waiting_for_the_slot`, `source_lost_midway_reports_failed_and_keeps_the_video` (`session.rs:290`, nhận `Finished` thay vì `Failed`): 2 / 3 lần đỏ khi các làn khác đang build. Soát ở gd4_18.
+- **[gd4_02 · gd4_18] `fastcast-video --test session` đỏ chập chờn lúc máy bận** — lý do: lúc rảnh 11 / 11 xanh (gd4_18), chưa tái hiện lại lúc bận nên chưa loại được lỗi thật. `low_fps_stops_without_waiting_for_the_slot`, `source_lost_midway_reports_failed_and_keeps_the_video` (`session.rs:290`, nhận `Finished` thay vì `Failed`). Soát khi lần sau đỏ, giữ log.
 - **[gd4_02] Lỗi tự khởi động không tới UI** — lý do: `daemon.rs::reload` bỏ qua lỗi `autostart::apply`, sửa phải đổi ngữ nghĩa `ReloadConfig`, ngoài làn; chờ quyết định khi soát GĐ4. Chi tiết: `plan/gd4_02_settings-general.md` mục 10.
 - **[gd4_12 · owner-qa] Chạy quay + OCR trên Mac** — lý do: máy nhà Windows, mã mới qua `cargo check` + clippy target `aarch64-apple-darwin`, chưa chạy dòng nào. Trên Mac: `cargo test -p fastcast-video --test macos`; `cargo test -p fastcast-video --test macos -- --ignored` (cấp quyền Screen Recording cho terminal, quay màn thật 3 s); mở MP4 bằng QuickTime; vùng vắt hai màn; `pwsh tools/fetch-ocr-models.ps1 -Vnocr <vnocr>/models -Out <đích>`, `FASTCAST_OCR_MODELS=<đích> cargo run -p fastcast-ocr --example ocr_bench`; đo 720p30. Case C3–C8 ở `plan/gd4_12_macos-video.md`.
 - **[gd4_05 · owner-qa] Trình đọc màn hình trên dòng Pro (C6)** — lý do: máy không chạy Narrator trong làn (phát tiếng, lấy focus). Bước: bật Narrator, Cài đặt → Pro, duyệt từng dòng; mong đợi đọc "<tên>, pro" + mô tả, Tab không dừng ở dòng nào.
-- **[gd4_05 · ux P2] PageUp / PageDown cuộn trang Settings** — lý do: `settings/view.rs` ngoài tệp sở hữu của làn. Hai dòng cuối trang Pro hiện chỉ tới được bằng chuột. Chi tiết: `plan/gd4_05_pro-slots.md` mục 10.
-- **[gd4_05 · ux P2] Shift+Tab không rời ô số cỡ chữ** — lý do: chưa rõ nguyên nhân, có thể ở `materiant` `NumberField`, ngoài tệp sở hữu. Tái hiện: `settings-run.ps1 -Page general -Keys "wait tab tab tab tab shift-tab shift-tab shift-tab shift-tab wait down"`, log có `general applied`, không có `settings: page`.
+- **[gd4_05 · ux P2] Shift+Tab không rời ô số cỡ chữ** — lý do: khả nghi `gpui-base` gán `shift-tab` → `OutdentInline` (`input/base/state.rs:197`), chưa kiểm; sửa ở `materiant` `NumberField`, repo đó đang có thay đổi chưa commit. Tái hiện: `settings-run.ps1 -Page general -Keys "wait tab tab tab tab shift-tab shift-tab shift-tab shift-tab wait down"`, log có `general applied`, không có `settings: page`.
 - **[gd4_19 · owner-qa] Chạy âm thanh khi quay trên Mac** — lý do: máy nhà Windows, mã mới qua `cargo check` + clippy target `aarch64-apple-darwin`, chưa chạy dòng nào. Trên Mac: `cargo test -p fastcast-video --test macos` (ca `writer_muxes_aac_without_any_permission` có track `soun`); `cargo test -p fastcast-video --test macos -- --ignored` (`records_system_audio`, `records_microphone`: cấp Screen Recording + Microphone cho terminal); quay thật kèm âm hệ thống, kèm micro, mở QuickTime nghe khớp hình; từ chối quyền micro ra `AudioUnavailable`. Soát thêm: khoá chuỗi `AV*Key` được `AVAssetWriterInput` nhận; `SCStream` 2 × 2 không có output màn vẫn giao âm; log `rec: audio clock`. Case C3–C6 ở `plan/gd4_19_macos-audio.md`.
 - **[gd4_19 · ux P2] Xin quyền micro trước khi bật `fastcast-rec`** — lý do: đụng làn `gd4_11` (UI Mac), cần thử trên Mac. Chờ hộp thoại đang chặn luồng quay tới 60 s, `STOP_TIMEOUT` của UI 30 s. Chi tiết: `plan/gd4_19_macos-audio.md` mục 10.
 - **[gd4_19 · ux P3] Mở lại micro khi mất thiết bị giữa lượt quay** — lý do: không thử được nếu không có Mac. Hiện khoảng sau đó là im lặng.
@@ -30,7 +32,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd4_07 · owner-qa] Icon ở 100 %, 125 %, 150 % (C7)** — lý do: máy nhà không bật khay trong làn, icon khay nằm ở taskbar màn LG. Bước: cài / chạy `fst` thật ở mỗi tỉ lệ (đổi tỉ lệ rồi khởi động lại `fst`), xem icon khay nét, không ô nền, menu khay đúng cỡ; xem icon `fst.exe` trong Explorer và `fastcast-ui` ở Alt+Tab.
 - **[gd4_07 · ux P3] Icon khay theo đổi tỉ lệ khi đang chạy** — lý do: không bật được khay trên máy nhà để thử. Bắt `WM_DPICHANGED`, gọi `set_icon` với cỡ mới.
 
-- **[gd3_02 · GĐ4] Đóng gói OCR**: đưa `onnxruntime.dll` vào sổ sha256 và sửa nhãn `+int8-all` / "(all)" của `spikes/ocr/results/manifest.int8-mix.toml` (Paddle trong đó là fp32) — lý do: sổ + bản cài thuộc GĐ4; sửa bây giờ làm lệch `C:/xdesktop-target/ocr-models` các làn đang dùng chung.
 - **[gd0_05 · owner-qa] Thử OCR trên ảnh chụp thật (C8)** — lý do: máy dùng thật, session không chụp màn; số CER trong `fastcast/docs/spikes/ocr.md` chỉ là ảnh tổng hợp. Khi `fastcast-ocr` chạy được (GĐ3): chụp vùng code, chat, web sáng / tối, chữ nhỏ, xem chữ ra; dòng tiếng Việt mất dấu = `looks_like_code` chọn nhầm.
 - **[gd0_05] Đọc giấy phép dữ liệu huấn luyện của model trước khi bán** — lý do: spike chỉ tin nhãn Apache-2.0 trong sổ vnocr, không đọc giấy phép dữ liệu của `vgg_transformer` gốc + dữ liệu học thêm `vn8a30`; việc của chủ dự án, không chặn GĐ3.
 - **[gd3_10] Test `fake_picker_copies_the_pixel_retries_and_remembers_the_format` đỏ khi chuột thật nằm trên cửa sổ giả** (đọc `rgb(136 24 160)` thay vì giữa màn, chuột ở 1119,626; suy từ toạ độ, chưa kiểm bằng cách dời chuột): test giả định "con trỏ chưa di" — lý do treo: tệp của gd1_09, ngoài làn gd3_10. Sửa: màn giả bỏ qua `move` thật, hoặc đặt cửa sổ picker ngoài màn.
@@ -39,7 +40,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd3_06] Video chịu được sập giữa lượt**: `moov` ở cuối nên `.part` của tiến trình bị giết cứng không phát được; thử `MFTranscodeContainerType_FMPEG4` — lý do: đổi container phải soát lại QuickTime, cần máy Mac.
 - **[gd3_07 · owner-qa] Kiểm tay âm thanh**: `plan/gd3_07_rec-audio.md` C6 (micro + hệ thống 60 s khớp hình, rút tai nghe, đổi thiết bị mặc định, micro bị chặn) — lý do: session không được mở micro trên máy chủ dự án, không rút được thiết bị. Gộp vào danh sách của gd3_13.
 
-- **[gd2_06 · gd3_13 vẫn chưa đo lại: máy bận GĐ4] CPU WARP lúc vẽ nét vượt mục tiêu**: 1,6–2,4 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd2-report.md` mục 2.3). Đo lại khi máy rảnh trước; nếu vẫn vượt, thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.
+- **[gd2_06 · gd4_18] CPU WARP lúc vẽ nét vượt mục tiêu**: lúc rảnh 0,9–1,9 nhân, mục tiêu ≤ 1 (`fastcast/docs/gd4-report.md` mục 2.5); kéo tay nắm đã đạt 0,26–0,39. Lý do treo: chưa có RDP thật để biết có giật không, chờ C1–C2 của `gd1-report`. Thử trong chế độ nhẹ: giảm nhịp vẽ nét, hoặc giữ sẵn ảnh đã tô của các hình đã xong thay vì vẽ lại đường vector mỗi khung.
 - **[gd2_06 · owner-qa] Kiểm tay GĐ2 — một danh sách, `fastcast/docs/gd2-report.md` mục 4** (gồm `gd2_04`, `gd2_05` ở dưới). Xong ⇒ `close-phase` GĐ2 khi GĐ1 cũng xong.
 
 - **[gd2_05 · owner-qa] Con lăn + bảng màu**: `fst` thật, chụp vùng, chọn công cụ. Lăn con lăn có nấc + vuốt touchpad: mỗi nấc đổi một bước, nhãn `N px` gần con trỏ, không nhảy loạn; lăn giữa lúc kéo; lăn lúc đang gõ chữ có Unikey (con trỏ + IME không mất). Bảng màu (phím `c`): kéo ra ngoài ô vẫn bám, gõ hex không bật công cụ — lý do: máy dùng thật, session không chạy overlay thật, con lăn thật.
@@ -52,21 +53,14 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **Kiểm tay gd1_09 (C14 — `plan/gd1_09_color-picker.md` mục 6)**: trên màn HDR và màn scale 125 / 150 %, Ctrl+Shift+3 (hoặc launcher "Lấy màu"): kính lúp hiện cạnh con trỏ, mũi tên dời con trỏ thật đúng 1 px, kính lúp sang màn kia khi di chuột; Enter chép, dán ra so với màu thật — lý do: máy dùng thật không chạy overlay thật; màu HDR phụ thuộc cách `xcap` chụp, chưa kiểm.
 - **`set_cursor_pos` macOS / Ubuntu (gd1_09)**: mũi tên chưa kéo con trỏ thật — lý do: chưa có máy, làm cùng GĐ4.
 - **[gd1_08 · owner-qa] Kiểm thước tay (C6)**: `fst` thật → Ctrl+Shift+2 → đo một nút trên trang web đã biết cỡ CSS ⇒ phần `@` khớp; có màn khác DPI: trục sang đúng màn, vắt hai màn thì không có `@`; Ctrl+C rồi dán ra `W×H` — lý do: máy dùng thật, chỉ chạy màn giả cùng scale. `plan/gd1_08_ruler.md`.
-- **[gd1_08 · ux] Gợi ý trước lần đo đầu, nhãn thước theo cỡ chữ lớn**: mục 10 (4), (5) của gd1_08 — lý do: (4) chờ chủ dự án xem tay, (5) chờ Settings → Cỡ chữ (GĐ4).
+- **[gd1_08 · ux] Gợi ý trước lần đo đầu**: mục 10 (4) của gd1_08 — lý do: chờ chủ dự án xem tay. Mục (5) đã sửa ở gd4_18.
 - **Kiểm tay gd1_10 (C7 — `plan/gd1_10_light-overlay.md` mục 6)**: RDP vào máy nhà từ máy khác, bấm chụp vùng; log có `overlay: render mode Light (… remote=true)`, kéo chọn dùng được, vùng sáng nét, lưu / chép đúng; xem thêm màn 1440p / 4K nếu có — lý do: không giả lập được RDP, cũng không đo được màn lớn hơn màn thật.
-- **Icon app cho exe / khay / bản cài** (icon đã chốt 30/10/2026 — `fastcast/assets/icon/app-icon.svg`, bản đầy đủ có
-  nền ô + gradient; launcher đã dùng bản chỉ hình ở `crates/ui/assets/app-icon.svg`): chưa xuất `.ico` (16–256 px) /
-  `.png` và nhúng vào exe (`winres` / `.rc`) + icon khay (`tray-icon`) — lý do: lượt materiant-gd1_11 chỉ thay icon
-  launcher, không sửa daemon / khay (session điều phối dặn); chọn công cụ xuất ico + soát giấy phép crate nhúng resource
-  là việc riêng.
 
 - **Kiểm tay gd1_05** (`plan/gd1_05_clipboard.md` C11): overlay thật, Ctrl+C / Enter / nút Chép → dán vào Paint / Word / trình
   duyệt (đúng ảnh, đúng cỡ); đợi UI thoát rồi dán lại; thông báo hiện ở màn có con trỏ, không lấy focus — lý do: máy dùng thật,
   session chỉ chạy màn giả.
 - **Clipboard Linux Wayland** (gd1_05): bật `wayland-data-control` của `arboard` + thử trên GNOME, soát `cargo deny` — lý do:
   không có máy Ubuntu trong lượt.
-- **Không lưu ảnh chụp vào lịch sử Win+V** (gd1_05 mục 10): tuỳ chọn dùng `exclude_from_history` của `arboard` — lý do: chờ màn
-  Settings (GĐ4).
 
 ### GĐ0 (T0–T4 xong 29/10/2026 — chi tiết `fastcast/ROADMAP.md` mục GĐ0)
 
@@ -81,7 +75,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   Kết quả ghi `fastcast/docs/spikes/video.md` mục 6 + chọn WGC / DXGI ở `plan/confirm.md` trước GĐ3.
 - **[gd3_05 · owner-qa] DXGI + con trỏ tự vẽ qua `source::open`** — lý do: máy dùng thật, session không quay màn của chủ dự án; `for_monitor` và `DxgiSource` mới biên dịch + test phần thuần, spike chưa có con trỏ DXGI nên bước trên không phủ. Sau gd3_06, quay màn thật bằng `fastcast-rec` với `FASTCAST_REC_BACKEND=dxgi`, xem xong xoá tệp: đúng vùng, con trỏ đúng chỗ + đúng cỡ trên từng màn, không để lại vết khi rê, chữ I-beam đảo màu, không viền vàng; log không có `dxgi unavailable`. Đổi độ phân giải giữa lúc quay ⇒ `DisplayChanged`. Không nhận viền vàng WGC ⇒ đổi mặc định ở `parse_backend`.
 - **[gd4_08 · owner-qa] Pipe thật** — lý do: làn không được chạy `fst` thật. Cài vào `%LOCALAPPDATA%`, bật `fst`, `fst status | Out-Host` trả trạng thái, phím tắt mở được UI (`ui.log` có `ipc: connected`). Trên Mac / Ubuntu: `cargo test -p fastcast-core guarded_socket_is_private`.
-- **[gd4_08 · lỗi test] `fake_wheel_needs_a_tool_and_adds_up_touchpad_deltas` đỏ trên `master` ecbebf7** — `crates/ui/tests/overlay.rs:750` thấy log `overlay: size` trước `mark before`; đỏ 6/6 lần ở bản không có gd4_08, 1 lần xanh ở bản có gd4_08. Chưa tìm nguyên nhân, ngoài phạm vi; làm bốn lệnh soát của mọi làn đỏ.
 
 - **Kiểm T3 thật**: `fst autostart on` → khởi động lại máy → daemon lên sau ~12 s, logon không chậm →
   `fst status | Out-Host`. Gộp vào gd1_11 nếu chưa làm trước.
@@ -135,7 +128,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   `msix-appdata-virtualization`).
 
 - **Kiểm tay gd1_04 (C8, C9 — `plan/gd1_04_save-image.md` mục 6)**: Lưu thành… trên overlay thật (hộp thoại phải nổi trên overlay, huỷ thì về overlay, phím vẫn nhận); bấm thông báo "Đã lưu" mở Explorer đúng tệp, ✕ chỉ đóng, rê chuột dừng đếm giờ — lý do: máy dùng thật, session không chạy overlay thật / không mở Explorer.
-- **Chỉnh `save.imageDir` trong Settings** (F-8 ghi "chỉnh được", gd1_04 mục 10): hiện chỉ sửa tay `config.json` — lý do: Settings thuộc GĐ4, chưa có.
 
 - **[gd3_04] Windows N**: có thể `fastcast-rec.exe` không bật nổi thay vì báo `NoEncoder` (exe nhập trực tiếp từ `mfplat.dll`; suy từ cách crate `windows` liên kết, chưa kiểm) — lý do: không có máy Windows N. Khi có máy: thử; nếu đúng thì gd3_11 coi "bật exe lỗi" như `NoEncoder`, hoặc nạp trễ DLL.
 - **[gd3_04] Vùng siêu dài**: 8000 × 720 mã hoá xong nhưng Media Foundation không giải mã lại được (`0xC00D36B4`), 5120 × 720 thì được; ngưỡng chưa dò, chưa thử trình phát khác — lý do: P3, chỉ gặp khi vắt 3–4 màn với vùng thấp, ưu tiên sau các làn GĐ3.

@@ -352,3 +352,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_11] Mỗi màn một cửa sổ nền trong, viền bám mép, vẽ ngoài vùng, sát mép màn thì vào trong — phương án khác: bốn cửa sổ thanh mảnh mỗi màn — vì sao: đúng spec, ít cửa sổ hơn; RAM đo được 17–18 MB.
 - [gd3_11] Đã `Stop` mà 30 s chưa chốt ⇒ giết worker, báo lỗi — phương án khác: chờ mãi — vì sao: treo thì khung không bao giờ gỡ; chưa có exe giả để kiểm nhánh này.
 - [gd3_11] Worker lỗi / chết ⇒ UI xoá `<output>.part` — phương án khác: để worker tự lo — vì sao: chết ngang thì worker không dọn được, `.part` chứa hình màn của người dùng và không mở được.
+- [gd3_10] Opus tự làm phần `[sonnet]` — phương án khác: giao theo mục 2b — vì sao: panel và thứ tự đóng overlay cùng một tệp, lời giao dài bằng code.
+- [gd3_10] Ô FPS không đặt `range`, số sai báo đỏ + khoá nút — phương án khác: `range(1..=60)` — vì sao: `NumberField` kẹp khi rời ô, trái "không kẹp lặng lẽ"; cái giá: ↑ ↓ vượt 60 không dừng mà báo lỗi.
+- [gd3_10] Độ nét dùng `RadioGroup` — phương án khác: hai nút như bản vẽ — vì sao: mũi tên chọn sẵn, một điểm dừng Tab, Enter ở nhóm là bắt đầu.
+- [gd3_10] Chờ tối đa 1 s cho overlay gỡ, quá hạn vẫn quay + ghi log — phương án khác: huỷ quay — vì sao: bấm mà không có gì xảy ra tệ hơn; cái giá: khung đầu có thể dính overlay ở ca hiếm.

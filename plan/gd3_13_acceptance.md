@@ -10,6 +10,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_10 (30/10/2026)
+
+<!-- handoff: gd3_10 -->
+
+- **Đã có sẵn để dùng**: log `record setup: overlay released <bool> after <n> ms` đo khoảng từ đóng overlay tới `record::start`.
+- **Kiểm tay cần thêm**: `record_region` trên màn thật, chọn vùng, Enter: khung đầu video không dính overlay / ảnh đóng băng; Tab đủ độ nét → FPS → âm thanh → con trỏ → nút; đặt `save.videoDir` vào thư mục chỉ đọc: báo trên overlay, vùng còn.
+- **Bẫy**: `tests/picker.rs` (`fake_picker_copies_…`) đỏ khi chuột thật nằm trên cửa sổ giả ở góc dưới phải màn chính. Dời chuột đi, chạy lại trước khi kết luận lỗi code.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui --test record_setup`. Chi tiết: `plan/gd3_10_record-setup.md` mục 9.
+
 ## 0. Bàn giao từ gd3_06 (30/10/2026)
 
 <!-- handoff: gd3_06 -->

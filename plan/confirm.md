@@ -28,6 +28,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd1_11] Báo cáo GĐ1 ghi "chưa xác nhận" cho tiêu chí 2 màn khác Hz / khác scale, task vẫn ✅ — chờ kiểm tay, KHÔNG đóng giai đoạn — phương án khác: để task 🔄 tới khi kiểm xong — vì sao: session điều phối dặn; phần Claude làm được đã xong, không chạy được overlay / phím thật trên máy dùng thật.
+- [gd1_11] Số độ trễ trong báo cáo đo lúc spike OCR + build session khác chạy xen kẽ, không đo lại lần nữa — phương án khác: chờ máy rảnh hẳn — vì sao: session điều phối dặn xong sớm, RAM không bị ảnh hưởng; số độ trễ cuối lấy từ kiểm tay A3, A4, A11.
+- [gd1_11] Không sửa độ trễ trả RAM sau khi nhả GPU (5–7 s) — phương án khác: truy tiếp thành phần giữ — vì sao: tự hết, người dùng không gặp hậu quả, đã ghi cách đọc đúng.
 - [gd1_10] Nền tối chế độ nhẹ nửa độ phân giải — phương án khác: đủ độ phân giải (+~6 MB mỗi màn 1080p) — vì sao: phần bị tối không cần nét, RAM là tính năng; nhìn thấy hơi mềm khi dùng RDP thì đổi `DARK_DOWNSCALE`.
 - [gd1_10] Chế độ nhẹ vẽ 25 fps ở 1080p, giãn tới 10 fps ở 4K — phương án khác: 30 fps cố định (1,09–1,30 nhân) — vì sao: mục tiêu ≤ 1 nhân; mức giãn theo diện tích chưa đo được trên màn thật lớn.
 - [gd1_10] Phiên RDP có GPU thật cũng vào chế độ nhẹ — phương án khác: chỉ theo adapter phần mềm — vì sao: đúng spec của task; chưa thử RDP thật nên chưa biết có cần không.

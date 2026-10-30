@@ -5,6 +5,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **Kiểm tay GĐ1 — MỘT danh sách, theo thứ tự chạy: `fastcast/docs/gd1-report.md` mục 4** (gom mọi gạch `owner-qa` / "Kiểm tay" gd1_01 → gd1_10, T3 autostart, khác DPI, độ trễ phím thật, RDP, nền mờ, dán thật) — lý do: máy dùng thật, session không chạy overlay / phím thật. Tiêu chí 2 màn khác Hz, khác scale: **chưa xác nhận**. Xong ⇒ `close-phase` GĐ1, các gạch kiểm tay dưới đây xoá theo.
+- **[gd1_11 · ux] GPUI ghi ERROR `Invalid window handle. (0x80070578)` mỗi lần đóng overlay**: làm rối `ui.log`, khả nghi `gpui-pre-windows` `window.rs:627` — lý do treo: chưa kiểm gốc, phải vá crate ngoài, không ảnh hưởng hành vi (P3). `plan/gd1_11_acceptance.md` mục 10.
 - **Kiểm tay gd1_09 (C14 — `plan/gd1_09_color-picker.md` mục 6)**: trên màn HDR và màn scale 125 / 150 %, Ctrl+Shift+3 (hoặc launcher "Lấy màu"): kính lúp hiện cạnh con trỏ, mũi tên dời con trỏ thật đúng 1 px, kính lúp sang màn kia khi di chuột; Enter chép, dán ra so với màu thật — lý do: máy dùng thật không chạy overlay thật; màu HDR phụ thuộc cách `xcap` chụp, chưa kiểm.
 - **`set_cursor_pos` macOS / Ubuntu (gd1_09)**: mũi tên chưa kéo con trỏ thật — lý do: chưa có máy, làm cùng GĐ4.
 - **[gd1_08 · owner-qa] Kiểm thước tay (C6)**: `fst` thật → Ctrl+Shift+2 → đo một nút trên trang web đã biết cỡ CSS ⇒ phần `@` khớp; có màn khác DPI: trục sang đúng màn, vắt hai màn thì không có `@`; Ctrl+C rồi dán ra `W×H` — lý do: máy dùng thật, chỉ chạy màn giả cùng scale. `plan/gd1_08_ruler.md`.
@@ -63,8 +65,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_06 · owner-qa] Kiểm launcher tay** (C7): Alt+Space thật, Telex, bấm ra ngoài, kéo sang màn khác + mở lại, sáng
   / tối, vi / en, không chớp nội dung cũ, Alt+Space không bật menu app đang dùng — bước ở `plan/gd1_06_launcher.md`
   mục 9; lỗi chớp / Alt thì làm đề xuất 4 / 2 của mục 10.
-- **[gd1_06 · ram] UI sau khi đóng cửa sổ + nhả GPU 7,3 MB** (chưa mở cửa sổ: 4,2 MB) — soát bộ đệm glyph / font GPUI
-  còn giữ; cần đo sâu trong GPUI, ngoài phạm vi launcher. Mục 10 (3).
+- **[gd1_11 · ram] UI giữ ấm sau khi dùng overlay 8,3–8,9 MB** (chưa dùng 5,7–5,8; launcher 5,6–5,9 — số 7,3 MB cũ của gd1_06 và 9–13 MB của gd1_02 / gd1_10 là đọc lúc bộ nhớ đang được trả, `fastcast/docs/gd1-report.md` mục 3): ~3 MB còn lại, cần đo sâu GPUI / DirectWrite; P3, chưa làm vì không tăng theo số lần mở.
 - **[gd1_06 · ux] Dời launcher ẩn sang màn có con trỏ** bằng `SetWindowPos` thay vì dựng lại (~25 ms) — P3, làm khi có
   máy nhiều màn khác DPI để kiểm. Mục 10 (5).
 - **[gd1_02 · owner-qa] Kiểm overlay tay** (C11, C12): `fst` thật, phím chụp vùng — kéo DELL 60 Hz ↔ LG 144 Hz, nhãn
@@ -79,8 +80,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_02 · ux] Spawn nguội → khung đầu overlay 496–674 ms** (> 400 ms của task): cùng hướng gạch gd1_01 "khởi động
   nguội" — daemon bật sẵn UI headless; trái F-4 ("bật khi dùng") ⇒ chờ chủ dự án chọn đánh đổi RAM.
   `plan/gd1_02_region-overlay.md` mục 10.
-- **[gd1_02 · ram] Headless sau lần dùng đầu 9,1–9,6 MB** (trước: 5,3) — cùng gốc với gạch `[gd1_06 · ram]` trên, cần đo
-  sâu GPUI / DirectWrite (`HeapCompact` sau khi nhả GPU đã thử: không đổi). **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên
+- **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên
   máy nhà (gd1_01 đo 17–26 ms) — đóng băng đã chồng lên lúc gắn; đo lại lúc máy rảnh / iGPU / máy công ty. Mục 10 của
   gd1_02.
 - **[gd1_07 · owner-qa] Gán phím thật (C7)**: bật `fst` thật → Alt+Space → Chụp vùng → Ctrl+K → Gán phím tắt… →

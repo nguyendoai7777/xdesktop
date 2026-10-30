@@ -348,3 +348,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_06] Không đổi tên được ⇒ `OutputUnwritable` và giữ `.part` — phương án khác: xoá — vì sao: video đã quay xong, xoá là mất; cái giá: sót tệp riêng tư tới lần quay cùng tên.
 - [gd3_06] Không ghi đè bằng `fs::hard_link`, ổ FAT / exFAT soát rồi `fs::rename` — phương án khác: `MoveFileExW` — vì sao: không phải thêm feature vào `Cargo.toml` chung.
 - [gd3_06] Sửa `video/src/lib.rs` ngoài tệp sở hữu (hai dòng `cfg` cho `unsupported`) — phương án khác: `allow(dead_code)` — vì sao: gd3_07 và gd3_06 cùng bỏ stub nên clippy đỏ; hàm chỉ còn dùng ngoài Windows.
+- [gd3_11] Opus tự làm `controls.rs`, không giao Sonnet — phương án khác: giao theo mục 2b của plan — vì sao: view ~60 dòng dính chặt trạng thái phiên và cách đặt cửa sổ, lời giao dài bằng code.
+- [gd3_11] Mỗi màn một cửa sổ nền trong, viền bám mép, vẽ ngoài vùng, sát mép màn thì vào trong — phương án khác: bốn cửa sổ thanh mảnh mỗi màn — vì sao: đúng spec, ít cửa sổ hơn; RAM đo được 17–18 MB.
+- [gd3_11] Đã `Stop` mà 30 s chưa chốt ⇒ giết worker, báo lỗi — phương án khác: chờ mãi — vì sao: treo thì khung không bao giờ gỡ; chưa có exe giả để kiểm nhánh này.
+- [gd3_11] Worker lỗi / chết ⇒ UI xoá `<output>.part` — phương án khác: để worker tự lo — vì sao: chết ngang thì worker không dọn được, `.part` chứa hình màn của người dùng và không mở được.

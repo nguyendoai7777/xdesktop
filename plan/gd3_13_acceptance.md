@@ -22,6 +22,17 @@
 - **Bẫy đã gặp**: `Finished.secs` là số giây tròn xuống (60,9 s báo 60). Chạy `cargo test -p fastcast-video`, không `--test session` một mình: thiếu `source_probe`.
 - **Soát lại khi làm**: bật UI thật với `FASTCAST_REC_EXE` bỏ trống, `FASTCAST_REC_WINDOW` đặt sẵn, `FASTCAST_OVERLAY_FAKE=1` ⇒ chuỗi UI ↔ worker thật chưa ai chạy (gd3_11 chỉ thử bằng `fake_rec`).
 
+## 0. Bàn giao từ gd3_11 (30/10/2026)
+
+<!-- handoff: gd3_11 -->
+
+- **Đã có sẵn để dùng**: chạy thử không cần overlay: `FASTCAST_OVERLAY_FAKE=1 FASTCAST_RECORD_REGION=100,100,700,200 FASTCAST_RECORD_OUTPUT=<tệp> FASTCAST_REC_EXE=<exe> fastcast-ui --endpoint <tag> --command record_region`; lệnh lặp là dừng, `FASTCAST_RECORD_CLICK_STOP_MS=<n>` bấm nút dừng giả. `tests/record_control.rs` chạy một mình phải build `--example fake_rec` trước.
+- **Nợ chuyển sang đây** (`[owner-qa]`, cho vào danh sách kiểm tay, `plan/gd3_11_record-control.md` C12): viền + thanh không lọt video; vùng vắt hai màn khác DPI, viền liền, đúng chỗ; thanh không che vùng; bấm nút dừng bằng chuột thật; nhìn đường sẫm 1 px ở khe nối hai màn có khó chịu không; chuột bấm xuyên viền xuống app bên dưới.
+- **Đo lại lúc máy rảnh**: RAM UI lúc đang quay (sơ bộ 17–18 MB), CPU đứng yên (sơ bộ 27 ms mỗi giây, ba cửa sổ, chưa phải 0; `--delay-ms 60000` giữ `fake_rec` chưa `Started` nên đồng hồ không chạy, tách được phần đồng hồ), độ trễ phím → khung (`Screen::read` gọi `layout()` trên luồng UI, nếu chậm thì chuyển sang luồng nền).
+- **Chưa kiểm được ở làn này**: giết worker treo sau `Stop` 30 s; muốn thử thì cần exe không trả lời.
+- **Bẫy đã gặp**: lọc `Get-Process` theo đường dẫn target, không thì giết nhầm exe giả của làn khác. `Select-Object -First n` cắt pipeline làm script dọn dẹp không chạy, để sót UI cũ che số đo. Đo bằng ảnh màn thì chống chụp phải tắt, xem xong xoá ảnh.
+- **Soát lại khi làm**: E2E với `fastcast-rec` thật + bảng gd3_12: `Finished` mở đúng bảng với `output` nằm trong `save.videoDir`.
+
 ## 0. Bàn giao từ gd3_07 (30/10/2026)
 
 <!-- handoff: gd3_07 -->

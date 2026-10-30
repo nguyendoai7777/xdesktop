@@ -28,6 +28,13 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd0_06] Quay theo vùng dùng Windows.Graphics.Capture (TẠM, đường theo màn chưa chạy thật) — phương án khác: DXGI Desktop
+  Duplication — vì sao: có con trỏ sẵn, chạy được laptop 2 GPU, màn xoay; cái giá: **Windows 10 hiện viền vàng quanh cả màn,
+  không tắt được**. Nhìn ở bước kiểm tay (`plan/_backlog.md`); không chấp nhận viền ⇒ DXGI + tự vẽ con trỏ.
+- [gd0_06] Vùng vắt hai màn: mỗi màn một nguồn, ghép vào một khung, khe để đen — phương án khác: chỉ cho vùng trong một màn —
+  vì sao: overlay GĐ1 đã cho kéo xuyên màn; pixel vật lý nên không phải co. Chưa chạy thật.
+- [gd0_06] Spike vượt trần: 1 438 dòng, 8 tệp (trần 900 / 7), không tách — phương án khác: tách `--verify` + cửa sổ thử thành
+  task riêng — vì sao: spike vứt đi; phần vượt phát sinh từ yêu cầu không quay màn thật.
 - [gd1_05] Overlay đóng sau khi daemon báo đã chép — phương án khác: đóng ngay rồi chép nền — vì sao: hỏng thì còn vùng chọn để thử
   lại; đổi lại overlay còn thêm ~60–110 ms với ảnh 3840 × 1080.
 - [gd1_05] Thông báo "Đã chép" là cửa sổ popup riêng (`crates/ui/src/notice.rs`) — phương án khác: `materiant::toast` — vì sao:

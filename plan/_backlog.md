@@ -21,6 +21,19 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ### GĐ0 (T0–T4 xong 29/10/2026 — chi tiết `fastcast/ROADMAP.md` mục GĐ0)
 
+- **[gd0_06 · owner-qa] Quay màn thật** — lý do: máy dùng thật, session không quay màn của chủ dự án; đường `--rect` mới
+  biên dịch + test hàm thuần, chưa chạy lần nào. Các lệnh dưới **quay màn thật**, xem xong xoá tệp. Build
+  (`cargo build --release --manifest-path fastcast/spikes/video/Cargo.toml`), exe ở `fastcast/spikes/video/target/release/`:
+  1. `video-spike --monitors` — lấy toạ độ màn.
+  2. `video-spike --rect 100,100,1280,720 --secs 10 a.mp4`, rồi `--backend dxgi` — đúng vùng? có con trỏ? viền vàng?
+  3. Vùng vắt hai màn: `--rect <x cách ranh màn 640 px>,100,1280,720 --secs 10 b.mp4` trên DELL 60 Hz + LG 144 Hz.
+  4. `--rect 100,100,1280,720 --secs 60 c.mp4` trên từng màn: dòng `MEASURE` (`skipped_slots`, CPU, RAM), `--verify c.mp4`.
+  5. Mở tệp bằng Media Player, QuickTime (Mac), trình duyệt; chữ có đọc được không. Thử cửa sổ có DRM: hiện đen?
+  Kết quả ghi `fastcast/docs/spikes/video.md` mục 6 + chọn WGC / DXGI ở `plan/confirm.md` trước GĐ3.
+- **[gd0_06] Test `fake_overlay_drag_across_monitors_then_close_and_reopen` đỏ một lần** (`fastcast-ui still running`, quá
+  hạn, master 7e29ba5, máy bận): chưa rõ do tải hay lỗi thật, ngoài phạm vi spike — chạy lại `cargo test -p fastcast-ui --test
+  overlay` lúc máy rảnh.
+
 - **Kiểm T3 thật**: `fst autostart on` → khởi động lại máy → daemon lên sau ~12 s, logon không chậm →
   `fst status | Out-Host`. Gộp vào gd1_11 nếu chưa làm trước.
 - **Khác DPI chạy thật**: đặt một màn 125 % / 150 % → `cargo run -p fastcast-capture --example probe --release`

@@ -10,6 +10,20 @@
 | Phụ thuộc mới | `ashpd` (MIT, portal qua D-Bus) — soát; khay: `tray-icon` backend `ksni` hay `libappindicator` (GTK, LGPL) |
 | File đụng tới | `fastcast/spikes/wayland/` MỚI · `fastcast/docs/spikes/wayland.md` MỚI |
 
+## 0. Bàn giao từ gd0_06 (30/10/2026)
+
+<!-- handoff: gd0_06 -->
+
+- **Đã có sẵn để dùng**: `fastcast/spikes/video/src/plan.rs` — `compose_plan` (vùng toàn cục → mảnh từng màn, khung ghép),
+  `target_size`, `Pacer` thuần, không phụ thuộc OS; `pattern.rs` — hoạ tiết + mã vạch khung để đếm khung từ video đã giải mã.
+- **Soát khi làm**: portal `ScreenCast` có cho biết hình học từng output không — `compose_plan` cần rect vật lý của từng màn.
+  Kế hoạch Linux của video đang ghi "portal + PipeWire + GStreamer VAAPI" (`fastcast/docs/spikes/video.md` mục 8), chờ kết
+  quả task này.
+- **Bẫy đã gặp**: `#[path]` tới `crates/capture/src/geometry.rs` dùng lại hình học không kéo `xcap`; crate spike phải có
+  `Cargo.toml` riêng trước khi chạy `cargo`, nếu không lệnh rơi lên workspace fastcast. `cargo deny` của crate ngoài workspace:
+  `cargo deny --config ../../deny.toml --manifest-path Cargo.toml check licenses`.
+- **Riêng tư**: chỉ quay nội dung do spike tự vẽ khi máy đang dùng thật.
+
 ## 1. Làm gì
 
 - **Phím tắt toàn cục** qua portal `GlobalShortcuts`: đăng ký được không, hỏi quyền thế nào, đổi phím ra sao

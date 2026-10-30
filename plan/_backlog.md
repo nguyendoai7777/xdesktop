@@ -25,7 +25,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   yên > 10 s, Task Manager `fastcast-ui` ~4 MB; hết `keepWarmMins` tiến trình biến mất; `fst quit` ⇒ UI tắt theo.
 - **[gd1_06 · ux] Launcher sau khi nhả GPU ~200 ms** (bản dựng sẵn 0,2 ms): giữ GPU / launcher ẩn lâu hơn khi launcher
   vừa dùng, hoặc tăng `GPU_IDLE_DEFAULT` — chờ chủ dự án chọn đánh đổi RAM giữ ấm 7,3 ⇒ 14,2 MB; gd1_02 (song song) cũng
-  đo khung đầu overlay sau nhả GPU trên cùng hằng số. `plan/gd1_06_launcher.md` mục 10 (1).
+  đo khung đầu overlay sau nhả GPU trên cùng hằng số. `plan/gd1_06_launcher.md` mục 10 (1). → gd1_02 đã tăng
+  `GPU_IDLE_DEFAULT` 10 → 60 s (gạch `confirm.md`); còn treo nếu chủ dự án muốn khác.
 - **[gd1_06 · owner-qa] Kiểm launcher tay** (C7): Alt+Space thật, Telex, bấm ra ngoài, kéo sang màn khác + mở lại, sáng
   / tối, vi / en, không chớp nội dung cũ, Alt+Space không bật menu app đang dùng — bước ở `plan/gd1_06_launcher.md`
   mục 9; lỗi chớp / Alt thì làm đề xuất 4 / 2 của mục 10.
@@ -33,6 +34,14 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   còn giữ; cần đo sâu trong GPUI, ngoài phạm vi launcher. Mục 10 (3).
 - **[gd1_06 · ux] Dời launcher ẩn sang màn có con trỏ** bằng `SetWindowPos` thay vì dựng lại (~25 ms) — P3, làm khi có
   máy nhiều màn khác DPI để kiểm. Mục 10 (5).
+- **[gd1_02 · owner-qa] Kiểm overlay tay** (C11, C12): `fst` thật, phím chụp vùng — kéo DELL 60 Hz ↔ LG 144 Hz, nhãn
+  đúng cỡ vật lý, không màn đen / nháy; màn 125 % / 150 % nét 1:1 không lệch; Esc ở màn có con trỏ; Alt+F4 một màn đóng
+  cả hai. Bước ở `plan/gd1_02_region-overlay.md` mục 9. Máy không có màn phụ lúc làm ⇒ chưa chạy overlay thật lần nào.
+- **[gd1_02 · ux] Spawn nguội → khung đầu overlay 496–674 ms** (> 400 ms của task): cùng hướng gạch gd1_01 "khởi động
+  nguội" — daemon bật sẵn UI headless, chờ chủ dự án chọn đánh đổi RAM. `plan/gd1_02_region-overlay.md` mục 10.
+- **[gd1_02 · ram] Headless sau lần dùng đầu 9,1–9,6 MB** (trước: 5,3) — cùng gốc với gạch `[gd1_06 · ram]` trên, cần đo
+  sâu GPUI / DirectWrite. **[gd1_02 · ux] Gắn lại GPU 150–405 ms** trên máy nhà (gd1_01 đo 17–26 ms) — đo lại lúc máy
+  rảnh / iGPU / máy công ty trước khi tối ưu. Mục 10 của gd1_02.
 - **Dọn dữ liệu thử**: `%APPDATA%\fastcast` + `%LOCALAPPDATA%\fastcast` thật trên máy nhà do lượt chạy Task Scheduler
   29/10/2026 tạo — giữ dùng tiếp, hoặc xoá bằng Explorer (session Claude chỉ thấy bản ảo hoá, memory
   `msix-appdata-virtualization`).

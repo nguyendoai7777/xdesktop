@@ -10,6 +10,33 @@
 | Phụ thuộc mới | — |
 | File đụng tới | `crates/ui/src/overlay/selection.rs` SỬA · `crates/ui/src/overlay/handles.rs` MỚI · `crates/ui/src/overlay/toolbar.rs` MỚI · `crates/ui/src/overlay/view.rs` SỬA · `i18n/{vi,en}.toml` SỬA |
 
+## 0. Bàn giao từ gd1_02 (30/10/2026)
+
+<!-- handoff: gd1_02 -->
+
+- **Đã có sẵn để dùng**: `crates/ui/src/overlay/` — `selection.rs` (`SelectionState::{Idle, Dragging { start, current },
+  Selected(Rect)}`, `press` / `drag` / `release` / `cancel() -> Cancel::{Cleared, Close}`, mọi điểm toàn cục vật lý, tự
+  `Layout::clamp`); `mod.rs` (`OverlaySession { layout, shots, selection, windows }` là Entity dùng chung, `to_global(monitor,
+  (x, y), window_scale)`, `close(cx)` đóng mọi màn, `crop(rect)` cho gd1_04 / gd1_05); `view.rs` (`OverlayView`, `Geometry`
+  vẽ lớp tối / viền / nhãn, chuột di / nhả nghe bằng `canvas` + `window.on_mouse_event`).
+- **Đổi so với spec này**: `Selected(Rect)` là tuple — đổi sang `Selected { rect, grab }` thì sửa `press` (hiện nhấn khi
+  đã chọn = chọn lại từ đầu) + test trong `selection.rs`. Vùng gồm CẢ pixel góc lúc nhả (`span`: kéo 0 → 1919 = 1920);
+  cỡ tối thiểu 1 × 1 đã đúng vì nhấn – nhả tại chỗ ⇒ `Idle`. Esc / chuột phải đã là "bỏ vùng, lần hai đóng" — giữ.
+- **Vẽ lại**: `OverlayView` chỉ `notify` khi `Visible::of(session, monitor)` đổi (mảnh + cạnh thật + nhãn). Thêm tay nắm /
+  thanh công cụ / trạng thái `grab` ⇒ đưa vào `Visible`, không thì cửa sổ không vẽ lại.
+- **Phím**: mỗi cửa sổ `track_focus` handle riêng; cửa sổ có con trỏ được kích hoạt lúc mở (`activate_under_cursor`).
+  Mũi tên / Enter gắn vào `on_key_down` trong `OverlayView::render` cạnh nhánh `escape`.
+- **Thanh công cụ trọn một màn**: `session.layout.monitors` + `Layout::split` / `monitor_at`; nhãn `W × H` đang ở màn chứa
+  góc trên trái (`Visible::label`) — thanh công cụ nên theo cùng quy tắc, đừng đè nhãn.
+- **Bẫy đã gặp**: chuột di / nhả khi kéo sang màn khác về cửa sổ ĐÃ NHẤN (SetCapture), toạ độ ngoài biên — đừng hit-test
+  bằng hitbox của div; `cx.listener` trong `on_mouse_down` chỉ chạy khi trúng div. Đóng cửa sổ từ trong sự kiện ⇒ hoãn
+  (`close` đã `cx.defer`). Lệnh `capture_region` thật chụp + phủ MỌI màn và giành focus — trên máy dùng thật chỉ chạy
+  thử bằng màn giả.
+- **Soát lại khi làm**: test chạy thật trên màn giả — `FASTCAST_OVERLAY_FAKE=1` + `FASTCAST_OVERLAY_SCRIPT` (thêm bước
+  `key 0 shift-right`, `down`/`move`/`up` trên tay nắm; cú pháp `overlay/dev.rs`) theo mẫu `crates/ui/tests/overlay.rs`.
+  CPU kéo 2 s (mục 5) so gd1_02: 141–359 ms / ~2 s, hai cửa sổ — `cargo test --release -p fastcast-ui --test overlay --
+  --ignored --nocapture`. Chi tiết số đo: `plan/gd1_02_region-overlay.md` mục 9.
+
 ## 1. Làm gì
 
 - Sau khi nhả chuột: 8 tay nắm (4 góc + 4 cạnh) kéo đổi cỡ, kéo bên trong để dời, kéo ra ngoài vùng ⇒ chọn lại từ đầu.

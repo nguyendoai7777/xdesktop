@@ -54,6 +54,17 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   Raycast / Spotlight; nhấp một lần chạy dễ chạy nhầm khi chỉ định rê chuột.
 - [gd1_06] Chân launcher chưa có "Ctrl+K Hành động" (khoá `launcher.actions` đã có trong catalog) — phương án khác: hiện
   sẵn như bố cục mục 7 — vì sao: Ctrl+K làm ở gd1_07, hiện nhãn mà bấm không gì xảy ra gây khó hiểu.
+- [gd1_02] UI đóng băng màn (không phải daemon), ngay khi nhận lệnh, trước khi gắn lại GPU — phương án khác: daemon chụp
+  sẵn rồi gửi ảnh — vì sao: F-4 (daemon không mang `xcap` / GPU), ảnh vẫn là màn lúc bấm phím.
+- [gd1_02] `GPU_IDLE_DEFAULT` 10 s → 60 s — phương án khác: giữ 10 s (RAM giữ ấm thấp hơn) hoặc giữ GPU suốt thời gian
+  giữ ấm — vì sao: gắn lại GPU đo 150–405 ms trên máy nhà ⇒ overlay mở từ trạng thái đã nhả chậm ~3 lần (228–608 ms so
+  với 57–164 ms); cái giá ~7 MB (16 thay vì 9 MB) trong một phút sau lần dùng.
+- [gd1_02] Vùng chọn gồm cả pixel dưới con trỏ lúc nhả (kéo 0 → 1919 = 1920 px), nhấn – nhả tại chỗ = không chọn;
+  Esc / chuột phải lần đầu bỏ vùng, lần hai đóng overlay — phương án khác: nửa mở (không với tới cột cuối của màn); Esc
+  luôn đóng — vì sao: chọn được trọn màn; giống Snipaste / ShareX.
+- [gd1_02] Khoá API overlay trên Windows khi chưa có spike Wayland gd0_07 — phương án khác: chờ máy Ubuntu — vì sao: GĐ1
+  không bị chặn; điểm có thể vướng (cửa sổ toàn màn từng output, toạ độ toàn cục / kéo xuyên màn, chụp qua portal) ghi ở
+  `plan/gd1_02_region-overlay.md` mục 8 cho gd0_07 soát.
 
 ## materiant
 

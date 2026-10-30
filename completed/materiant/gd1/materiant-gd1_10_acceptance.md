@@ -30,7 +30,7 @@
   vòng.
 - **Soát lại khi làm**: RAM launcher ~14,0–14,9 MB (gd1_11 mục 9, nền mờ không tốn thêm); macOS / Ubuntu: `Blurred` là
   `NSVisualEffectView` / tuỳ compositor — chụp xem có nền đen đặc thay vì mờ không. Chi tiết:
-  `plan/materiant-gd1_11_dark-neutral.md` mục 9.
+  `completed/materiant/gd1/materiant-gd1_11_dark-neutral.md` mục 9.
 
 ## 0. Bàn giao từ materiant-gd1_08 (30/10/2026)
 
@@ -38,7 +38,7 @@
 
 - **Đã có sẵn để dùng**: `materiant::menu::{Menu, MenuItem, ContextMenuExt}` — dropdown `Menu::new(id).trigger(nút)
   .label(…).item(MenuItem::new(id, nhãn).icon(…).shortcut("Ctrl+C").on_select(…)).separator().submenu(item, Menu)`;
-  menu chuột phải `div().id(…).context_menu(|menu, w, cx| …)`. API + cách dùng: `plan/materiant-gd1_08_menu.md` mục 9.
+  menu chuột phải `div().id(…).context_menu(|menu, w, cx| …)`. API + cách dùng: `completed/materiant/gd1/materiant-gd1_08_menu.md` mục 9.
 - **Ctrl+K của launcher**: Menu chưa có API mở bằng code — gắn `.context_menu(…)` cho dòng kết quả rồi gán
   `KeyBinding::new("ctrl-k", materiant::menu::OpenContextMenu, Some(<ngữ cảnh launcher>))`: mở giữa dòng, trỏ sẵn mục
   đầu (mục 9 gạch "Cho fastcast"). Thấy cần mở theo điểm / theo code ⇒ thêm `Menu` API ở đây, ghi mục 9.
@@ -64,7 +64,7 @@
 - **Đã có sẵn để dùng**: `materiant::select::Select` (dropdown chọn một, typeahead), `materiant::tabs::Tabs` (ngang /
   `.vertical()` — đủ cho sidebar Settings của fastcast), `materiant::toast::{Toast, ToastSpec, ToastViewport}`
   (`Toast::push(window, cx, …)`; app đặt MỘT `ToastViewport::new()` ở view gốc, `.inset_top(px)` nếu có header tự vẽ).
-  API + ví dụ: doc đầu mỗi tệp; tóm tắt ở `plan/materiant-gd1_09_select-tabs-toast.md` mục 9.
+  API + ví dụ: doc đầu mỗi tệp; tóm tắt ở `completed/materiant/gd1/materiant-gd1_09_select-tabs-toast.md` mục 9.
 - **Đổi so với spec**: `Select::new(id)` không `cx`; `ToastTimer.resume` đếm lại đủ thời lượng (như web) — cả hai chờ
   chủ dự án xác nhận ở `plan/confirm.md`.
 - **Nợ chuyển sang đây** (mục 8 của gd1_09): dropdown của Select đang neo bằng `gpui_kit::base::Popup` trực tiếp ⇒ chuyển
@@ -85,7 +85,7 @@
 
 - **Đã có sẵn để dùng**: `materiant::overlay::{position, stack, tooltip, popover, dialog}` — tooltip
   `.with_tooltip(id, text)`, `Popover::new(id).trigger(…).content(…)`, `DialogHandle::new(cx)` + `Dialog::new(id,
-  &handle)`. Chi tiết `plan/materiant-gd1_07_overlay.md` mục 9.
+  &handle)`. Chi tiết `completed/materiant/gd1/materiant-gd1_07_overlay.md` mục 9.
 - **Đổi so với spec**: Dialog mở kiểu khai báo (app giữ handle), không `Dialog::open(window, cx, …)`; nợ "mở bằng
   code" cần `Root::register_plugin` trong `materiant::init` — làm được khi hết làn song song (mục 8 của gd1_07).
 - **Nợ chuyển sang đây**: kiểm tay gd1_07 (`plan/_backlog.md`): C5 bằng mắt + animation khi bật Animation effects,
@@ -113,7 +113,7 @@
 - **Bẫy đã gặp**: `CARGO_TARGET_DIR` chung giữa worktree song song ⇒ rlib `materiant` của làn này đè làn kia, "Finished"
   mà không build (xanh giả). Còn làn song song thì dùng target riêng (cách mồi hard link: mục 9 gd1_05).
 - **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test toggles` (3 test); trang `toggles` sáng / tối +
-  `[owner-qa]` C3 (giảm chuyển động) / C4 (so web) còn treo — `plan/materiant-gd1_05_toggles.md` mục 6, 9.
+  `[owner-qa]` C3 (giảm chuyển động) / C4 (so web) còn treo — `completed/materiant/gd1/materiant-gd1_05_toggles.md` mục 6, 9.
 - `cargo fmt --check` trên master (30/10) báo lệch ở `src/scroll.rs`, `src/list.rs`, `examples/gallery/pages/scroll.rs`,
   `ui-tests/tests/scroll.rs` (gd1_06) — chạy `cargo fmt --all` một lượt.
 - Vòng focus switch ở nền tối tương phản ~1,3:1 (`ControlTokens::focus_ring`) — đề xuất gd1_05 chưa chọn; ghi vào lượt
@@ -130,7 +130,7 @@
   `SHADOW_ALPHA`; `kbd.rs`: `CHIP_*`. `button::optical_lift` (căn thân chữ trong hộp `line_height = 1`) thành helper
   chung của `style.rs` để Select / Tabs / chip dùng.
 - So ảnh với web: chỗ lệch CÓ CHỦ ĐÍCH của nút (rem thay px, vòng focus giữ bo góc, `loading` luôn quay + thay icon trái,
-  `elevated` nền tối ngả 4 %) — danh sách ở `plan/materiant-gd1_03_button-kbd.md` mục 9, đừng tính là lỗi.
+  `elevated` nền tối ngả 4 %) — danh sách ở `completed/materiant/gd1/materiant-gd1_03_button-kbd.md` mục 9, đừng tính là lỗi.
 - **Bẫy**: macOS / Ubuntu — `optical_lift` lấy `descent.abs()` vì DirectWrite trả âm; nền khác dấu khác vẫn đúng, nhưng
   soát mắt chữ trong nút trên hai nền đó. `--keys` của gallery chỉ gửi KeyDown (GPUI click bàn phím ở KeyUp) ⇒ Enter /
   Space không thử được qua `gallery-run.ps1`.
@@ -156,7 +156,7 @@
   `InputState` phát `Change` dù chữ không đổi — `TextField` đã lọc, ô tự viết trên `gpui_base::Input` thì nhớ lọc.
   Không thử Ctrl+V trên máy thật (đọc clipboard của chủ dự án) — dán kiểm bằng clipboard giả của test.
 - **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test field` (5 ca); trang gallery `input` RAM 16,3 MB lúc mở.
-  Chi tiết: `plan/materiant-gd1_04_input.md` mục 9.
+  Chi tiết: `completed/materiant/gd1/materiant-gd1_04_input.md` mục 9.
 
 ## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
 
@@ -176,7 +176,7 @@
   `CARGO_TARGET_DIR` ghi đè rlib của nhau ⇒ build ở `materiant/target/<task>`; `gallery-run.ps1` truyền `-Exe` / `-Out`
   riêng.
 - **Soát lại khi làm**: `cargo test -p materiant-ui-tests --test scroll` (7 ca); RAM trang `scroll` 18,1 MB lúc mở /
-  18,5 MB sau End — số so khi gộp mọi trang. Chi tiết: `plan/materiant-gd1_06_scroll-list.md` mục 9.
+  18,5 MB sau End — số so khi gộp mọi trang. Chi tiết: `completed/materiant/gd1/materiant-gd1_06_scroll-list.md` mục 9.
 
 ## 0. Bàn giao từ materiant-gd1_02 (29/10/2026)
 
@@ -191,7 +191,7 @@
 - **Soát lại khi làm**: `cargo test` (25 unit + 4 theme UI + 5 ripple UI + 1 gallery); chạy thử chỉ qua
   `pwsh materiant/tools/gallery-run.ps1 -Page <trang> -Keys "…"` — phím, chuột `down@x,y` / `up@` / `move@`, `wait@ms`,
   `shot@tên` (ảnh giữa chuỗi); toạ độ lấy từ ảnh trừ ~31 px thanh tiêu đề; ảnh xem xong xoá. Token + tên hàm đầy đủ:
-  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9; mẫu dùng: `materiant/CLAUDE.md` mục "Style · ripple · icon".
+  `completed/materiant/gd1/materiant-gd1_02_style-ripple-icon.md` mục 9; mẫu dùng: `materiant/CLAUDE.md` mục "Style · ripple · icon".
 
 ## 1. Làm gì
 

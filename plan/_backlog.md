@@ -67,6 +67,9 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 ## materiant
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
+
+### GĐ1 — port component (đóng 30/10/2026, `completed/materiant/gd1/`)
+
 - **Kiểm tay GĐ1 — một lượt** (lý do: nhìn bằng mắt / so web, hover + kéo cửa sổ thật của OS, bộ gõ Unikey / EVKey,
   touchpad + màn 144 Hz, nền mờ thật phía sau, FRAMES khi bật Animation effects — không giả lập được khi chạy thử nền):
   bảng 14 dòng có lệnh từng mục ở `materiant/docs/gd1-report.md` mục 6 (gom C4 / C5 của gd1_01 → gd1_09, C8 gd1_11, C1
@@ -79,7 +82,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   mở bằng code qua `RootPlugin`; `ScrollbarMotion` 1 s + fade; `FieldShell` tách nhãn; `FieldSize::Lg`; vòng focus switch
   nền tối ~1,3:1. Danh sách + nguồn: `materiant/docs/gd1-report.md` mục 7.
 - **[gd1_10 · ux] `start.ps1 launcher`** cho chủ dự án mở launcher example như `docs` (lý do: `start.ps1` / `start.sh`
-  ở repo gốc ngoài phạm vi tệp của gd1_10). `plan/materiant-gd1_10_acceptance.md` mục 10 (2).
+  ở repo gốc ngoài phạm vi tệp của gd1_10). `completed/materiant/gd1/materiant-gd1_10_acceptance.md` mục 10 (2).
 - **[gd1_10 · ram] Trang gallery `button` 24,1 MB** (các trang khác 14–18) — đo phần nào tốn (bóng `elevated`, glyph)
   trước khi fastcast dùng nhiều bóng; lý do treo: không chặn, P3. Mục 10 (3).
 

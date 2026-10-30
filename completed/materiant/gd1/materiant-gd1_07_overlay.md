@@ -32,7 +32,7 @@ Bàn giao ghi vào gd1_08 (Menu dựng trên Popover của task này).
 - **Bẫy build**: các worktree dùng chung `CARGO_TARGET_DIR=materiant/target` đè `libmateriant-*.rlib` của nhau khi build
   cùng lúc (`unresolved import` dù code đủ) ⇒ build song song với làn khác thì dùng target riêng.
 - Chữ trong khung cao cố định (`line_height = 1`) trông thấp ~2 px: `materiant::button` có `optical_lift` (pub(crate)) —
-  chi tiết + bẫy `descent` âm ở `plan/materiant-gd1_03_button-kbd.md` mục 9.
+  chi tiết + bẫy `descent` âm ở `completed/materiant/gd1/materiant-gd1_03_button-kbd.md` mục 9.
 - **Soát lại khi làm**: trang gallery `button` (mẫu mọi dáng / trạng thái); `cargo test -p materiant-ui-tests --test
   button`.
 

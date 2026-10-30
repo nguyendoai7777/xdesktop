@@ -39,7 +39,7 @@
   chưa giả lập được: kiểm hình học / thời lượng bằng unit test, đè / nhả chuột bằng `#[gpui::test]` `simulate_*`
   trong `ui-tests/`, phần nhìn ⇒ `[owner-qa]`.
 - **Soát lại khi làm**: `cargo test` (đang 17 unit + 4 UI + 1 gallery); `tools/gallery-run.ps1 -Page style`; trang
-  `theme` để so màu token. Chi tiết gd1_01: `plan/materiant-gd1_01_theme.md` mục 9.
+  `theme` để so màu token. Chi tiết gd1_01: `completed/materiant/gd1/materiant-gd1_01_theme.md` mục 9.
 
 Cuối **trục tuần tự**: xong task này mới mở bốn làn song song gd1_03–06. Vì các task song song **không được** sửa
 `style.rs` / `icon.rs`, task này phải đặt đủ token + icon chúng cần (mục 3).

@@ -16,7 +16,7 @@ Chính là panel Ctrl+K của launcher fastcast (`plan/gd1_07_hotkey-assign.md`)
 
 <!-- handoff: materiant-gd1_07 -->
 
-- **Đã có sẵn để dùng** (interface đủ: `plan/materiant-gd1_07_overlay.md` mục 9):
+- **Đã có sẵn để dùng** (interface đủ: `completed/materiant/gd1/materiant-gd1_07_overlay.md` mục 9):
   - Dropdown = `materiant::overlay::popover::Popover::new(id).trigger(nút).placement(Placement::BOTTOM_START)
     .content(|dismiss, w, cx| …)`; chọn mục xong ⇒ `dismiss.dismiss(w, cx)` (trả focus về trigger). `.bare()` bỏ bề
     mặt nếu menu tự vẽ; muốn cùng diện mạo thì bọc `popover::surface(window, cx)` (nền, bo 8, bóng, viền khi tối).
@@ -55,7 +55,7 @@ Chính là panel Ctrl+K của launcher fastcast (`plan/gd1_07_hotkey-assign.md`)
 - Web vẽ shortcut của menu là chữ trơn (`menu.css` `.menu-item-shortcut`: 12 px, muted, `margin-left: 12px`), không phải
   chip — chọn dáng nào cho Menu thì hỏi chủ dự án; `Kbd` chưa có biến thể chữ trơn.
 - Mục menu cao cố định ⇒ chữ trông thấp ~2 px như nút: dùng lại cách `button::optical_lift` (chi tiết + bẫy `descent` âm
-  ở `plan/materiant-gd1_03_button-kbd.md` mục 9).
+  ở `completed/materiant/gd1/materiant-gd1_03_button-kbd.md` mục 9).
 - **Bẫy**: GPUI sinh click bàn phím (Enter / Space) ở KeyUp — UI test gửi KeyDown + KeyUp (`press()` trong
   `ui-tests/tests/button.rs`); `--keys` của gallery chỉ KeyDown.
 - **Soát lại khi làm**: hàng `Kbd` ở trang gallery `button`; `cargo test -p materiant --lib kbd`.

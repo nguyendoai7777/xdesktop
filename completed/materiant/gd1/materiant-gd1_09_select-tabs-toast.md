@@ -29,7 +29,7 @@ sách của dropdown dùng `ScrollArea`; chưa xong thì dùng thanh cuộn mặ
   KeyUp ⇒ UI test gửi cả KeyDown + KeyUp (`press()` trong `ui-tests/tests/button.rs`); `--keys` của gallery chỉ KeyDown.
 - **Bẫy build**: worktree dùng chung `CARGO_TARGET_DIR` đè rlib `materiant` của nhau khi build cùng lúc ⇒ target riêng
   khi có làn khác đang build.
-- **Soát lại khi làm**: trang gallery `button`; `plan/materiant-gd1_03_button-kbd.md` mục 9 (API đầy đủ).
+- **Soát lại khi làm**: trang gallery `button`; `completed/materiant/gd1/materiant-gd1_03_button-kbd.md` mục 9 (API đầy đủ).
 
 ## 0. Bàn giao từ materiant-gd1_06 (30/10/2026)
 

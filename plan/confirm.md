@@ -28,6 +28,12 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [plan GĐ3] Thêm exe thứ tư `fastcast-rec`, quay ở tiến trình riêng — phương án khác: quay trong `fastcast-ui` (ba exe đúng F-4) — vì sao: sau khi dừng còn ~33 MB DLL Media Foundation, chỉ thoát tiến trình mới nhả (`docs/spikes/video.md` mục 7).
+- [plan GĐ3] OCR và quay nói với UI qua stdin / stdout của tiến trình con — phương án khác: qua pipe của daemon (`Role::Ocr` có sẵn) — vì sao: daemon không đổi, không phải đo lại RAM; UI chết thì con tự biết; UI và engine tách được thành làn song song.
+- [plan GĐ3] Q-1 âm thanh: Không / Hệ thống / Micro, mặc định Không — phương án khác: thêm "Cả hai" — vì sao: "Cả hai" phải trộn + bù lệch đồng hồ giữa hai thiết bị, chưa đáng ở GĐ3. Chỉ ghi ở đây, chưa vào `docs/decisions.md`.
+- [plan GĐ3] Video ghi thẳng vào `save.videoDir`, dừng xong mới hỏi Lưu / Lưu thành… / Bỏ — phương án khác: hỏi đích trước khi quay — vì sao: Ctrl+S / Ctrl+Shift+S giống ảnh; không qua thư mục tạm (báo cáo spike). Đóng bảng không chọn = giữ tệp.
+- [plan GĐ3] Làn engine soát bằng `-p` thay vì đủ bốn lệnh của `CLAUDE.md` — phương án khác: soát đủ mọi làn — vì sao: UI không phụ thuộc hai crate đó, đỡ build GPUI ~5 phút mỗi làn; gd3_13 soát đủ trên `master`.
+
 - [gd1_11] Báo cáo GĐ1 ghi "chưa xác nhận" cho tiêu chí 2 màn khác Hz / khác scale, task vẫn ✅ — chờ kiểm tay, KHÔNG đóng giai đoạn — phương án khác: để task 🔄 tới khi kiểm xong — vì sao: session điều phối dặn; phần Claude làm được đã xong, không chạy được overlay / phím thật trên máy dùng thật.
 - [gd1_11] Số độ trễ trong báo cáo đo lúc spike OCR + build session khác chạy xen kẽ, không đo lại lần nữa — phương án khác: chờ máy rảnh hẳn — vì sao: session điều phối dặn xong sớm, RAM không bị ảnh hưởng; số độ trễ cuối lấy từ kiểm tay A3, A4, A11.
 - [gd1_11] Không sửa độ trễ trả RAM sau khi nhả GPU (5–7 s) — phương án khác: truy tiếp thành phần giữ — vì sao: tự hết, người dùng không gặp hậu quả, đã ghi cách đọc đúng.

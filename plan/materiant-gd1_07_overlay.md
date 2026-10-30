@@ -174,8 +174,20 @@ dialog" (có vòng focus + tooltip hiện vì về bằng phím); Tooltip: rê 6
   `cargo fmt -- <tệp của mình>`.
 - `.debug_selector(…)` có ở mọi build (no-op ngoài test-support) ⇒ đặt trong lib được cho UI test (`materiant-tooltip`).
 
-**Chờ kiểm tay** (`[owner-qa]`, ghi `plan/_backlog.md`): C5 bằng mắt; bật lại Animation effects ⇒ xem mờ dần 140 / 160
-ms + `GALLERY_FRAME_STATS=1` (mong 60 fps); Popover nền tối có viền (đề xuất 1).
+**Chờ kiểm tay** (`[owner-qa]`, ghi `plan/_backlog.md`): C5 bằng mắt; Popover nền tối có viền (đề xuất 1).
+
+**Sửa sau kiểm có animation (30/10/2026)** — "Animation effects" bị tắt do chủ dự án điều khiển máy qua TeamViewer
+(TeamViewer tự tắt hiệu ứng); chủ dự án bật lại. Đo `GALLERY_FRAME_STATS=1` (release, mở / đóng Dialog + Popover 4
+lượt): 60–63 fps, khung chậm nhất 17–24 ms; ảnh giữa lúc hiện: Tooltip mờ dần đúng. Ảnh lộ hai lỗi, đã sửa (master
+materiant `368a049`):
+- Hai tooltip cùng hiện (một do focus bàn phím, một do rê) ⇒ global `Tooltips.owner`: cái hiện sau thắng (web: một panel
+  dùng chung).
+- Esc đóng Dialog ⇒ focus về "Open dialog" ⇒ tooltip của nút tự hiện treo ⇒ Popover / Dialog gọi
+  `tooltip::note_restored_focus` trước khi trả focus; tooltip không latch cho focus đó (đúng ý `onFocusIn` của web).
+- UI test mới `only_one_tooltip_shows_at_a_time`, `focus_restored_by_a_dialog_does_not_show_the_tooltip` (đỏ khi bỏ bản
+  sửa); selector test thành `materiant-tooltip:<chữ>`. Bẫy: điều khiển máy qua TeamViewer / RDP có thể tắt "Animation
+  effects" ⇒ `cx.reduce_motion()` = true, FRAMES không in gì — soát
+  `SystemParametersInfo(SPI_GETCLIENTAREAANIMATION)` trước khi đo.
 
 **Đề xuất đã làm**: 1 (viền nền tối), 2 (`Popover::disabled`).
 

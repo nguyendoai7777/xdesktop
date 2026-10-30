@@ -69,6 +69,20 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_02] Mở nguội overlay 496–674 ms (> 400 ms) nhưng KHÔNG cho daemon bật sẵn UI headless — phương án khác: daemon
   bật `fastcast-ui` lúc khởi động / sau khi UI tự thoát (~5 MB thường trực) — vì sao: trái F-4 ("UI bật khi dùng"), RAM
   thường trực là lựa chọn của chủ dự án; đã làm phần không đụng F-4 (đóng băng song song với gắn GPU). Gạch `_backlog.md`.
+- [gd1_03] Chỉnh vùng (tay nắm, dời, mũi tên) kẹp trong **hình bao** desktop ảo — phương án khác: kẹp theo từng màn như
+  kéo chọn (`Layout::clamp`) — vì sao: tay nắm cạnh chỉ dời một trục, kẹp theo màn gần nhất làm trục kia nhảy; bố cục so
+  le cho dời vùng vào khe nhưng vẫn cắt được (phần khe trong suốt).
+- [gd1_03] Kéo tay nắm đổi cỡ theo **độ lệch** con trỏ kể từ lúc nhấn — phương án khác: bắt cạnh về đúng con trỏ ngay khi
+  nhấn — vì sao: nhấn lệch trong vùng bắt 8 px không làm cạnh nhảy; nhấn đúng pixel cạnh thì cạnh = pixel dưới con trỏ.
+- [gd1_03] Thanh công cụ ở màn chứa góc **dưới phải** của vùng (khe ⇒ màn có mảnh lớn nhất); dưới → trên (né nhãn
+  `W × H`) → trong — phương án khác: cùng màn với nhãn (góc trên trái) — vì sao: thanh nằm dưới-phải, chọn màn theo góc
+  đó thì thanh sát chỗ nhả chuột.
+- [gd1_03] "Lưu thành…" = icon Lưu + ba chấm vẽ tại chỗ — phương án khác: thêm icon `save-as` vào materiant `icon.rs` —
+  vì sao: materiant đang nghiệm thu gd1_10, không sửa; gạch `_backlog.md`.
+- [gd1_03] Overlay thật: chọn / chỉnh xong thì kích hoạt cửa sổ đang có thanh công cụ — phương án khác: để focus ở cửa sổ
+  đã nhấn — vì sao: nhấn ở màn A nhả ở màn B thì Tab không tới được nút trên thanh (owner-qa của task).
+- [gd1_03] Không giao Sonnet (i18n + ghép nút ~80 dòng) — phương án khác: giao theo D-5 — vì sao: dính interface đang
+  chốt cùng lượt, giao đi tốn hơn tự làm.
 
 ## materiant
 
@@ -190,3 +204,13 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [materiant-gd1_08] Chọn mục ⇒ đóng cả chuỗi menu TRƯỚC rồi mới gọi `on_select` (web: emit rồi đóng) — phương án khác:
   đúng thứ tự web — vì sao: handler mở Dialog (fastcast gd1_07 "Gán phím tắt…") thì Dialog giữ được focus, không bị
   menu đóng sau trả focus về nút.
+- [materiant-gd1_10] Ô tìm của launcher example là `TextField` (khung + vòng focus) — phương án khác: ô trần
+  `gpui_base::Input` như fastcast — vì sao: ví dụ để nghiệm thu component materiant.
+- [materiant-gd1_10] Launcher example "ẩn" = đóng cửa sổ + nhớ chỗ kéo ở tệp nhỏ trong thư mục tạm — phương án khác: ẩn
+  Win32 + giữ tiến trình như fastcast — vì sao: ví dụ không có tiến trình giữ ấm, không nhúng FFI ẩn cửa sổ vào crate.
+- [materiant-gd1_10] Thêm `ContextMenuExt::context_menu_at(Anchor, …)` (mở bằng phím tại góc phần tử chủ) — phương án
+  khác: để Ctrl+K mở giữa launcher — vì sao: Raycast mở ngay trên chân; fastcast launcher cần đúng kiểu này.
+- [materiant-gd1_10] `materiant::init` gán phím mặc định của mọi component (vẫn gán lười được) — phương án khác: giữ gán
+  lười ở lần vẽ đầu — vì sao: nợ gd1_05 / gd1_06; keymap đủ ngay từ đầu cho chip phím `MenuItem::action`.
+- [materiant-gd1_10] Nợ "dời token lên `style.rs` / `icon.rs`" không làm ở gd1_10, gom một task GĐ2 — phương án khác:
+  làm luôn — vì sao: chạm ~10 module, vượt cỡ S; đóng GĐ1 dù C3 (macOS / Ubuntu) / C4 (so web) chờ kiểm tay (D-9).

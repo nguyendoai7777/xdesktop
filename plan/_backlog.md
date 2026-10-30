@@ -44,6 +44,15 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_02 · owner-qa] Kiểm overlay tay** (C11, C12): `fst` thật, phím chụp vùng — kéo DELL 60 Hz ↔ LG 144 Hz, nhãn
   đúng cỡ vật lý, không màn đen / nháy; màn 125 % / 150 % nét 1:1 không lệch; Esc ở màn có con trỏ; Alt+F4 một màn đóng
   cả hai. Bước ở `plan/gd1_02_region-overlay.md` mục 9. Máy không có màn phụ lúc làm ⇒ chưa chạy overlay thật lần nào.
+- **[gd1_03 · owner-qa] Kiểm chỉnh vùng tay** (C9): màn thật nhiều DPI — rê tay nắm thấy con trỏ đổi cỡ đúng hướng, kéo
+  cạnh vắt hai màn khác scale bám con trỏ, Tab / Enter / Space trên thanh công cụ, tooltip có phím tắt, Alt + mũi tên
+  không bật menu hệ thống, sáng / tối. Bước ở `plan/gd1_03_selection-edit.md` mục 9.
+- **[gd1_03 · ux] Thân vùng chọn không có con trỏ "dời" trên Windows**: `gpui-pre-windows` (`util.rs`) map `OpenHand` /
+  `ClosedHand` về `IDC_ARROW`, không có `IDC_SIZEALL` — lý do treo: phải vá crate ngoài (upstream) hoặc đặt con trỏ Win32
+  riêng qua `platform` — M, P3.
+- **[gd1_03 · ux] Icon "Lưu thành…" riêng** (lucide `save-all` / `folder-down`) vào materiant `icon.rs`, rồi bỏ ba chấm vẽ
+  tay ở `fastcast/crates/ui/src/overlay/toolbar.rs` — lý do treo: materiant đang nghiệm thu gd1_10, session điều phối dặn
+  không sửa materiant — S, P3.
 - **[gd1_02 · ux] Spawn nguội → khung đầu overlay 496–674 ms** (> 400 ms của task): cùng hướng gạch gd1_01 "khởi động
   nguội" — daemon bật sẵn UI headless; trái F-4 ("bật khi dùng") ⇒ chờ chủ dự án chọn đánh đổi RAM.
   `plan/gd1_02_region-overlay.md` mục 10.
@@ -58,49 +67,21 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 ## materiant
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
-- **Kiểm tay gd1_09** (C5 — lý do: so bằng mắt với tài liệu web): `pwsh start.ps1 docs select` / `tabs` / `toast`, Ctrl+T
-  sáng / tối — nhịp vạch tab, lò xo vào + trượt ra của toast, rê chuột dừng đếm, panel dropdown + typeahead. Chi tiết
-  `plan/materiant-gd1_09_select-tabs-toast.md` mục 9.
-- **Kiểm tay gd1_01** (C4 phần nhìn + C5): `cargo run --example gallery -- --page theme` → Ctrl+T xoay Light / Dark /
-  System, bấm 4 preset, ở System bật / tắt chế độ tối Windows ⇒ gallery đổi theo; so với trang theme bản web. Chi tiết
-  `plan/materiant-gd1_01_theme.md` mục 9.
-- **Kiểm tay gd1_02** (C4 + C5 — lý do: kéo cửa sổ của OS và nhìn bằng mắt không giả lập được):
-  `cargo run --example gallery -- --page style` → kéo thanh "Drag region" ⇒ cửa sổ đi theo (nhấp đúp phóng to, kéo lên
-  mép màn hình Snap); bấm "Occluded button" ⇒ in `CLICK drag-occluded`, cửa sổ không nhích. Đè / thả các ô ripple, so
-  với ripple bản web (tông sáng trên nền nhấn đậm hơn chút — đã biết); dải icon nét đều ở 100 % và 150 % DPI. Chi tiết
-  `plan/materiant-gd1_02_style-ripple-icon.md` mục 9.
-- **Kiểm tay gd1_06** (C4 — lý do: touchpad / bánh xe thật và độ mượt trên màn 144 Hz không giả lập được):
-  `cargo run --example gallery -- --page scroll` → cuộn bằng touchpad + bánh xe ở khung đoạn văn, bảng rộng (Shift +
-  bánh xe / vuốt ngang) và danh sách 10 000 dòng — phải mượt; kéo thumb danh sách tới cuối. Chi tiết
-  `plan/materiant-gd1_06_scroll-list.md` mục 9.
-- **Kiểm tay gd1_04** (C4 — lý do: bộ gõ Unikey / EVKey / IME tiếng Việt thật và blur ở cửa sổ active không giả lập
-  được khi chạy thử nền): `pwsh start.ps1 docs input` → gõ Telex "Tiếng Việt có dấu" vào các ô chữ (không mất / nhân
-  đôi ký tự), gõ Telex vào ô số (không chèn chữ); ô FPS gõ `99` rồi bấm ô khác ⇒ `60`; bấm nhãn "Display name" ⇒ con
-  trỏ vào ô. Chi tiết `plan/materiant-gd1_04_input.md` mục 9.
-- **Kiểm tay gd1_03** (C5 — lý do: hover thật và so bằng mắt với tài liệu web không giả lập được khi chạy thử nền):
-  `cargo run --example gallery -- --page button` → rê / nhấn từng dáng × màu ở sáng / tối, so với trang button của
-  materiant web; bấm chuột vào nút thì KHÔNG có vòng focus, Tab tới thì có; Space / Enter bấm được (gallery `--keys`
-  không thử được — chỉ gửi KeyDown); chữ trong nút / chip `Kbd` nằm giữa. Chỗ lệch có chủ đích:
-  `plan/materiant-gd1_03_button-kbd.md` mục 9.
-- **Kiểm tay gd1_05** (C3 phần giảm chuyển động + C4 — lý do: không tự đổi cài đặt hệ thống, so bằng mắt với web):
-  `cargo run --example gallery -- --page toggles` → so với trang checkbox / radio / switch của materiant web ở sáng /
-  tối; Space / Enter bật tắt được (gallery `--keys` không thử được). Windows → Accessibility → Visual effects →
-  Animation effects = Off, mở lại gallery ⇒ thumb nhảy thẳng, tick / chấm / vành sóng không chạy, không ripple.
-  `plan/materiant-gd1_05_toggles.md` mục 9.
-- **Kiểm tay gd1_07** (C5 bằng mắt — lý do: nhìn cảm giác thật; animation + FRAMES đã đo 30/10, ~60 fps):
-  `pwsh start.ps1 docs overlay` → bấm "Open dialog", Tab tới "More options", Space mở Popover, Esc lần một đóng
-  Popover, lần hai đóng Dialog, focus về "Open dialog" (tooltip của nó KHÔNG tự hiện); bốn nút góc mở Popover lật vào
-  trong; nền tối Popover có viền 1 px. `plan/materiant-gd1_07_overlay.md` mục 9.
-- **Kiểm tay gd1_08** (C5 bằng mắt + rê chuột thật — lý do: `gallery-run` chỉ giả lập chuột trái, không có hover OS):
-  `pwsh start.ps1 docs menu` → so với trang menu của materiant web ở sáng / tối (chip phím tắt thẳng cột); rê qua Share
-  / More mở sau ~150 ms; chuột phải sát góc phải dưới cửa sổ lật lên trên-trái; "40 items" cuộn bằng bánh xe.
-  `plan/materiant-gd1_08_menu.md` mục 9.
-- **Phím Menu / Apps** mở menu chuột phải như Shift+F10 — lý do treo: tên phím Apps trong GPUI phải bấm phím thật mới
-  biết. `plan/materiant-gd1_08_menu.md` mục 10.
-- **`cargo fmt --check` đỏ ở tệp của gd1_06** (`src/scroll.rs`, `src/list.rs`, `examples/gallery/pages/scroll.rs`,
-  `ui-tests/tests/scroll.rs`) — lý do treo: tệp của làn khác; gd1_10 chạy `cargo fmt` một lượt khi nghiệm thu.
-- **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
-  darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
+- **Kiểm tay GĐ1 — một lượt** (lý do: nhìn bằng mắt / so web, hover + kéo cửa sổ thật của OS, bộ gõ Unikey / EVKey,
+  touchpad + màn 144 Hz, nền mờ thật phía sau, FRAMES khi bật Animation effects — không giả lập được khi chạy thử nền):
+  bảng 14 dòng có lệnh từng mục ở `materiant/docs/gd1-report.md` mục 6 (gom C4 / C5 của gd1_01 → gd1_09, C8 gd1_11, C1
+  phần tay của gd1_10, phím Menu / Apps của gd1_08). Kết quả báo lại / ghi vào đây.
+- **macOS / Ubuntu GĐ1** (gd1_10 C3 — lý do: máy này không có Mac / Ubuntu, không target darwin): gallery + launcher +
+  `cargo test`, nhãn RAM `phys_footprint` / `RssAnon` chưa build lần nào — lệnh + chỗ dễ vỡ ở
+  `materiant/docs/gd1-report.md` mục 5.
+- **Task dọn nợ GĐ1 → GĐ2** (lý do: chạm ~10 module, vượt cỡ S của gd1_10 — tách task khi mở GĐ2): dời hằng cục bộ lên
+  `style.rs` / `icon.rs` + `optical_lift` thành helper chung; Select neo bằng Popover lật cạnh; `ToastViewport` / Dialog
+  mở bằng code qua `RootPlugin`; `ScrollbarMotion` 1 s + fade; `FieldShell` tách nhãn; `FieldSize::Lg`; vòng focus switch
+  nền tối ~1,3:1. Danh sách + nguồn: `materiant/docs/gd1-report.md` mục 7.
+- **[gd1_10 · ux] `start.ps1 launcher`** cho chủ dự án mở launcher example như `docs` (lý do: `start.ps1` / `start.sh`
+  ở repo gốc ngoài phạm vi tệp của gd1_10). `plan/materiant-gd1_10_acceptance.md` mục 10 (2).
+- **[gd1_10 · ram] Trang gallery `button` 24,1 MB** (các trang khác 14–18) — đo phần nào tốn (bóng `elevated`, glyph)
+  trước khi fastcast dùng nhiều bóng; lý do treo: không chặn, P3. Mục 10 (3).
 
 ## Workspace
 

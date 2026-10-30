@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) |
 | Repo | materiant |
 | Cỡ | S — ~300 dòng (example launcher) + báo cáo |
 | Phụ thuộc | materiant-gd1_01 → gd1_09, gd1_11 (tông tối trung tính — xong trước, 30/10/2026) |
@@ -207,19 +207,80 @@
 
 - Không thêm component mới; lỗi lớn ⇒ tách task sửa.
 
+## 2b. Phân vai
+
+| Phần việc | Ai |
+| --- | --- |
+| `examples/launcher.rs` (lọc bỏ dấu, nhớ vị trí, phím ở pha capture, menu Ctrl+K), `examples/common/dev.rs` | `[opus]` |
+| `materiant::init` gán phím mọi component; `ContextMenuExt::context_menu_at` + test | `[opus]` |
+| `tools/gallery-run.ps1 -Example launcher`, đo RAM / khung đầu, soát gallery 11 trang sáng / tối nền mờ | `[opus-run]` |
+| `docs/gd1-report.md`, `ROADMAP.md` bàn giao GĐ1 | `[opus]` |
+| Kiểm tay (kéo cửa sổ thật, bộ gõ, so web, macOS / Ubuntu, FRAMES khi bật animation) | `[owner-qa]` |
+
+Không giao Sonnet: phần ghép UI chỉ một tệp ~540 dòng gắn chặt với lọc / phím / vị trí (hình học cửa sổ là `[opus]`).
+
 ## 5. Đo
 
 - RAM `launcher` example nghỉ + sau khi gõ lọc (Task Manager); cỡ exe; thời gian khung đầu (mẫu `bench.ps1`).
 
 ## 6. Nghiệm thu
 
-- C1 `[opus-run]` launcher example chạy đủ hành vi mục 1 trên Windows; RAM ghi vào báo cáo.
-- C2 `[opus-run]` soát xanh cả repo; gallery đủ mọi trang, không trang nào còn "chưa làm".
-- C3 `[owner-qa]` chạy gallery + launcher trên macOS và Ubuntu (lệnh trong báo cáo), gửi lại ảnh / lỗi.
-- C4 `[owner-qa]` duyệt bảng so ảnh sáng / tối.
+- **C1** `[opus-run]` + `[opus-unit]` — Cho launcher example release mở nền (`gallery-run.ps1 -Example launcher`), Khi gõ
+  `thuoc` / `vung`, ↑ ↓, Enter, Esc, Ctrl+K → Pin, Ctrl+T, tệp vị trí `300 200` / ngoài màn, Thì lọc đúng (bỏ dấu), chọn
+  đúng, `RUN` + đóng, Esc xoá chữ rồi mới ẩn, menu mở ngay trên chân và ghim đưa mục lên đầu, mở đúng chỗ đã nhớ / về giữa
+  khi chỗ cũ ngoài màn; RAM ghi vào báo cáo. Kéo cửa sổ thật + bấm ra ngoài: `[owner-qa]` (báo cáo mục 6 dòng 11).
+- **C2** `[opus-run]` — Cho nhánh `claude/gd1_10`, Khi soát xanh (`build`, `clippy -D warnings`, `test`, `deny`,
+  `fmt --check`, `tree -i gpui-component`) + chụp gallery 11 trang × sáng / tối nền mờ, Thì xanh hết, không trang stub.
+- **C3** `[owner-qa]` — gallery + launcher trên macOS và Ubuntu (lệnh: báo cáo mục 5), gửi lại ảnh / lỗi.
+- **C4** `[owner-qa]` — duyệt chỗ lệch so với web (báo cáo mục 4) + kiểm tay một lượt (báo cáo mục 6).
 
 ## 8. Nợ chuyển task khác
 
+- GĐ2 (task dọn nợ, `plan/_backlog.md` mục materiant): dời hằng cục bộ lên `style.rs` / `icon.rs`, Select neo bằng
+  Popover lật cạnh, `ToastViewport` / Dialog mở bằng code qua `RootPlugin`, `ScrollbarMotion`, `FieldShell` tách nhãn,
+  `FieldSize::Lg`, vòng focus switch nền tối. Danh sách đủ: `materiant/docs/gd1-report.md` mục 7.
+- fastcast launcher (Ctrl+K hành động): dùng `ContextMenuExt::context_menu_at(Anchor::BottomRight, …)` trên phần thân.
+
 ## 9. Bàn giao thực tế
 
+✅ 30/10/2026. Nhánh `claude/gd1_10` (materiant): `examples/launcher.rs` MỚI, `examples/common/dev.rs` MỚI (tách từ
+`gallery/main.rs`), `docs/gd1-report.md` MỚI, `src/lib.rs` (init gán phím), `src/menu.rs` (`context_menu_at`),
+`ui-tests/tests/menu.rs` (+1 ca), `tools/gallery-run.ps1` (`-Example`, chịu tiến trình tự thoát), `Cargo.toml`
+(`[[example]] launcher`, `test = true`), `CLAUDE.md`, `ROADMAP.md`; commit riêng `cargo fmt --all` (tệp gd1_06).
+
+- **Số đo** (release `-p materiant`, cột Memory, cửa sổ nền): launcher nghỉ 14,4–14,7 MB (spike 15,6–15,8), sau gõ lọc +
+  menu 15,2–15,7 MB, khung đầu 374–398 ms máy rảnh / 496–578 ms lúc CPU ~58 % (spike 376–382), exe 8,9 MB (spike 23,2).
+  Gallery nền mờ 13,8–24,1 MB theo trang (bảng ở báo cáo mục 3). `FRAMES` không đo được: máy tắt Animation effects.
+- **Soát** (cwd = worktree, `CARGO_TARGET_DIR=C:/xdesktop-target/materiant-gd1_10`): `cargo build`, `clippy --all-targets
+  -D warnings`, `test` (111 unit + 1 gallery + 5 launcher + 60 UI, trong đó menu 10), `deny check licenses` ok,
+  `fmt --all --check` sạch, `tree -i gpui-component` không có. Chạy thử: `foreground_unchanged=True` mọi lần, ảnh đã xoá.
+- **Opus chọn 30/10/2026** (D-9, gạch ở `plan/confirm.md`): ô tìm `TextField` (không ô trần như fastcast) — vì ví dụ để
+  nghiệm thu component; ẩn = đóng cửa sổ + nhớ chỗ ở tệp trong thư mục tạm — vì ví dụ không có tiến trình giữ ấm, không
+  nhúng FFI ẩn cửa sổ vào crate component; tách `examples/common/dev.rs` (sửa `gallery/main.rs`) thay vì chép ~150 dòng;
+  `materiant::init` gán phím mọi component (nợ gd1_05 / gd1_06); nợ dời token KHÔNG làm ở đây (chạm ~10 module, vượt cỡ
+  S) — gom một task GĐ2; đóng GĐ1 dù C3 / C4 chờ kiểm tay.
+- **Bẫy**: lần chạy đầu của exe mới build khung đầu ~6 s (Defender quét) — bỏ số đó. `cargo fmt -- <tệp>` vẫn format cả
+  crate. `Corner` của gpui là `Anchor` trong gpui-pre 0.3.10 (`Bounds::corner(Anchor)`). Action `OpenContextMenu` đi từ
+  chỗ focus lên ⇒ phần tử có `.context_menu` phải là tổ tiên của ô đang focus. Escape ở pha capture của launcher phải
+  kiểm ô tìm còn focus, không thì nuốt Esc của menu đang mở.
+- **Chờ kiểm tay**: C1 phần kéo / bấm ra ngoài, C3, C4 — một danh sách 14 dòng ở `materiant/docs/gd1-report.md` mục 6
+  (+ `plan/_backlog.md`).
+
+- **Cho fastcast**: Ctrl+K hành động của launcher = `ContextMenuExt::context_menu_at(Anchor::BottomRight, …)` (`Anchor` từ
+  `materiant::gpui_kit`) trên phần thân chứa ô tìm + `KeyBinding::new("ctrl-k", materiant::menu::OpenContextMenu, …)`;
+  `materiant::init` đã gán phím mọi component. Mẫu: `materiant/examples/launcher.rs`. Không đổi API cũ.
+
+**Đề xuất đã làm**: (1) `context_menu_at` — Ctrl+K mở ngay trên chân như Raycast.
+
 ## 10. Đề xuất cải tiến
+
+1. `[ux]` Ctrl+K mở menu giữa launcher — bằng chứng: ảnh chạy thử (menu đè giữa danh sách); `ContextMenuExt` mở bằng phím
+   ở tâm chủ — đề xuất: `context_menu_at(Anchor)` — giá trị: fastcast Ctrl+K đúng kiểu Raycast — S — P2. **Đã làm.**
+2. `[ux]` `pwsh start.ps1 launcher` cho chủ dự án mở launcher example như `docs` — bằng chứng: báo cáo mục 6 dòng 11 phải
+   gõ `cargo run --manifest-path …` — giá trị: kiểm tay nhanh — S — P3. Chưa làm: `start.ps1` / `start.sh` ở repo gốc
+   ngoài phạm vi tệp của task (backlog).
+3. `[ram]` Trang `button` 24,1 MB (cao nhất, các trang khác 14–18) — bằng chứng: bảng báo cáo mục 3 — đề xuất: đo xem phần
+   nào (bóng `elevated`, glyph) — giá trị: biết chi phí bóng trước khi fastcast dùng nhiều — S — P3 (backlog).
+4. `[pro]` Không áp (task nghiệm thu component).
+5. `[bảo mật]` Tệp vị trí của example ở thư mục tạm: chỉ hai số, đọc có kiểm (`parse_position` từ chối rác / NaN, chỗ
+   ngoài màn bị bỏ) — không cần sửa.

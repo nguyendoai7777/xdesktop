@@ -384,3 +384,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_01] `store::update` thêm bound `Send` — giữ đúng chữ ký, ghi đĩa trên luồng UI — fsync không chặn UI
 - [gd4_01] `settings-run.ps1` chỉ báo lỗi khi cửa sổ thử giành foreground — báo lỗi mọi lần foreground đổi — chủ dự án tự chuyển app thì lần chạy không nên đỏ
 - [gd4_01] Thêm Ctrl/Cmd+W + focus sẵn ở sidebar cho Settings — chờ làn UI — test đóng cửa sổ cần và người dùng dùng bàn phím cần
+- [materiant-gd4_01] Số đo Badge theo `kbd.rs` vì `xbds/materiant/projects` không có gói chip / badge — phương án khác: tự chế số mới — vì sao: cùng họ chip với Kbd.
+- [materiant-gd4_01] Badge tự trộn `ink` về màu chữ tới khi đạt 4,5 : 1 — phương án khác: sửa `AccentTokens.ink` — vì sao: `ink` còn dùng cho nút, đổi sẽ lệch bản web.

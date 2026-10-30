@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | 🔄 |
 | Repo | materiant |
 | Cỡ | S — ~80 dòng |
 | Phụ thuộc | — (song song với gd4_01, khác repo) |

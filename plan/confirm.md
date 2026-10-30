@@ -57,3 +57,11 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [materiant-gd1_06] `ScrollArea` mặc định hiện thanh khi con trỏ trong khung + khi đang cuộn (`ScrollbarVisibility::
   Hover`) — phương án khác: mặc định web `scroll` (chỉ hiện lúc cuộn) — vì sao: task ghi "hiện khi rê / khi đang cuộn";
   `Scrolling` vẫn chọn được.
+- [materiant-gd1_05] `on_change` của Checkbox / RadioGroup / Switch nhận `&T` (`Fn(&CheckState | &usize | &bool, …)`)
+  — phương án khác: nhận giá trị `T` như primitive gpui-base — vì sao: dùng thẳng được `cx.listener(|this, v: &T, …|)`.
+- [materiant-gd1_05] `Switch` có `.label()` (nhãn bên phải, cách track 8 px) — phương án khác: như web, nhãn để ngoài
+  component (`field-shell`) — vì sao: bấm nhãn cũng bật / tắt, có tên cho trình đọc màn hình mà app khỏi tự ghép.
+- [materiant-gd1_05] Thời lượng dấu tick / chấm radio = `CONTROL_DURATION_MS` 200 ms — phương án khác: đúng web
+  (checkbox 180 ms, radio 250 ms) — vì sao: `style.rs` ghi token này cho cả ba control; chênh 20–50 ms khó thấy.
+- [materiant-gd1_05] Tick lộ dần trái → phải bằng khung cắt; KHÔNG xoay tick ↔ trừ như web — phương án khác: vẽ nét
+  thật (`stroke-dashoffset`) — vì sao: GPUI vẽ SVG thành mặt nạ, không có nét để chạy, không xoay được `div`.

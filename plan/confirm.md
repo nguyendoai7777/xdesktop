@@ -72,6 +72,21 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## materiant
 
+- [dark-neutral] Tông tối mặc định: nền `#1c1c1c`, chữ `#f5f5f5`, chữ phụ `#a3a3a3`, viền trắng 8 %, viền ô nhập
+  `#424242` — phương án khác: `#202020` / nền đen hẳn `#0a0a0a` như Black Pink — vì sao: gần nhất ảnh mẫu Raycast, chữ
+  phụ 7,6:1. Black Pink (nhánh tối) cũng bỏ ánh xanh zinc ở muted / border; Rose / Rebecca giữ sắc ám có chủ ý.
+- [dark-neutral] Tầng nổi phủ alpha (`ThemeColors::layer`) chỉ cho nền hover / chọn của List, chip Kbd, nút xoá /
+  stepper, nền disabled ô nhập — phương án khác: đổi cả thang `neutral` thành alpha — vì sao: `neutral` còn làm viền,
+  chữ, track switch, và phần tử có `ring_shadow` (bóng vẽ cả dưới nền ⇒ nền alpha sẽ bị ám màu vòng); thang đặc giữ
+  nguyên nghĩa, `layer` đặt trên `surface` ra đúng cùng màu.
+- [dark-neutral] Cửa sổ nền mờ = `Blurred` (acrylic) + nền tối alpha 0,88; tông sáng vẫn đục — phương án khác:
+  `Transparent` không nhoè (chữ phía sau lộ, rối mắt) / sáng cũng trong — vì sao: brief "tông sáng không đổi"; đo không
+  tốn RAM (gallery 15,0–16,0 MB mờ vs 15,9–16,4 MB đặc). Nền không đục ⇒ GPUI tắt ClearType (chữ AA xám); kéo cửa sổ
+  acrylic Windows 10 có thể trễ — kiểm tay.
+- [dark-neutral] Ô tìm của launcher vẫn là `TextField` có khung, nền `surface` ĐẶC (không phủ alpha) — phương án khác:
+  nền ô alpha / ô trần không khung kiểu Raycast — vì sao: ô nhập vẽ vòng hover / focus bằng `ring_shadow` (bóng dưới
+  nền) ⇒ nền alpha bị ám hồng khi focus; ô trần là đổi bố cục (ngoài phạm vi) — mục 10 của task.
+
 - [ripple / window] `materiant::window::window_options()` = `WindowOptions` mặc định với `inactive_frame_interval:
   None`; gallery + mọi cửa sổ materiant nên trải `..window_options()` — phương án khác: giữ mặc định GPUI (cửa sổ không
   active ~30 fps, tiết kiệm điện khi app chạy animation dài ở nền) — vì sao: đo ripple ở cửa sổ không active chỉ 24 fps

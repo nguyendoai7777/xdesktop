@@ -5,10 +5,31 @@
 | Trạng thái | ☐ |
 | Repo | materiant |
 | Cỡ | S — ~300 dòng (example launcher) + báo cáo |
-| Phụ thuộc | materiant-gd1_01 → gd1_09 |
+| Phụ thuộc | materiant-gd1_01 → gd1_09, gd1_11 (tông tối trung tính — xong trước, 30/10/2026) |
 | Quyết định áp dụng | D-3 (đa nền tảng), D-6 |
 | Phụ thuộc mới | — (`unicode-normalization` chỉ nếu example cần bỏ dấu — ưu tiên không) |
 | File đụng tới | `examples/launcher.rs` MỚI · `docs/gd1-report.md` MỚI · `ROADMAP.md` SỬA (bàn giao GĐ1) |
+
+## 0. Bàn giao từ materiant-gd1_11 (30/10/2026)
+
+<!-- handoff: materiant-gd1_11 -->
+
+- **Đã có sẵn để dùng**: launcher kiểu Raycast nên mở bằng `WindowOptions { .., ..materiant::window::translucent_window_options() }`
+  (nền `Blurred` — acrylic) + nền gốc `materiant::window::translucent_surface(cx)`; nền hàng hover / chọn, chip phím
+  dùng `cx.theme().colors().layer(Neutral::N…)` (trắng phủ alpha) — `VirtualList` và `Kbd` đã dùng sẵn. Mẫu thật:
+  `fastcast/crates/ui/src/launcher/{mod,view}.rs`.
+- **Đổi so với lúc viết spec này**: tông tối mặc định giờ là đen trung tính (`DARK_SURFACE` `#1c1c1c`, chữ `#f5f5f5`, phụ
+  `#a3a3a3`, viền trắng 8 %) — ảnh so với spike / bản web ở nền tối sẽ khác (spike slate) — so theo ảnh mẫu Raycast.
+  Tông sáng không đổi.
+- **Nợ chuyển sang đây**: soát gallery mọi trang ở tối + `GALLERY_TRANSLUCENT=1`; kiểm tay nền mờ thật (C8 của gd1_11).
+- **Bẫy đã gặp**: PrintWindow chỉ chụp nội dung — không thấy desktop nhoè phía sau cửa sổ nền mờ ⇒ so ảnh nền mờ là
+  việc `[owner-qa]`. Nền không đục ⇒ GPUI tắt ClearType (chữ AA xám — đừng tưởng lỗi font). Dựng cửa sổ nền mờ mới
+  chậm thêm ~27 ms. Máy đang tắt "Animation effects" ⇒ `FRAMES` không in (soát `SPI_GETCLIENTAREAANIMATION` trước).
+- **Bẫy nền mờ**: phần tử có `ring_shadow` (ô nhập, switch) phải giữ nền ĐẶC — bóng vẽ cả dưới nền, nền alpha bị ám màu
+  vòng.
+- **Soát lại khi làm**: RAM launcher ~14,0–14,9 MB (gd1_11 mục 9, nền mờ không tốn thêm); macOS / Ubuntu: `Blurred` là
+  `NSVisualEffectView` / tuỳ compositor — chụp xem có nền đen đặc thay vì mờ không. Chi tiết:
+  `plan/materiant-gd1_11_dark-neutral.md` mục 9.
 
 ## 0. Bàn giao từ materiant-gd1_08 (30/10/2026)
 

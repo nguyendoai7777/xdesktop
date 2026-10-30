@@ -10,6 +10,14 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `docs/gd3-report.md`; SỬA `tests/measure.rs`, `CLAUDE.md`, `ROADMAP.md` |
 
+## 0. Bàn giao từ gd3_03 (30/10/2026)
+
+<!-- handoff: gd3_03 -->
+
+- **Đã có sẵn để dùng**: `tools/ocr-e2e.ps1` đo `Ready`, RAM đỉnh, thời gian từng ảnh của `fastcast-ocr`, không mở cửa sổ. `tools/fetch-ocr-models.ps1` dựng `models/`; bộ dựng sẵn ở `C:/xdesktop-target/ocr-models`.
+- **Trả lời mục "Soát" của gd3_09**: `Internal` là do stub cũ. Giờ thiếu manifest ⇒ `ModelMissing`, thiếu dll ⇒ `RuntimeMissing` (test `real_exe_reports_missing_model_and_runtime`). Chưa soát panel hiện đúng chữ "thiếu model" với exe thật.
+- **Soát lại khi làm**: số của gd3_02 đo lúc máy bận thì đo lại khi rảnh. Thử xong xoá `C:/xdesktop-target/ocr-models` cùng các target của làn.
+
 ## 0. Bàn giao từ gd3_09 (30/10/2026)
 
 <!-- handoff: gd3_09 -->

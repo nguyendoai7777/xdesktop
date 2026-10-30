@@ -2,13 +2,13 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) — C13 (engine thật) do gd3_02 chạy lúc gộp, theo luật làn |
 | Repo | fastcast |
 | Cỡ | S — ~300 dòng |
 | Phụ thuộc | gd3_01, gd0_05 (kết luận cách phát hành model) |
 | Quyết định áp dụng | F-4, F-6, D-2 |
 | Phụ thuộc mới | — |
-| File đụng tới | SỬA `crates/ocr/src/{main,worker}.rs`; MỚI `crates/ocr/tests/worker.rs`, `tools/fetch-ocr-models.ps1` |
+| File đụng tới | SỬA `crates/ocr/src/{main,worker}.rs`, `CLAUDE.md`; MỚI `crates/ocr/tests/worker.rs`, `tools/fetch-ocr-models.ps1`, `tools/ocr-e2e.ps1` |
 
 ## 0. Bàn giao từ gd0_05 (30/10/2026)
 
@@ -41,14 +41,39 @@
 
 Thuật toán OCR (gd3_02). Client phía UI (gd3_09). Bản cài kèm model (GĐ4).
 
-## 2b–5
+## 2b. Phân vai
 
-Viết lúc bắt đầu task. Test bằng `Recognizer` giả, không cần model. **Đo** `[opus-run]`: RAM đỉnh + sau khi thoát, thời gian `Ready` nguội, khi gd3_02 đã gộp (ai gộp sau chạy).
+Toàn bộ `[opus]`: đa luồng + giao thức + kiểm đường dẫn, không có phần UI / catalog để giao.
+
+## 3. Kiểu dữ liệu · IPC · cấu hình
+
+Không thêm thông điệp, dùng nguyên `fastcast_core::worker`. Biến môi trường `FASTCAST_OCR_MODELS`. Thêm `worker::{serve, models_dir, check_models, MODELS_VAR}`.
+
+## 4. Code
+
+Luồng đọc stdin đẩy vào `mpsc`, luồng chính `recv_timeout(idle)` rồi đọc ảnh tuần tự ⇒ rảnh tính từ lúc xong ca đọc, ca dài không bị hết hạn. Kiểm đường dẫn cùng cách `daemon/clipboard.rs`.
+
+## 5. Đo
+
+Khi gd3_02 đã gộp, `[opus-run]` ai gộp sau chạy: `tools/ocr-e2e.ps1` in thời gian `Ready` nguội, RAM đỉnh, thời gian từng ảnh. Kỳ vọng: `Ready` ~1 s; đỉnh ~450 MB cả màn; sau khi thoát tiến trình đã mất.
 
 ## 6. Nghiệm thu
 
-- Test: thứ tự trả lời; tệp ảnh luôn bị xoá, kể cả lỗi; đường dẫn ngoài `tmp/` bị từ chối; stdin đóng ⇒ thoát mã 0; hết hạn rảnh ⇒ thoát.
-- `[opus-run]` Engine thật trên ảnh tổng hợp của spike: chữ khớp, không sót tệp trong `tmp/`.
+| Case | Cho | Khi | Thì | Phủ |
+|---|---|---|---|---|
+| C1 | Worker đã nạp | Gửi 3 ảnh liền | `Ready` trước, rồi đúng thứ tự id | `[opus-unit]` ✅ |
+| C2 | Tệp trong `tmp/`, sai cỡ / cạnh 0 / vượt `MAX_CLIPBOARD_EDGE` / `u32::MAX` | Recognize | `ImageUnreadable`, tệp đã xoá | `[opus-unit]` ✅ |
+| C3 | Engine trả lỗi | Recognize | `Failed` đúng mã, tệp đã xoá | `[opus-unit]` ✅ |
+| C4 | Đường dẫn ngoài `tmp/`, có `..`, tương đối, thư mục con | Recognize | `ImageUnreadable`, tệp **không** bị xoá | `[opus-unit]` ✅ |
+| C5 | Không có thư mục tạm | Recognize | `ImageUnreadable` | `[opus-unit]` ✅ |
+| C6 | Đang đọc một ảnh | Stdin đóng | Trả nốt, thoát 0 | `[opus-unit]` ✅ |
+| C7 | Ảnh xếp hàng sau `Shutdown`, hoặc UI đóng stdout | Worker thoát | Thoát 0, ảnh trong `tmp/` đã xoá, ngoài `tmp/` còn nguyên | `[opus-unit]` ✅ |
+| C8 | Hạn rảnh 300 ms, ca đọc 600 ms | Một ảnh rồi để yên | Vẫn có trả lời; thoát 0 sau ≥ hạn tính từ lúc trả lời | `[opus-unit]` ✅ |
+| C9 | Nạp hỏng | Bật | `Failed { id: None }`, không `Ready`, thoát 1 | `[opus-unit]` ✅ |
+| C10 | JSON lạ | Gửi rồi gửi ảnh | `Failed { id: None, Internal }`, ảnh sau vẫn đọc | `[opus-unit]` ✅ |
+| C11 | Chữ không vừa `MAX_LINE`, kể cả do escape | Recognize | `Internal`; chữ vừa thì qua được `recv` | `[opus-unit]` ✅ |
+| C12 | Exe thật, thiếu manifest / dll; tiến trình thật stdin mở | Bật | `ModelMissing` / `RuntimeMissing`, thoát 1; hết hạn rảnh thoát 0 dù luồng đọc đang chặn; đóng stdin thoát 0 | `[opus-unit]` ✅ |
+| C13 | Engine thật, ảnh tổng hợp của spike | `tools/ocr-e2e.ps1` | ≥ 90 % từ khớp, không sót tệp trong `tmp/`, thoát 0 | `[opus-run]` gd3_02 |
 
 ## 7. Ghi chú UI
 
@@ -56,8 +81,22 @@ Viết lúc bắt đầu task. Test bằng `Recognizer` giả, không cần mode
 
 ## 8. Nợ chuyển task khác
 
-Thêm `models/` vào bản cài + trang giấy phép: GĐ4.
+Thêm `models/` vào bản cài + trang giấy phép: GĐ4. C13 + số đo: gd3_02 (gộp sau).
 
 ## 9. Bàn giao thực tế
 
+- **Kết quả**: C1–C12 xanh, 17 test, chạy lặp 5 lần không chập chờn. `cargo clippy -p fastcast-ocr --all-targets -- -D warnings`, `cargo fmt --check`, `cargo deny check licenses` xanh. Soát theo luật làn engine, không build GPUI.
+- **Chưa chạy**: C13 và số đo `Ready` / RAM, vì engine vẫn là stub trên `master`. Luật làn giao cho làn gộp sau là gd3_02; đã ghi lệnh ở khối bàn giao của nó. `tools/ocr-e2e.ps1` mới thử với `fake_ocr` (đường truyền, xoá tệp, mã thoát), chưa thử với engine thật.
+- **`tools/fetch-ocr-models.ps1` đã chạy thật**: Docker + ONNX Runtime 1.31.1, mọi tệp khớp sổ `manifest.int8-mix.toml`, chạy lại không làm gì thêm. Kết quả ở `C:/xdesktop-target/ocr-models` (95 MB, ngoài git). Sha256 zip ONNX Runtime ghim theo lần tải này, tức tin lần tải đầu; chưa đối chiếu với nguồn độc lập.
+- **Opus chọn 30/10/2026** (`plan/confirm.md`):
+  - Dll ở `<models>/onnxruntime.dll`, không cạnh exe như spike: task ghi vậy, và bộ model gọn một thư mục.
+  - Thêm `tools/ocr-e2e.ps1` ngoài danh sách tệp: mục 6 cần chạy thật mà làn gộp sau mới có engine, phải có lệnh sẵn.
+  - Đường dẫn ngoài `tmp/` không xoá dù "luôn xoá tệp": xoá theo đường dẫn tuỳ ý là lỗ hổng, cùng cách daemon.
+  - Tệp xoá trước khi nhận dạng, không phải sau: ảnh ở trên đĩa ngắn nhất, và engine chết ngang vẫn không sót.
+  - Stdin đóng thì trả nốt ảnh đã nhận rồi mới thoát; `Shutdown` hoặc mất stdout thì bỏ ảnh còn xếp hàng, chỉ xoá tệp.
+- **Sửa khi soi**: ảnh xếp hàng sau `Shutdown` / khi UI chết sẽ sót tệp tới lần daemon dọn ⇒ thêm `discard_queued` + C7.
+- **Soi 4 lăng kính**: bảo mật — đã xử lý ở trên, log không có đường dẫn / chữ (`worker.rs` chỉ ghi cỡ ảnh, mã lỗi, ms). UI/UX — không áp, panel ở gd3_09. RAM — ảnh nhả ngay sau `engine.read`, thoát là về 0 (C12); số thật chờ C13. Pro — không áp.
+
 ## 10. Đề xuất cải tiến
+
+- `[bảo mật]` `core::worker::recv` đọc dòng quá dài chỉ cắt `MAX_LINE + 1` byte, phần đuôi thành một dòng hỏng nữa ⇒ nhiều `Failed` cho một dòng — `core/worker.rs` `recv` — bỏ hết tới `\n` — thấp, chỉ UI gửi được stdin, không hại — S — P3. Chưa làm: tệp chung của gd3_01.

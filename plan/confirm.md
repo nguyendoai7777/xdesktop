@@ -365,3 +365,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd3_09] Thiếu exe `fastcast-ocr` báo "hãy cài lại" — phương án khác: lỗi chung kèm thử lại — vì sao: thử lại không giúp được gì.
 - [gd3_09] Thêm hạn 60 s khi worker không trả lời, giết + báo lỗi — phương án khác: chờ mãi như spec — vì sao: không thì panel kẹt "đang đọc" và giữ ảnh đóng băng.
 - [gd3_09] Sửa `tests/overlay.rs` (tệp của gd3_08): panel test luôn trỏ exe OCR không có — phương án khác: bỏ nút thử lại khỏi thứ tự Tab — vì sao: giữ dùng được bằng bàn phím, test không còn phụ thuộc `fastcast-ocr` thật trong `target/`.
+- [gd3_03] Dll ở `<models>/onnxruntime.dll` — phương án khác: cạnh exe như spike — vì sao: task ghi vậy, bộ model gọn một thư mục khi đưa vào bản cài.
+- [gd3_03] Đánh dấu ✅ khi C13 (engine thật) chưa chạy, giao gd3_02 chạy lúc gộp — phương án khác: chờ gd3_02 gộp rồi mới đóng — vì sao: luật làn GĐ3 "làn gộp sau chạy"; chữ và số đo vẫn chưa có tới lúc đó.
+- [gd3_03] Sha256 zip ONNX Runtime ghim theo lần tải đầu — phương án khác: đối chiếu nguồn độc lập — vì sao: script dev, chỉ cần phát hiện tệp đổi; GĐ4 đưa vào bản cài thì nên soát lại.

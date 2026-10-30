@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ |
 | Repo | fastcast |
 | Cỡ | S — ~250 dòng |
 | Phụ thuộc | gd2_04, materiant-gd2_01 |
@@ -44,6 +44,7 @@
 - Nút màu trên bảng tuỳ chọn mở `materiant::color_picker`, đổi màu áp cho nét sau, cho cả ô chữ đang soạn. Phím `c` mở / đóng.
 - Hàng màu mẫu; nhớ màu + độ dày + cỡ chữ gần nhất (`config.annotate`, có `#[serde(default)]`, ghi lúc đóng overlay).
 - Gõ hex trong bảng không kích hoạt phím tắt công cụ.
+- **Thêm (chủ dự án, 30/10/2026)**: con lăn đổi cỡ công cụ đang bật. Độ dày 1–32 (vẽ tự do 1–48), bước 1, mặc định 3; chữ 10–96, bước 2, mặc định 20. Áp ngay trên nét đang vẽ và ô chữ đang soạn, không thêm mục undo; touchpad cộng dồn; mỗi công cụ nhớ cỡ riêng; nhãn `3 px` gần con trỏ 1 giây.
 
 ## 2. Không làm trong task này
 
@@ -62,5 +63,15 @@ Viết lúc bắt đầu task.
 ## 8. Nợ chuyển task khác
 
 ## 9. Bàn giao thực tế
+
+Gộp `master` ở `3dee9ef`.
+
+- Có: `InkStyle { color, widths: [u16; 5], font }`, `size_range(tool)` (mọi min / max / bước ở `model.rs`), `WheelSteps`, `Ink::nudge_stroke`, `OverlaySession::{wheel, toggle_color, set_color}`; `OverlayView::{on_wheel, sync_color_panel}`; `config.annotate` (`color`, `lineWidth`, `arrowWidth`, `rectangleWidth`, `ellipseWidth`, `penWidth`, `fontSize`), kẹp khi đọc, ghi lúc đóng overlay; bước kịch bản `wheel`, `wheelpx`.
+- Bảng tuỳ chọn: ô màu, các nấc 2 / 3 / 5 / 8, thêm số hiện tại; giá trị giữa các nấc thì không nấc nào sáng. `[` `]` đi theo nấc, đang ở giữa thì về nấc gần theo chiều đó.
+- `Visible.style` chỉ có ở màn có thanh công cụ: lăn trên màn 0 không vẽ lại màn 1 (`fake_wheel_on_one_monitor_does_not_repaint_the_other`).
+- Bảng màu chỉ dựng lúc mở, đóng là nhả. Nhấn ra ngoài bảng thì đóng bảng và nhấn vẫn có tác dụng. Esc đóng bảng trước.
+- Kiểm: unit `model`, `shape`, `options`; `fake_wheel_*`, `fake_color_*`, `fake_ink_style_*`; ảnh màn giả (bảng màu, nét 12 px đổi giữa chừng, nhãn `12 px`).
+- **Chưa kiểm**: con lăn + touchpad thật, kéo thật trên bảng màu, RAM khi mở bảng màu.
+- Không có cộng dồn nhiều nấc trong một sự kiện dòng: Windows gộp hai nấc lăn cực nhanh thành một sự kiện thì chỉ đổi một bước.
 
 ## 10. Đề xuất cải tiến

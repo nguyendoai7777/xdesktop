@@ -28,6 +28,13 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [gd2_05] Con lăn lên = tăng theo sự kiện dòng của OS (không đảo theo "natural scrolling") — phương án khác: đảo trên macOS — vì sao: chưa có máy Mac thử.
+- [gd2_05] Một sự kiện dòng = một nấc, bất kể cài đặt số dòng của Windows; touchpad 30 px một nấc — phương án khác: chia theo 3 dòng — vì sao: cài đặt OS không làm đổi cảm giác; 30 px là ước lượng, chờ kiểm tay.
+- [gd2_05] Mỗi công cụ nét nhớ độ dày riêng cả trong config; không nhớ đậm / nghiêng / gạch chân qua lần mở sau — phương án khác: nhớ cả ba — vì sao: yêu cầu chỉ nêu màu, độ dày, cỡ chữ; bật đậm lần trước dễ gây bất ngờ.
+- [gd2_05] Giữ nấc 2 / 3 / 5 / 8 trên bảng + thêm số hiện tại; giá trị giữa nấc thì không nấc nào sáng — phương án khác: thay bằng thanh trượt — vì sao: ít đổi, vẫn một chạm.
+- [gd2_05] Nhấn ra ngoài bảng màu: đóng bảng và nhấn vẫn vẽ được — phương án khác: lần nhấn đó chỉ đóng bảng — vì sao: khỏi tốn một lần nhấn.
+- [gd2_05] Tám màu mẫu cố định (đỏ, cam, vàng, xanh lá, xanh dương, tím, đen, trắng) — phương án khác: nhớ màu gần đây — vì sao: ngoài phạm vi task.
+
 - [gd2_01] Chú thích gắn với ảnh đóng băng: dời / đổi cỡ vùng chọn không dời chú thích, chỉ cắt — phương án khác: dời theo vùng — vì sao: spec task; giữ được hình khi chỉnh lại vùng.
 - [gd2_01] Esc bỏ vùng vẫn giữ chú thích (thứ tự: bỏ nét → tắt công cụ → bỏ vùng → đóng) — phương án khác: bỏ vùng là xoá hết — vì sao: lỡ tay không mất công vẽ.
 - [gd2_01] Có công cụ bật: ẩn tay nắm, nhấn ngoài vùng bỏ qua — phương án khác: nhấn ngoài vùng chọn lại — vì sao: tránh mất vùng khi vẽ trượt tay.
@@ -305,3 +312,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [icon F-11] Dòng "Mở launcher" / "Settings" dùng icon materiant (`Search`, `Settings`), nút Đóng của thanh công cụ giữ `Close` — phương án khác: vẽ thêm vào bộ F-11 — vì sao: chủ dự án chưa chọn icon cho các mục này, icon materiant cùng hệ nét.
 - [icon F-11] Chip phím hiện icon trên mọi OS (Ctrl = ^, Alt = ⌥ cả trên Windows) — phương án khác: chỉ macOS — vì sao: chủ dự án chọn bộ này không phân biệt OS; đổi chỉ một chỗ ở `assets::key_icon`.
 - [icon F-11] Icon lệnh tô `primary` đúng như yêu cầu, primary mặc định hiện là hồng của materiant, khác đỏ icon app — phương án khác: đặt primary của fastcast thành đỏ `#FF6363` — vì sao: chủ dự án nói ăn theo theme, chưa đổi theme.
+- [gd3_01] `target_size` đặt ở `fastcast_core::worker`, `fastcast_video::size` chỉ re-export — phương án khác: để ở `video` như spec, UI tự tính lại — vì sao: gd3_10 phải hiện cỡ ra thật mà UI không được phụ thuộc `fastcast-video`, chép hai nơi sẽ lệch.
+- [gd3_01] `source::{D3d, create_device, create_bgra}` là mã thật ngay từ stub — phương án khác: stub, gd3_05 mới điền — vì sao: gd3_04 chạy song song cần device để mã hoá hoạ tiết.
+- [gd3_01] `fastcast-video` phụ thuộc `fastcast-capture` chỉ để dùng `geometry` — phương án khác: `#[path]` như spike, hoặc tách crate — vì sao: một nguồn sự thật cho F-3; `xcap` tốn thời gian biên dịch, không gọi tới thì linker bỏ (chưa đo cỡ `fastcast-rec`, gd3_06 đo RAM).
+- [gd3_01] Biến `FASTCAST_RECORD_*` kích hoạt qua lệnh `record_region` trong `commands::dispatch` — phương án khác: đọc lúc UI khởi động trong `app.rs` — vì sao: `app.rs` không thuộc tệp của task, lệnh lặp cũng thử được.
+- [gd3_01] `FASTCAST_OCR_EXE` / `FASTCAST_REC_EXE` có hiệu lực cả ở bản release — phương án khác: chỉ bản debug — vì sao: gd3_13 đo bản release với exe giả; ai chỉnh được biến môi trường của tài khoản thì đã chạy được mã bất kỳ.

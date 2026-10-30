@@ -5,6 +5,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **[gd2_05 · owner-qa] Con lăn + bảng màu**: `fst` thật, chụp vùng, chọn công cụ. Lăn con lăn có nấc + vuốt touchpad: mỗi nấc đổi một bước, nhãn `N px` gần con trỏ, không nhảy loạn; lăn giữa lúc kéo; lăn lúc đang gõ chữ có Unikey (con trỏ + IME không mất). Bảng màu (phím `c`): kéo ra ngoài ô vẫn bám, gõ hex không bật công cụ — lý do: máy dùng thật, session không chạy overlay thật, con lăn thật.
+
 - **[gd2_04 · owner-qa] Gõ tiếng Việt vào ô chữ**: chạy `fst` thật, chụp vùng, phím `t`, click, gõ Telex + VNI qua Unikey / EVKey: không mất / nhân đôi chữ, ô ứng viên đúng chỗ; thử cả màn scale khác 100 % + vùng vắt hai màn khác scale (chữ không đổi cỡ vật lý, ảnh lưu khớp) — lý do: máy dùng thật, session không gõ phím thật; màn giả luôn theo scale màn chính.
 - **[gd2_04] Font chữ chú thích trên macOS, Ubuntu**: chưa chạy thử, kiểm ảnh lưu có đúng chữ, đúng chỗ.
 

@@ -43,6 +43,11 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
   materiant web; bấm chuột vào nút thì KHÔNG có vòng focus, Tab tới thì có; Space / Enter bấm được (gallery `--keys`
   không thử được — chỉ gửi KeyDown); chữ trong nút / chip `Kbd` nằm giữa. Chỗ lệch có chủ đích:
   `plan/materiant-gd1_03_button-kbd.md` mục 9.
+- **Kiểm tay gd1_05** (C3 phần giảm chuyển động + C4 — lý do: không tự đổi cài đặt hệ thống, so bằng mắt với web):
+  `cargo run --example gallery -- --page toggles` → so với trang checkbox / radio / switch của materiant web ở sáng /
+  tối; Space / Enter bật tắt được (gallery `--keys` không thử được). Windows → Accessibility → Visual effects →
+  Animation effects = Off, mở lại gallery ⇒ thumb nhảy thẳng, tick / chấm / vành sóng không chạy, không ripple.
+  `plan/materiant-gd1_05_toggles.md` mục 9.
 - **RAM gallery macOS** (`phys_footprint`, đã viết ở gd1_01) chưa build trên Mac — lý do: máy này không có target
   darwin. Soát ở gd1_10 hoặc lần đầu chạy gallery trên Mac.
 

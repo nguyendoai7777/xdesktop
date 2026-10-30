@@ -10,6 +10,16 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `overlay/record_panel.rs`; MỚI `crates/ui/tests/record_setup.rs` |
 
+## 0. Bàn giao từ gd3_08 (30/10/2026)
+
+<!-- handoff: gd3_08 -->
+
+- **Đã có sẵn để dùng**: `overlay/record_panel.rs` đã nối, chỉ điền tệp này. `Tool::Record` có tay nắm, không có thanh. Module con đọc được `session.record`, `session.selection`, `session.close(cx)`. `commands::dispatch` vẫn gọi `record::stop_if_recording || dev_hook` trước khi mở overlay.
+- **Đổi so với spec**: `render(visible, widgets, host, window, cx)`, không còn `at`: `view` đã đặt chỗ, `occlude`, chặn chuột. `window` để tạo `NumberField`; entity để trong `Widgets`, sống tới khi đóng overlay, cả lúc panel ẩn khi kéo chỉnh. Thêm móc `state`, `size`. Gỡ `#[allow(dead_code)]` trên `OverlaySession::record`, `PanelHost` khi dùng tới.
+- **Bẫy**: `PanelState` sao ở `cx.observe` nên đổi `session.record` phải `cx.notify()`. Không có móc "mở": đọc `config.record` lúc `selection_changed` đầu tiên. Vùng chuyển màn thì cửa sổ màn kia có `Widgets` mới, giá trị phải nằm ở `session.record`.
+- **Phím**: `on_key` chạy trước mọi phím kể cả Esc. Enter lúc focus ở ô nhập / nút không tới `on_key` ⇒ Enter trong ô FPS phải bắt từ sự kiện của ô. Mũi tên chỉ dời vùng khi focus ở gốc cửa sổ, focus ở widget thì mũi tên là của widget.
+- **Soát lại khi làm**: `fake_record_has_no_toolbar_and_no_drawing_keys` (bài này gửi Esc hai lần: Esc của panel không được nuốt). Máy bận thì chạy `--test-threads=1` trước khi kết luận đỏ.
+
 ## 0. Bàn giao từ gd3_01 (30/10/2026)
 
 <!-- handoff: gd3_01 -->

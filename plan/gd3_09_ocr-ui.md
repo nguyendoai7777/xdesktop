@@ -10,6 +10,16 @@
 | Phụ thuộc mới | — |
 | File đụng tới | SỬA `crates/ui/src/ocr/{mod,client}.rs`, `overlay/ocr_panel.rs`; MỚI `crates/ui/tests/ocr.rs` |
 
+## 0. Bàn giao từ gd3_08 (30/10/2026)
+
+<!-- handoff: gd3_08 -->
+
+- **Đã có sẵn để dùng**: `overlay/ocr_panel.rs` đã nối, chỉ điền tệp này. `Tool::Ocr` có tay nắm, thanh Chép + Đóng. Module con đọc được trường riêng của phiên: `session.ocr`, `session.selection`, `session.crop_job(region)`, `session.begin_copy()`, `session.close(cx)`.
+- **Đổi so với spec**: `render(visible, widgets, host, window, cx)`, không còn `at`: `view` đã đặt chỗ, `occlude`, chặn chuột. `host.session` là `WeakEntity`, `host.root` là focus gốc. Thêm móc `state`, `size`, `copy` (nút Chép). Gỡ `#[allow(dead_code)]` trên `OverlaySession::ocr`, `PanelHost` khi dùng tới.
+- **Bẫy**: `PanelState` sao ở `cx.observe` nên đổi `session.ocr` phải `cx.notify()`, và phải `PartialEq` đúng. `selection_changed` không gọi khi vùng bị bỏ ⇒ hẹn giờ 150 ms xong đọc lại `session.selection`. `size` là chỗ dành sẵn, chữ ngắn thì panel thấp hơn cũng không hở vì thanh nằm trên.
+- **Phím**: `on_key` chạy trước mọi phím kể cả Esc, Ctrl+C, Enter; Enter lúc focus ở nút không tới đây. Ctrl+C không có ở `view` cho `Tool::Ocr`: panel không bắt thì không có gì xảy ra.
+- **Soát lại khi làm**: `fake_ocr_toolbar_has_copy_and_close_and_no_drawing_keys`, chỉ đợi dòng log `overlay: action copy`. Máy bận thì chạy `--test-threads=1` trước khi kết luận đỏ.
+
 ## 0. Bàn giao từ gd3_01 (30/10/2026)
 
 <!-- handoff: gd3_01 -->

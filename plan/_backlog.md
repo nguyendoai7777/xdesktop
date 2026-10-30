@@ -5,6 +5,10 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 ## fastcast
 
+- **Kiểm tay gd1_09 (C14 — `plan/gd1_09_color-picker.md` mục 6)**: trên màn HDR và màn scale 125 / 150 %, Ctrl+Shift+3 (hoặc launcher "Lấy màu"): kính lúp hiện cạnh con trỏ, mũi tên dời con trỏ thật đúng 1 px, kính lúp sang màn kia khi di chuột; Enter chép, dán ra so với màu thật — lý do: máy dùng thật không chạy overlay thật; màu HDR phụ thuộc cách `xcap` chụp, chưa kiểm.
+- **`set_cursor_pos` macOS / Ubuntu (gd1_09)**: mũi tên chưa kéo con trỏ thật — lý do: chưa có máy, làm cùng GĐ4.
+- **[gd1_08 · owner-qa] Kiểm thước tay (C6)**: `fst` thật → Ctrl+Shift+2 → đo một nút trên trang web đã biết cỡ CSS ⇒ phần `@` khớp; có màn khác DPI: trục sang đúng màn, vắt hai màn thì không có `@`; Ctrl+C rồi dán ra `W×H` — lý do: máy dùng thật, chỉ chạy màn giả cùng scale. `plan/gd1_08_ruler.md`.
+- **[gd1_08 · ux] Gợi ý trước lần đo đầu, nhãn thước theo cỡ chữ lớn**: mục 10 (4), (5) của gd1_08 — lý do: (4) chờ chủ dự án xem tay, (5) chờ Settings → Cỡ chữ (GĐ4).
 - **Kiểm tay gd1_10 (C7 — `plan/gd1_10_light-overlay.md` mục 6)**: RDP vào máy nhà từ máy khác, bấm chụp vùng; log có `overlay: render mode Light (… remote=true)`, kéo chọn dùng được, vùng sáng nét, lưu / chép đúng; xem thêm màn 1440p / 4K nếu có — lý do: không giả lập được RDP, cũng không đo được màn lớn hơn màn thật.
 - **Icon app cho exe / khay / bản cài** (icon đã chốt 30/10/2026 — `fastcast/assets/icon/app-icon.svg`, bản đầy đủ có
   nền ô + gradient; launcher đã dùng bản chỉ hình ở `crates/ui/assets/app-icon.svg`): chưa xuất `.ico` (16–256 px) /

@@ -2,13 +2,23 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) |
 | Repo | fastcast |
-| Cỡ | S — ~350 dòng |
+| Cỡ | S — ~520 dòng + 190 dòng test (ước lượng cũ ~350) |
 | Phụ thuộc | gd1_02 · gd1_05 (chép chữ) |
 | Quyết định áp dụng | F-1, F-3 |
 | Phụ thuộc mới | — |
-| File đụng tới | `crates/ui/src/overlay/ruler.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA |
+| File đụng tới | `crates/ui/src/overlay/ruler.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA · thêm: `overlay/view.rs` (2 `pub(super)`), `overlay/dev.rs` (bước `shift`), `clipboard.rs`, `tests/{ipc,overlay}.rs`, `CLAUDE.md` |
+
+## 0. Bàn giao từ gd1_09 (30/10/2026)
+
+<!-- handoff: gd1_09 -->
+
+- **Nợ chuyển sang đây**: khi thước mở overlay thật, thêm `Command::Ruler` vào `commands::freezes_screen` (đóng băng + chặn nhau với
+  chụp vùng / lấy màu); test `repeated_command_focuses_existing_window` đang coi Ruler và ColorPicker độc lập thì đổi cặp lệnh.
+- **Đã có sẵn để dùng**: `overlay::window_placements(fake, layout, cx)`, `dev::run_script(hàm lấy cửa sổ, cx)` dùng được cho phiên riêng
+  (mẫu `overlay/picker.rs`). `tests/ipc.rs` đã bỏ `color_picker`, dùng `ocr_region` / `open_settings`.
+- **Bẫy đã gặp**: `Root` của gpui-base nuốt Tab ⇒ `cx.intercept_keystrokes`. Gộp sau gd1_09 có thể xung đột nhỏ ở `commands.rs`, `overlay/mod.rs`.
 
 ## 0. Bàn giao từ gd1_05 (30/10/2026)
 
@@ -56,6 +66,13 @@
 
 - Đo nhiều hình cùng lúc, tự bắt cạnh phần tử (snap to edges) — ghi đề xuất nếu thấy đáng.
 
+## 2b. Phân vai
+
+| Phần việc | Vai |
+| --- | --- |
+| Toàn bộ `ruler.rs` (hình học đa màn, khoá trục, view), nối `mod.rs` / `commands.rs`, test, i18n | `[opus]` — không giao Sonnet: i18n chỉ 2 dòng, dính interface đang chốt |
+| Đo trên nút web thật, màn khác DPI thật | `[owner-qa]` |
+
 ## 4. Code
 
 Dùng `selection.rs` của gd1_02 (cùng máy trạng thái kéo) nhưng không có tay nắm / thanh công cụ. Nhãn `px` là pixel
@@ -63,9 +80,14 @@ Dùng `selection.rs` của gd1_02 (cùng máy trạng thái kéo) nhưng không 
 
 ## 6. Nghiệm thu
 
-- Kéo 100 px logic trên màn 150 % ⇒ nhãn 150 px vật lý + `@1.5x: 100`.
-- Trục vẽ trên đúng màn chứa con trỏ khi con trỏ đi qua màn khác.
-- `[owner-qa]`: đo một nút trên trang web đã biết cỡ CSS ⇒ khớp.
+| Case | Cho / Khi / Thì | Phủ bởi | KQ |
+| --- | --- | --- | --- |
+| C1 | Màn 150 %, kéo 100 px logic (pixel 300 → 449) ⇒ nhãn `150 × 150 px (@1.5x: 100×100)`; `320×48` ⇒ `(@1.5x: 213×32)`; màn 100 % không có phần `@` | `[opus-unit]` `hundred_logical_px…`, `label_matches…` | ✅ |
+| C2 | Con trỏ qua màn khác ⇒ trục + toạ độ cục bộ chỉ ở màn chứa con trỏ; di ở màn 0 không vẽ lại màn 1 (30 lần di: màn 1 vẽ 7 lần) | `[opus-unit]` `axes_are_drawn_only…` + `[opus-run]` `fake_ruler_axes…` | ✅ |
+| C3 | Ctrl+C khi chưa đo ⇒ không gửi; đã đo ⇒ `ClipboardText` đúng `W×H`, daemon từ chối ⇒ giữ số đo + báo lỗi, chép lại ⇒ đóng + báo | `[opus-run]` `fake_ruler_measures…`, `fake_daemon` in `CLIPBOARD_TEXT 201×81` | ✅ |
+| C4 | Shift khi kéo ⇒ khoá trục lệch ít (cả lúc đứng yên, cả khe giữa màn so le) | `[opus-unit]` `shift_*`, `pressing_shift…` + `[opus-run]` | ✅ |
+| C5 | Kéo lại ⇒ đo mới; Esc thoát ngay | `[opus-unit]` `dragging_again…` + `[opus-run]` | ✅ |
+| C6 | Đo một nút trên trang web đã biết cỡ CSS ⇒ khớp; đo trên hai màn khác DPI thật | `[owner-qa]` — `plan/_backlog.md` | chờ kiểm tay |
 
 ## 7. Ghi chú UI
 
@@ -73,6 +95,26 @@ Trục 1 px logic màu nhấn, nhãn nền tối chữ sáng. Khoá i18n: `ruler
 
 ## 8. Nợ chuyển task khác
 
+- gd1_11 (nghiệm thu, phụ thuộc cả dải): đưa C6 vào bước kiểm tay.
+
 ## 9. Bàn giao thực tế
 
+- **Đã có**: `Command::Ruler` mở `overlay::open(f, Tool::Ruler, cx)`; `RulerView` chạy trên `OverlaySession` (dùng lại `SelectionState`, `to_global`, `close`, `copy_finished`), không tay nắm / thanh công cụ / lớp tối. Thêm `RulerState` + `Tool` ở `overlay/mod.rs`.
+- **Quyết định (Opus chọn 30/10/2026, gạch ở `confirm.md`)**: số đo gồm cả pixel đầu và cuối; Esc thoát ngay; chép xong đóng overlay; vắt qua hai màn khác scale thì không hiện phần `@`.
+- **Lỗi an toàn đã chặn**: `tests/ipc.rs` dùng `ruler` / `color_picker` làm lệnh "chưa có cửa sổ" ⇒ khi thước thành overlay, test sẽ chụp + phủ màn thật. Đã đổi sang `ocr_region` / `record_region`, sửa `CLAUDE.md`.
+- **Plan lệch code**: spec không ghi `view.rs` / `dev.rs`; đã thêm `pub(super)` cho `piece_of`, `rect_div` và bước kịch bản `shift on|off`. `ruler.rs` dài hơn ước lượng, vẫn dưới trần.
+- **Gộp master**: xung đột với gd1_10 ở `CLAUDE.md`, `overlay/mod.rs`, `tests/overlay.rs`, giữ cả hai phía, soát xanh lại. Thước dùng luôn nhịp khung chế độ nhẹ (`RenderMode::frame_wait`).
+- **Soát** (worktree, sau gộp gd1_10): `cargo build`, `clippy -D warnings`, `cargo test` (bin UI 121 ✅, overlay 14 ✅ + 4 đo ignored), `cargo deny check licenses` ✅; `FASTCAST_OVERLAY_RENDER=light` hai test thước ✅.
+- **`[opus-run]`**: màn giả + `FASTCAST_OVERLAY_SCRIPT` + `fake_daemon`: `CLIPBOARD_TEXT 201×81`, focus máy không đổi (`foreground_unchanged=True`). Ảnh `PrintWindow` hai cửa sổ của app, đã xem rồi xoá: trục, nhãn, viền đúng; đọc pixel viền nằm ngoài vùng đo.
+- **Chưa kiểm**: overlay thật, màn khác DPI thật (màn giả cùng scale với màn chính, số @ phủ bằng unit test), bản dịch `vi` chưa nhìn trên màn (ảnh chạy cấu hình `en`), RAM không đo vì dùng chung phiên overlay với gd1_02. Chờ kiểm tay: C6.
+- **Đề xuất đã làm** (mục 10): (1), (2), (3).
+
 ## 10. Đề xuất cải tiến
+
+1. ✅ `[ux]` Bấm lệnh overlay khác khi đang có overlay ⇒ mở chồng, ảnh đóng băng dính overlay cũ — `commands.rs` `route` so từng lệnh — lệnh overlay loại trừ nhau, đưa cửa sổ đang mở lên — tránh kẹt phiên dưới — S — P1. Đã làm (`same_feature`).
+2. ✅ `[ux]` Kéo chuột khó trúng pixel trên màn scale cao — Alt + mũi tên chỉnh cạnh phải / dưới 1 px (Shift: 10), dùng lại `OverlaySession::arrow` — đo chính xác, dùng được bằng phím — S — P2. Đã làm.
+3. ✅ `[ux]` "Đã chép" không nói chép gì — khoá `ruler.copied` "Đã chép 320×48" — S — P2. Đã làm.
+4. `[ux]` Trước lần đo đầu không có gợi ý nào (Esc, kéo để đo) — `ruler.rs` chỉ hiện gợi ý khi `finished` — thêm dòng "Kéo để đo · Esc thoát" tự ẩn sau lần di đầu — S — P3. Vào backlog: chờ chủ dự án xem tay có thấy cần.
+5. `[ux]` `MEASURE_ROOM` / `POINTER_ROOM` là số cố định, cỡ chữ lớn thì nhãn có thể tràn mép phải — `ruler.rs` — đo chữ thật khi có Settings → Cỡ chữ (GĐ4) — S — P3. Vào backlog: chờ GĐ4.
+6. `[pro]` Tự bắt cạnh phần tử, đo nhiều hình cùng lúc — mục 2 của task — huy hiệu "Pro" — M — P3. Đã ghi `fastcast/ROADMAP.md` GĐ4.
+- Bảo mật: không log nội dung chép (chỉ log cỡ đo, không nhạy cảm), ảnh nhả cùng phiên, không IPC mới. RAM: không phụ thuộc mới, không thêm bản sao ảnh.

@@ -2,13 +2,22 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (30/10/2026) |
 | Repo | fastcast |
 | Cỡ | M — ~450 dòng |
 | Phụ thuộc | gd1_02 · gd1_05 (chép chữ) |
 | Quyết định áp dụng | F-1, F-3 |
 | Phụ thuộc mới | — (đổi màu tự viết, không thêm crate) |
-| File đụng tới | `crates/core/src/color.rs` MỚI · `crates/core/src/lib.rs` SỬA · `crates/ui/src/overlay/picker.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA |
+| File đụng tới | `crates/core/src/color.rs` MỚI · `crates/core/src/lib.rs` SỬA · `crates/ui/src/overlay/picker.rs` MỚI · `crates/ui/src/overlay/mod.rs` SỬA · `crates/ui/src/commands.rs` SỬA · `i18n/{vi,en}.toml` SỬA — thêm so với spec: `overlay/dev.rs`, `platform.rs`, `clipboard.rs`, `tests/{picker,ipc,common}` (mục 9) |
+
+## 0. Bàn giao từ gd1_08 (30/10/2026)
+
+<!-- handoff: gd1_08 -->
+
+- **Đã có sẵn để dùng**: `overlay::Tool` + `overlay::open(freezing, tool, cx)` — thêm `Tool::Picker`, một nhánh `open_window` trong `open`; khuôn view một màn: `overlay/ruler.rs::RulerView` (không đọc phiên trong `render`, `Visible` so ở `observe`, `request_frame` theo chế độ nhẹ); `clipboard::copy_text` đã bỏ `expect(dead_code)`, mẫu chép + báo: `ruler.rs::copy_measure`.
+- **Đổi so với lúc viết spec này**: `commands.rs` đóng băng theo `matches!(command, CaptureRegion | Ruler)` ⇒ thêm `ColorPicker`; `same_feature` đã coi `ColorPicker` là lệnh overlay (không mở chồng).
+- **Bẫy đã gặp**: `tests/ipc.rs` đã thôi dùng `color_picker` — đừng thêm lại, lệnh này sắp mở overlay thật. Gộp master có thể xung đột ở `overlay/mod.rs`, `commands.rs`, i18n: giữ cả hai phía.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui --test overlay` (mẫu `fake_ruler_*`, kịch bản có thêm `shift on|off`); chi tiết `plan/gd1_08_ruler.md` mục 9.
 
 ## 0. Bàn giao từ gd1_05 (30/10/2026)
 
@@ -31,13 +40,20 @@
   có viền), dưới kính lúp là mã màu theo định dạng đang chọn.
 - Nhấn chuột / Enter ⇒ chép mã theo `color.lastFormat` qua daemon, toast "Đã chép #1E90FF", đóng overlay.
 - Tab / 1–4 đổi định dạng: `hex` (`#1E90FF`), `rgb` (`rgb(30 144 255)`), `rgba` (`rgba(30, 144, 255, 1)`), `oklch`
-  (`oklch(0.652 0.172 253.7)`) — nhớ vào `color.lastFormat` (F-1: "nhớ lựa chọn gần nhất").
+  (`oklch(0.652 0.19 253.2)` — spec cũ ghi `0.172 253.7`, sai; mục 9) — nhớ vào `color.lastFormat` (F-1: "nhớ lựa chọn gần nhất").
 - Mũi tên dời con trỏ 1 px vật lý để nhắm chính xác.
 - `color.rs` (core): sRGB → OKLab → OKLCH + định dạng chuỗi — hàm thuần, test với giá trị chuẩn.
 
 ## 2. Không làm trong task này
 
 - Bảng màu đã lấy, lấy màu trung bình vùng.
+
+## 2b. Phân vai
+
+| Phần việc | Ai |
+| --- | --- |
+| `color.rs`, `picker.rs` (toạ độ vật lý, phiên, view), nối `commands` / `dev`, i18n, test | `[opus]` — task nhỏ, cùng một phiên, không tách Sonnet |
+| So màu thật trên màn HDR / khác DPI, mũi tên kéo con trỏ thật, focus khi đổi màn | `[owner-qa]` |
 
 ## 3. Kiểu dữ liệu · IPC · cấu hình
 
@@ -50,11 +66,22 @@ theo cú pháp CSS Color 4 có khoảng trắng — xác nhận với chủ dự
 
 ## 6. Nghiệm thu
 
-- Test đơn vị: trắng `oklch(1 0 0)`, đen `oklch(0 0 0)`, `#ff0000` ⇒ `oklch(0.628 0.258 29.2)`, `#1e90ff` khớp bảng
-  tham chiếu (sai ≤ 0,001).
-- Định dạng đổi lần trước được giữ sau khi khởi động lại.
-- Màu lấy ở màn scale 150 % là đúng pixel vật lý dưới con trỏ (so ảnh đóng băng).
-
+| Case | Cho / Khi / Thì | Phủ |
+| --- | --- | --- |
+| C1 | Trắng, đen, xám ⇒ `oklch(1 0 0)`, `oklch(0 0 0)`, C = H = 0; `#ff0000` ⇒ `oklch(0.628 0.258 29.2)`; `#1e90ff`, lục, lam, vàng khớp bảng (sai ≤ 0,001) | `[opus-unit]` `color.rs` |
+| C2 | Con trỏ ở điểm logic (100, 100) màn giả, Enter ⇒ daemon nhận mã HEX của đúng pixel vật lý trong ảnh | `[opus-run]` `tests/picker.rs` |
+| C3 | Daemon từ chối ⇒ overlay còn mở, thử lại được; đồng ý ⇒ đóng + thông báo Success | `[opus-run]` |
+| C4 | Màn thứ hai: mã đọc từ ảnh màn đó; Shift+mũi tên 10 px; mũi tên 1 px | `[opus-run]` |
+| C5 | Phím 1–4, Tab, Shift+Tab đổi định dạng (Tab không bị `Root` nuốt) | `[opus-run]` |
+| C6 | Đổi định dạng rồi đóng, khởi động lại UI ⇒ mở đúng định dạng cũ (`color.lastFormat`) | `[opus-run]` |
+| C7 | Không đổi định dạng ⇒ không ghi cấu hình | `[opus-run]` |
+| C8 | Enter lặp / nhấn chuột lúc đang chép ⇒ chỉ gửi một lần | `[opus-run]` |
+| C9 | Nhấn chuột chép đúng điểm nhấn | `[opus-run]` |
+| C10 | Mũi tên ở góc màn: con trỏ không ra ngoài; kẹp vào màn | `[opus-run]` |
+| C11 | Esc / chuột phải đóng, không chép; lệnh lặp mở lại ấm | `[opus-run]` |
+| C12 | Di chuột trên màn 0 không vẽ lại màn 1 | `[opus-run]` |
+| C13 | Màn 150 %: toạ độ logic ↔ pixel vật lý khớp từng pixel; ảnh đọc đúng pixel vật lý, cả màn toạ độ âm | `[opus-unit]` `picker.rs` |
+| C14 | Màn HDR / khác DPI thật: so mã với màu thật, mũi tên kéo con trỏ thật, kính lúp đổi màn | `[owner-qa]` — chờ kiểm tay |
 ## 7. Ghi chú UI
 
 ```
@@ -65,10 +92,33 @@ theo cú pháp CSS Color 4 có khoảng trắng — xác nhận với chủ dự
   ■ #1E90FF   HEX · RGB · RGBA · OKLCH   (Tab)
 ```
 
-Khoá i18n: `picker.hint`, `picker.copied`.
+Khoá i18n: `picker.hint`, `picker.copied` (`{code}`). Tên định dạng HEX / RGB / RGBA / OKLCH là thuật ngữ, không dịch.
 
 ## 8. Nợ chuyển task khác
 
+- gd1_08: thêm `Command::Ruler` vào `commands::freezes_screen` khi thước mở overlay thật (đã ghi vào mục 0 của gd1_08).
+
 ## 9. Bàn giao thực tế
 
+- **Kết quả**: lấy màu chạy trên màn giả: 6 test `tests/picker.rs` + `fake_daemon` in `CLIPBOARD_TEXT oklch(0.427 0.151 265.8)`.
+  Soát xanh sau khi gộp master (gd1_10): build, clippy, test (core 54, ui 115 + ipc 5 + overlay 12 + picker 6), `deny` licenses ok.
+  Lần chạy đầu `tests/overlay.rs` đỏ 3 test (hết thời gian chờ log, lúc máy build song song); chạy lại đều xanh.
+- **Spec sai, đã sửa**: `#1E90FF` là `oklch(0.652 0.19 253.2)`, không phải `0.172 253.7`. Kiểm hai đường độc lập (ma trận
+  sRGB → LMS trong code; sRGB → XYZ → OKLab bằng script ngoài); đỏ / lục / lam / vàng khớp bảng CSS.
+- **Opus chọn 30/10/2026** (đều ở `plan/confirm.md`): `rgb` giữ cú pháp có khoảng trắng; phiên `PickerSession` + view riêng
+  thay chế độ trong `OverlaySession`; mũi tên kéo cả con trỏ thật; nhớ định dạng lúc đóng; số 0 thừa bị bỏ (`0.19`, `1`).
+- **Thêm ngoài spec**: Shift+mũi tên 10 px, Ctrl+C, chuột phải đóng — cùng phím với chọn vùng.
+- **Ngoài dòng "File đụng tới"**: `overlay/dev.rs` (`run_script` nhận hàm lấy cửa sổ, dùng chung hai phiên), `platform.rs`
+  (`set_cursor_pos`), `clipboard.rs` (gỡ `expect(dead_code)`), `tests/ipc.rs` (`color_picker` giờ mở overlay thật ⇒ test đổi sang
+  `ocr_region`, `open_settings`), `tests/common` (`has_log`).
+- **Đo**: không đo RAM / độ trễ riêng; cùng đường ảnh đóng băng với overlay, gom vào lượt đo gd1_11. Khung đầu bản debug màn giả
+  1,2–1,7 s lúc máy bận build, không phải số tham chiếu.
+- **Chờ kiểm tay** (C14, `plan/_backlog.md`). macOS / Ubuntu: `set_cursor_pos` chưa làm, mũi tên chỉ dời điểm nhắm, di chuột nhẹ là về con trỏ thật.
+- **Đề xuất đã làm**: lệnh đóng băng chặn nhau (`commands::freezes_screen`, test `frozen_screen_features_block_each_other`); chế độ nhẹ WARP / RDP cho lấy màu (`request_frame`, cùng nhịp với overlay); chỗ Pro ghi ở `ROADMAP.md` GĐ4.
+- **Soi không ra lỗi**: log chỉ ghi toạ độ + định dạng, không ghi mã màu; chép đi qua `PrivateText`; không tệp tạm.
+
 ## 10. Đề xuất cải tiến
+
+- [ux] Bấm phím lấy màu khi overlay chọn vùng đang mở ⇒ ảnh mới chứa luôn overlay cũ — `commands.rs` `route` theo từng lệnh — lệnh đóng băng chặn nhau, đưa cửa sổ cũ lên — tránh ảnh hỏng — S — P2 — **đã làm**.
+- [ram] Lấy màu vẽ lại toàn màn mỗi lần di chuột, trên WARP / RDP tốn CPU — `render_mode.rs` chỉ áp cho `OverlayView` — chặn nhịp khung bằng `RenderMode::frame_wait` — dùng được qua RDP — S — P2 — **đã làm**.
+- [pro] Bảng màu đã lấy + thêm định dạng (HSL, Tailwind, SwiftUI) — mục 2 loại khỏi task — huy hiệu "Pro" ở GĐ4 — dev trả tiền cho quy trình — M — P3 — **đã ghi `ROADMAP.md`**.

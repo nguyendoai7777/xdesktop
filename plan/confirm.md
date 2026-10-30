@@ -126,6 +126,22 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_04] Cửa sổ thông báo bật `WDA_EXCLUDEFROMCAPTURE` — phương án khác: chờ nó đóng rồi mới chụp — vì sao: không làm chậm lệnh chụp; đổi lại app khác (ghi hình, chia sẻ màn) cũng không thấy thông báo.
 - [gd1_04] Mẫu tên tệp + JPEG / WebP đặt chỗ "Pro" ở `ROADMAP.md` GĐ4 — phương án khác: miễn phí — vì sao: D-4 chỉ đặt chỗ.
 
+- [gd1_08] Số đo gồm cả pixel đầu và cuối (kéo từ pixel 300 tới 449 = 150 px, kéo đúng 100 px logic ở 150 % ra 151) — phương án khác: chỉ tính độ lệch — vì sao: nhấn trên pixel đầu, nhả trên pixel cuối của nút thì ra đúng cỡ nút; cùng quy ước vùng chọn gd1_02.
+- [gd1_08] Esc thoát ngay dù đang có số đo; chuột phải mới bỏ số đo trước — phương án khác: Esc bỏ số đo rồi mới thoát như chọn vùng — vì sao: spec ghi "Esc thoát".
+- [gd1_08] Chép xong đóng thước — phương án khác: giữ mở để đo tiếp — vì sao: focus phải trả về app để dán; giống chép ảnh gd1_05. Hỏng thì giữ số đo.
+- [gd1_08] Vùng vắt qua hai màn khác scale không hiện phần `@` — phương án khác: quy theo màn chứa góc trên trái — vì sao: một số logic cho hai scale là số sai.
+- [gd1_08] Lệnh overlay loại trừ nhau: đang mở thước mà bấm chụp vùng ⇒ đưa thước lên, không đổi công cụ — phương án khác: đóng cái cũ rồi mở cái mới — vì sao: ảnh đóng băng phải chụp sau khi overlay cũ đóng hẳn, phức tạp hơn; làm sau nếu thấy cần.
+- [gd1_08] Thêm ngoài spec: Alt + mũi tên chỉnh số đo, thông báo "Đã chép 320×48" (`ruler.copied`), `ruler.copy_hint` có nhắc Alt + mũi tên — phương án khác: đúng spec — vì sao: đề xuất mục 10, cỡ S.
+
+- [gd1_09] Chuỗi `rgb` giữ cú pháp CSS Color 4 có khoảng trắng `rgb(30 144 255)` — phương án khác: có dấu phẩy — vì sao: đúng spec; `rgba` đã là dạng dấu phẩy cho ai cần.
+- [gd1_09] Sửa ví dụ spec: `#1E90FF` = `oklch(0.652 0.19 253.2)` — phương án khác: giữ `0.172 253.7` — vì sao: tính độc lập hai đường đều ra `0.19 253.2`.
+- [gd1_09] Bỏ số 0 thừa trong OKLCH (`0.19`, không `0.190`) — phương án khác: luôn 3 chữ số — vì sao: spec đòi `oklch(1 0 0)`.
+- [gd1_09] Lấy màu dùng phiên + view riêng (`PickerSession`) — phương án khác: chế độ `Picker` trong `OverlaySession` như spec viết — vì sao: không có vùng chọn / thanh công cụ, không đụng `view.rs` của gd1_10 đang chạy song song.
+- [gd1_09] Mũi tên kéo cả con trỏ thật (`SetCursorPos`) — phương án khác: chỉ dời điểm nhắm — vì sao: kính lúp + chữ thập phải cùng chỗ; GPUI không ẩn được con trỏ.
+- [gd1_09] Nhớ định dạng lúc đóng overlay — phương án khác: ghi mỗi lần đổi — vì sao: Tab liên tiếp không ghi đĩa từng lần.
+- [gd1_09] Thêm Shift+mũi tên, Ctrl+C, chuột phải đóng — phương án khác: đúng phím spec — vì sao: cùng phím với chọn vùng.
+- [gd1_09] Lệnh đóng băng chặn nhau: bấm lấy màu lúc overlay đang mở chỉ đưa overlay lên — phương án khác: đóng cái cũ, mở cái mới — vì sao: không mất vùng đang chọn dở.
+
 ## materiant
 
 - [dark-neutral] Tông tối mặc định: nền `#1c1c1c`, chữ `#f5f5f5`, chữ phụ `#a3a3a3`, viền trắng 8 %, viền ô nhập

@@ -28,6 +28,10 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [rec-setup] Bảng thiết lập quay luôn ở giữa màn có vùng chọn, có thể che vùng; muốn chỉnh tay nắm phía dưới thì dùng phím mũi tên — phương án khác: giữa màn nhưng né vùng — vì sao: chủ dự án yêu cầu "luôn ở giữa". Vùng vắt hai màn: màn chứa góc dưới phải.
+- [rec-setup] Độ đục giữ nguyên 0,75 (`floating_surface`, D-10): đo trên ảnh chủ dự án gửi thì bảng đã ở mức đó — phương án khác: tăng riêng bảng này lên ~0,9 — vì sao: chủ dự án ghi đúng số 0,75; nếu vẫn thấy trong quá thì cần số cao hơn.
+- [rec-setup] "Fps", "Hex", "Rgb" chỉ hoa chữ đầu — phương án khác: FPS, HEX — vì sao: theo đúng D-13, tránh toàn chữ hoa.
+
 - [debt-notify] Lỗi tự khởi động đi bằng cặp thông điệp mới `AutostartStatusRequest` / `AutostartStatus`, không thêm trường vào `DaemonStatus` như lời khuyên — phương án khác: thêm trường `#[serde(default)]` — vì sao: `crates/ui/tests/settings_hotkeys.rs` dựng `DaemonStatus` bằng struct literal, thêm trường là test đó không biên dịch, mà tệp đang do session khác sửa, không được đụng. Daemon cũ trả `Error`, trang coi như không có gì để báo; `ReloadConfig` giữ nguyên nghĩa.
 - [debt-notify] Trang Chung chỉ hỏi daemon sau khi vừa đổi tự khởi động (công tắc, độ trễ) — phương án khác: hỏi sau mọi lần ghi — vì sao: lỗi cũ còn nằm ở daemon tới lần áp sau, đổi cỡ chữ sẽ báo lại. Công tắc giữ ý người dùng, không trả về.
 - [debt-notify] Mất âm báo bằng chữ trên thanh quay, không dùng thông báo nổi — phương án khác: `notice::show` — vì sao: chữ ở lại suốt đoạn mất tiếng, thông báo tắt sau 2,5 s. Có tiếng lại thì đổi chữ và giữ tới hết cuộc quay vì video đã có đoạn không tiếng.

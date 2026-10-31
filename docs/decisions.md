@@ -19,6 +19,7 @@ Nguồn sự thật dùng chung giữa các máy (máy nhà Windows, máy công 
 | D-10 | **Nền khối nổi độ đục 0,75** (chủ dự án: "nền của các popover sẽ trong suốt tầm 75%", khoanh nhãn W × H và thanh công cụ trên overlay): popover, menu, select, thanh công cụ + nhãn + bảng lấy màu trên overlay dùng `cx.floating_surface()` (`materiant::style::FLOATING_SURFACE_ALPHA`), chữ theo theme. Dialog, toast giữ nền đặc. | 30/10/2026 |
 | D-11 | **Lỗi phát sinh sửa ngay, không đưa vào backlog** (chủ dự án: "các lỗi phát sinh fix ngay, không đưa vào backlog"). Gặp lỗi lúc đang làm ⇒ sửa trong lượt, kể cả ngoài làn nếu không đụng file làn khác đang mở. `plan/_backlog.md` chỉ nhận việc thật sự không làm được lúc đó: thiếu máy / thiết bị, dịch vụ trả phí, chờ chủ dự án kiểm tay. | 31/10/2026 |
 | D-12 | **Kéo remote bằng rebase, không sinh commit `Merge…`** (chủ dự án: "merge mà k sinh commit rác"). `git pull --rebase`, chỉ rebase commit chưa push. `merge --no-ff claude/<task>` giữ nguyên. Chi tiết: `plan/_tasking-convention.md` mục 7. | 31/10/2026 |
+| D-13 | **Chữ giao diện viết hoa chữ cái đầu dòng** ("Quay vùng", "Hex"), không viết toàn chữ hoa; tên app hiển thị là `Fastcast`. Chữ của người dùng / mã màu là dữ liệu, không đụng. | 31/10/2026 |
 
 ## fastcast
 

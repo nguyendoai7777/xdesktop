@@ -65,7 +65,7 @@ Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -
 
 ## Đánh tag
 
-`bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (fastcast, materiant; không hỏi: `--project <tên>`, PowerShell `-Project <tên>`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. Nâng materiant thì fastcast có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
+`bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. Nâng materiant thì fastcast có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
 
 ## Lệnh chung
 

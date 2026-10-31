@@ -63,6 +63,10 @@ bash build.sh      # macOS / Ubuntu
 `-f` / `--force`: biên dịch lại mã của ta, giữ thư viện đã build. Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `release/fastcast/<target>/` (gitignore); macOS ra `Fastcast.app` + `.dmg` (thiếu model / `pwsh` thì bản `-draft`); Windows x64 phổ thông thêm bản cài NSIS cạnh đó.
 Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`.
 
+## Đánh tag
+
+`bash tag.sh` / `pwsh ./tag.ps1`: tag `v<version>` cho commit hiện tại của fastcast. `-p` / `--patch`, `--minor`, `--major` nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
+
 ## Lệnh chung
 
 - Rust stable (≥ 1.96), MSVC Build Tools + Windows SDK trên Windows. Repo con: `git -C <repo> …`.

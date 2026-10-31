@@ -1,12 +1,14 @@
 # Build bản release của fastcast. Hỏi OS → kiến trúc → chip rồi build (Enter = máy đang chạy). Đứng ở gốc workspace:
 #   pwsh ./build.ps1
 #   pwsh ./build.ps1 -Os windows -Arch x64 -Chip intel-amd      # không hỏi
+#   pwsh ./build.ps1 -f                                         # -Force: biên dịch lại mã của ta, giữ thư viện đã build
 # Ra release/fastcast/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst.exe`). Windows x64 phổ thông có đủ NSIS + model
 # thì thêm bản cài release/fastcast/fastcast-<version>-setup.exe. Chỉ build được cho OS đang chạy: thiếu SDK để link chéo OS.
 param(
     [ValidateSet('windows', 'macos', 'linux')] [string] $Os,
     [ValidateSet('x64', 'arm64')] [string] $Arch,
-    [ValidateSet('intel-amd', 'avx2', 'intel', 'apple', 'snapdragon', 'arm')] [string] $Chip
+    [ValidateSet('intel-amd', 'avx2', 'intel', 'apple', 'snapdragon', 'arm')] [string] $Chip,
+    [Alias('f')] [switch] $Force
 )
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -119,6 +121,10 @@ if ($Chip -eq 'avx2') { $env:RUSTFLAGS = "$env:RUSTFLAGS -C target-cpu=x86-64-v3
 # Luôn --target: RUSTFLAGS không lan sang build script, mỗi target một thư mục. Không feature `dev-env` (bản phát hành).
 Push-Location $repo
 try {
+    if ($Force) {
+        cargo clean --release --target $triple -p fastcast-core -p fastcast-capture -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video -p materiant
+        if ($LASTEXITCODE -ne 0) { throw "cargo clean failed (exit $LASTEXITCODE)" }
+    }
     cargo build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 } finally {

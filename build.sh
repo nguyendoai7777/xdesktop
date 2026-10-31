@@ -2,18 +2,20 @@
 # Build bản release của fastcast. Hỏi OS → kiến trúc → chip rồi build (Enter = máy đang chạy). Đứng ở gốc workspace:
 #   bash build.sh
 #   bash build.sh --os linux --arch x64 --chip intel-amd      # không hỏi
+#   bash build.sh -f                                          # --force: biên dịch lại mã của ta, giữ thư viện đã build
 # Ra release/fastcast/<target>[-avx2]/ (macOS: fastcast.app + .dmg để cài; OS khác: bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo="$root/fastcast"
 
-os="" arch="" chip=""
+os="" arch="" chip="" force=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --os) os="$2"; shift 2 ;;
     --arch) arch="$2"; shift 2 ;;
     --chip) chip="$2"; shift 2 ;;
+    -f|--force) force=1; shift ;;
     *) echo "Không hiểu tham số: $1" >&2; exit 1 ;;
   esac
 done
@@ -24,6 +26,7 @@ case "$(uname -s)" in
     [ -n "$os" ] && forward+=(-Os "$os")
     [ -n "$arch" ] && forward+=(-Arch "$arch")
     [ -n "$chip" ] && forward+=(-Chip "$chip")
+    [ -n "$force" ] && forward+=(-Force)
     exec pwsh -NoProfile -File "$(cygpath -w "$root/build.ps1")" ${forward[@]+"${forward[@]}"} ;;
   Darwin) host_os=macos ;;
   *) host_os=linux ;;
@@ -141,6 +144,10 @@ if [ "$chip" = avx2 ]; then
 fi
 
 # Luôn --target: RUSTFLAGS không lan sang build script, mỗi target một thư mục. Không feature `dev-env` (bản phát hành).
+if [ -n "$force" ]; then
+  (cd "$repo" && cargo clean --release --target "$triple" -p fastcast-core -p fastcast-capture -p fastcast-daemon \
+    -p fastcast-ui -p fastcast-ocr -p fastcast-video -p materiant)
+fi
 (cd "$repo" && cargo build --release --locked --target "$triple" \
   -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins)
 target_dir="${CARGO_TARGET_DIR:-$repo/target}"

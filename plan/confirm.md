@@ -441,3 +441,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_11] Để lỗi hai màn khác scale, chỉ log + backlog P1 — phương án khác: đổi hệ toạ độ ngay — vì sao: phải sửa cả `video`, ngoài làn, cần hai màn để thử.
 - [gd4_11] Hoãn xin quyền micro sang gd4_13 — phương án khác: làm trong UI ngay — vì sao: không thử được hộp thoại TCC trên máy đang dùng, chưa có `Info.plist`.
 - [gd4_11] Test Mac mở cửa sổ trong suốt, nổi, không bắt chuột (`FASTCAST_TEST_UNSEEN`) — phương án khác: cửa sổ thấy được, chiếm màn lúc chạy test — vì sao: GPUI không vẽ cửa sổ bị che, máy chỉ một màn đang dùng.
+- [gd4_11 · hai màn] Đặt màn từ màn chính, cạnh chung kề nhau, cỡ = điểm × scale (`display_points::place`), bỏ `display_rect`, `fastcast-rec` gọi chung `capture::macos::layout` — phương án khác: nhân mọi màn với scale lớn nhất — vì sao: scale chung làm cỡ màn 1× không còn là pixel thật, phải co ảnh, trái F-3.
+- [gd4_11 · hai màn] Thêm đổi toạ độ khi kéo chuột ra ngoài cửa sổ (`platform::beyond_window`), ngoài vùng sửa được giao — phương án khác: để lại — vì sao: AppKit báo điểm, không sửa thì vùng kéo sang màn khác scale lệch con trỏ.

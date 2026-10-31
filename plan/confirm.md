@@ -445,3 +445,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_13] Bundle id `com.fastcast.app`, giữ nhãn LaunchAgent `com.fastcast.daemon` — dùng chung một tên — một bên là app, một bên là dịch vụ launchd dự phòng.
 - [gd4_13] Arm64, x86_64 mỗi bản một `.dmg` — universal — universal làm gấp đôi exe + dylib 44 MB cho mọi người; hiện mới có dylib arm64.
 - [gd4_13] Thiếu model / trang giấy phép thì script dừng, `--draft` mới cho qua và gắn `-draft` vào tên `.dmg` — chỉ cảnh báo như `build.sh` — tránh phát hành nhầm bản thiếu (D-2).
+- [gd4_11 · hai màn] Đặt màn từ màn chính, cạnh chung kề nhau, cỡ = điểm × scale (`display_points::place`), bỏ `display_rect`, `fastcast-rec` gọi chung `capture::macos::layout` — phương án khác: nhân mọi màn với scale lớn nhất — vì sao: scale chung làm cỡ màn 1× không còn là pixel thật, phải co ảnh, trái F-3.
+- [gd4_11 · hai màn] Thêm đổi toạ độ khi kéo chuột ra ngoài cửa sổ (`platform::beyond_window`), ngoài vùng sửa được giao — phương án khác: để lại — vì sao: AppKit báo điểm, không sửa thì vùng kéo sang màn khác scale lệch con trỏ.

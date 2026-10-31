@@ -163,7 +163,7 @@ warnings=""
 if command -v pwsh >/dev/null 2>&1 && command -v cargo-about >/dev/null 2>&1; then
   pwsh -NoProfile -File "$repo/tools/gen-licenses.ps1" -Out "$out/licenses"
 else
-  warnings="$warnings⚠ Không có trang giấy phép (cần pwsh + cargo-about).
+  warnings="${warnings}⚠ Không có trang giấy phép (cần pwsh + cargo-about).
 "
 fi
 
@@ -171,7 +171,7 @@ fi
 if [ -d "$target_dir/release/models" ] && [ "$arch" = "$host_arch" ]; then
   cp -R "$target_dir/release/models" "$out/models"
 else
-  warnings="$warnings⚠ Không kèm model: OCR chưa chạy được (dựng bằng fastcast/tools/fetch-ocr-models.ps1 vào target/release/models).
+  warnings="${warnings}⚠ Không kèm model: OCR chưa chạy được (dựng bằng fastcast/tools/fetch-ocr-models.ps1 vào target/release/models).
 "
 fi
 

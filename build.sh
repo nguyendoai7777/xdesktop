@@ -33,11 +33,45 @@ case "$(uname -m)" in
   *) host_arch=x64 ;;
 esac
 
-# select_option <tiêu đề> <số thứ tự mặc định> <id|nhãn>… ⇒ gán $picked. Hết stdin thì lấy mặc định.
+# select_option <tiêu đề> <số thứ tự mặc định> <id|nhãn>… ⇒ gán $picked. ↑ ↓ di chuyển, Enter chọn; vẽ lại tại chỗ bằng mã
+# ANSI. `read -t` số nguyên: bash 3.2 của macOS không nhận số lẻ. Stdin là pipe ⇒ gõ số; hết stdin thì lấy mặc định.
 select_option() {
   local title="$1" default="$2" answer i=1 item
   shift 2
   if [ $# -eq 1 ]; then echo "$title ${1#*|}"; picked="${1%%|*}"; return; fi
+  if [ -t 0 ]; then
+    local items=("$@") count=$# cursor=$((default - 1)) key rest
+    echo "$title"
+    printf '\033[?25l'
+    trap 'printf "\033[?25h"' EXIT
+    while :; do
+      for ((i = 0; i < count; i++)); do
+        if [ "$i" = "$cursor" ]; then
+          printf '\r\033[2K\033[36m> %s\033[0m\n' "${items[i]#*|}"
+        else
+          printf '\r\033[2K  %s\n' "${items[i]#*|}"
+        fi
+      done
+      printf '\r\033[2K\033[2m%s\033[0m' '↑ ↓ di chuyển · enter chọn'
+      IFS= read -rsn1 key || key=""
+      if [ "$key" = $'\033' ]; then
+        IFS= read -rsn2 -t 1 rest || rest=""
+        key="$key$rest"
+      fi
+      printf '\r\033[%dA' "$count"
+      case "$key" in
+        $'\033[A'|$'\033OA') cursor=$(((cursor + count - 1) % count)) ;;
+        $'\033[B'|$'\033OB') cursor=$(((cursor + 1) % count)) ;;
+        '')
+          # Xoá cả dòng tiêu đề rồi in lại kèm lựa chọn.
+          printf '\033[1A\r\033[J\033[?25h'
+          trap - EXIT
+          echo "$title ${items[cursor]#*|}"
+          picked="${items[cursor]%%|*}"
+          return ;;
+      esac
+    done
+  fi
   echo "$title"
   for item in "$@"; do
     if [ "$i" = "$default" ]; then echo "  [$i] ${item#*|}  (Enter)"; else echo "  [$i] ${item#*|}"; fi

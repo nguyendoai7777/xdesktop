@@ -61,8 +61,61 @@ repo_url() {
   esac
 }
 
+# select_checklist <tiêu đề> <id|nhãn>… ⇒ gán $selected. ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ
+# bằng mã ANSI, phải có ít nhất một mục được tích. `read -t` số nguyên: bash 3.2 của macOS không nhận số lẻ.
+select_checklist() {
+  local title="$1" cursor=0 count i key rest box hint='↑ ↓ di chuyển · space chọn · enter xác nhận'
+  shift
+  count=$#
+  local checked=()
+  local items=("$@")
+  for ((i = 0; i < count; i++)); do checked[i]=0; done
+  echo "$title"
+  printf '\033[?25l'
+  trap 'printf "\033[?25h"' EXIT
+  while :; do
+    for ((i = 0; i < count; i++)); do
+      if [ "${checked[i]}" = 1 ]; then box='[x]'; else box='[ ]'; fi
+      if [ "$i" = "$cursor" ]; then
+        printf '\r\033[2K\033[36m> %s %s\033[0m\n' "$box" "${items[i]#*|}"
+      else
+        printf '\r\033[2K  %s %s\n' "$box" "${items[i]#*|}"
+      fi
+    done
+    printf '\r\033[2K\033[2m%s\033[0m' "$hint"
+    IFS= read -rsn1 key || key=""
+    if [ "$key" = $'\033' ]; then
+      IFS= read -rsn2 -t 1 rest || rest=""
+      key="$key$rest"
+    fi
+    printf '\r\033[%dA' "$count"
+    case "$key" in
+      $'\033[A'|$'\033OA') cursor=$(((cursor + count - 1) % count)) ;;
+      $'\033[B'|$'\033OB') cursor=$(((cursor + 1) % count)) ;;
+      ' ') if [ "${checked[cursor]}" = 1 ]; then checked[cursor]=0; else checked[cursor]=1; fi ;;
+      '')
+        selected=""
+        for ((i = 0; i < count; i++)); do
+          if [ "${checked[i]}" = 1 ]; then selected="$selected ${items[i]%%|*}"; fi
+        done
+        if [ -n "$selected" ]; then
+          printf '\033[J\033[?25h'
+          trap - EXIT
+          echo "Đã chọn:$selected"
+          return
+        fi
+        hint='chưa chọn project nào, bấm space để chọn' ;;
+    esac
+  done
+}
+
 selected="$*"
+if [ -z "$selected" ] && [ -t 0 ]; then
+  select_checklist 'Bạn muốn init project nào:' \
+    'fastcast|fastcast   (kéo fastcast + materiant)' 'materiant|materiant  (chỉ thư viện UI)'
+fi
 if [ -z "$selected" ]; then
+  # Stdin là pipe: không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
   echo 'Bạn muốn init project nào:'
   echo '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
   echo '  [2] materiant  (chỉ thư viện UI)'

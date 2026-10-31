@@ -61,8 +61,50 @@ $projects = [ordered]@{
     'fastcast'  = @('fastcast', 'materiant')
     'materiant' = @('materiant')
 }
+$labels = @('fastcast   (kéo fastcast + materiant)', 'materiant  (chỉ thư viện UI)')
+
+# ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.
+function Select-Checklist([string] $Title, [string[]] $Ids, [string[]] $Labels) {
+    $esc = [char]27
+    $checked = [bool[]]::new($Ids.Count)
+    $cursor = 0
+    $hint = '↑ ↓ di chuyển · space chọn · enter xác nhận'
+    Write-Host $Title
+    [Console]::Write("$esc[?25l")
+    try {
+        while ($true) {
+            for ($i = 0; $i -lt $Ids.Count; $i++) {
+                $box = if ($checked[$i]) { '[x]' } else { '[ ]' }
+                $line = if ($i -eq $cursor) { "$esc[36m> $box $($Labels[$i])$esc[0m" } else { "  $box $($Labels[$i])" }
+                [Console]::Write("`r$esc[2K$line`n")
+            }
+            [Console]::Write("`r$esc[2K$esc[2m$hint$esc[0m")
+            $key = [Console]::ReadKey($true)
+            [Console]::Write("`r$esc[$($Ids.Count)A")            switch ($key.Key) {
+                'UpArrow' { $cursor = ($cursor + $Ids.Count - 1) % $Ids.Count }
+                'DownArrow' { $cursor = ($cursor + 1) % $Ids.Count }
+                'Spacebar' { $checked[$cursor] = -not $checked[$cursor] }
+                'Enter' {
+                    $picked = @(for ($i = 0; $i -lt $Ids.Count; $i++) { if ($checked[$i]) { $Ids[$i] } })
+                    if ($picked.Count) {
+                        [Console]::Write("$esc[J")
+                        Write-Host "Đã chọn: $($picked -join ', ')"
+                        return $picked
+                    }
+                    $hint = 'chưa chọn project nào, bấm space để chọn'
+                }
+            }
+        }
+    } finally {
+        [Console]::Write("$esc[?25h")
+    }
+}
+
+if (-not $Project -and -not [Console]::IsInputRedirected) {
+    $Project = Select-Checklist 'Bạn muốn init project nào:' @($projects.Keys) $labels
+}
 if (-not $Project) {
-    # Đọc bằng [Console]::In: chạy được cả khi stdin là pipe (Git Bash); hết stdin thì lấy mặc định.
+    # Stdin là pipe (mintty của Git Bash, script): không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
     Write-Host 'Bạn muốn init project nào:'
     Write-Host '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
     Write-Host '  [2] materiant  (chỉ thư viện UI)'

@@ -2,7 +2,7 @@
 # Build bản release của fastcast. Hỏi OS → kiến trúc → chip rồi build (Enter = máy đang chạy). Đứng ở gốc workspace:
 #   bash build.sh
 #   bash build.sh --os linux --arch x64 --chip intel-amd      # không hỏi
-# Ra release/fastcast/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
+# Ra release/fastcast/<target>[-avx2]/ (macOS: fastcast.app + .dmg để cài; OS khác: bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -155,6 +155,24 @@ for exe in $exes; do
 done
 
 out="$root/release/fastcast/$out_name"
+
+# macOS phát hành bằng `.app` + `.dmg`, không để exe rời. Có đủ model thì ra bản đủ, thiếu thì bản `-draft` kèm cảnh báo.
+if [ "$os" = macos ]; then
+  package=(--skip-build --arch "$arch" --out "$out")
+  models=""
+  for dir in "$target_dir/release/models" "$target_dir/ocr-models"; do
+    if [ -d "$dir/onnx" ] && [ "$arch" = "$host_arch" ]; then models="$dir"; break; fi
+  done
+  if [ -n "$models" ] && command -v pwsh >/dev/null 2>&1 && command -v cargo-about >/dev/null 2>&1; then
+    package+=(--models "$models")
+  else
+    package+=(--draft)
+    [ -z "$models" ] || package+=(--models "$models")
+  fi
+  bash "$repo/tools/build-macos.sh" "${package[@]}"
+  exit 0
+fi
+
 rm -rf "$out"
 mkdir -p "$out"
 for exe in $exes; do cp "$release/$exe" "$out/"; done
@@ -176,4 +194,3 @@ else
 fi
 
 printf '\nXong: %s\n%s' "$out" "$warnings"
-[ "$os" != macos ] || printf 'Bản .app + .dmg: cd fastcast && bash tools/build-macos.sh --arch %s --models <thư mục model> (thiếu thì --draft)\n' "$arch"

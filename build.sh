@@ -176,3 +176,4 @@ else
 fi
 
 printf '\nXong: %s\n%s' "$out" "$warnings"
+[ "$os" != macos ] || printf 'Bản .app + .dmg: cd fastcast && bash tools/build-macos.sh --arch %s --models <thư mục model> (thiếu thì --draft)\n' "$arch"

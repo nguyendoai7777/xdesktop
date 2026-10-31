@@ -2,14 +2,14 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ☐ |
+| Trạng thái | ✅ (31/10/2026) script + bản `--draft` chạy trên Mac; bản đủ (trang giấy phép, model) chờ `pwsh` + `onnx/`; cài từ `.dmg`, quyền chờ kiểm tay |
 | Máy | Mac (`hdiutil`, `codesign` không chạy trên Windows) |
 | Repo | fastcast |
 | Cỡ | S — ~200 dòng script |
 | Phụ thuộc | gd4_06, gd4_07, gd4_10, gd4_11, gd4_12, gd4_19 |
 | Quyết định áp dụng | D-2, F-5 |
 | Phụ thuộc mới | — |
-| File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
+| File đụng tới | MỚI `installer/macos/{Info.plist,entitlements.plist,en.lproj,vi.lproj}`, `tools/build-macos.sh`; SỬA `crates/ui/src/settings/page_about.rs`, `spikes/ocr/results/manifest.int8-mix.toml`, `tools/build-installer.ps1`, `tools/fetch-ocr-models.ps1` |
 
 ## 0. Bàn giao từ gd4_11 (31/10/2026)
 
@@ -101,4 +101,17 @@ Developer ID + notarize: dịch vụ trả phí, chủ dự án quyết, ghi `_b
 
 ## 9. Bàn giao thực tế
 
+**Đã chạy trên Mac (M5 Pro, bản `--draft`, 6,7 MB)**: `codesign --verify --deep --strict` đạt, `Signature=adhoc`, `com.fastcast.app`; `spctl` báo `rejected` đúng như chưa notarize; `.dmg` gắn được, có lối tắt Applications, `.app` trong đó vẫn hợp lệ. `open` chạy `fst`: `background only` = true (không Dock), 6 phím `ok`, `MallocSpaceEfficient=1` còn sau khi ký, footprint 7,4 MB; `autostart on` đi qua `SMAppService`, `off` sạch, không sót plist; `quit` tắt hẳn. `iconutil` đọc được `app-icon.icns` (4 cỡ). `.app` thêm dylib rồi ký vẫn hợp lệ, sha dylib giữ `17500d6b…`.
+
+**Soát**: build, clippy cả workspace, `cargo deny` xanh; `cargo test` 595 đạt, 1 đỏ, 4 ignored. Ca đỏ `record_control::frame_and_bar_open_clock_runs_and_stop_button_finishes` không đụng mã task này, chạy lại 4 lần đều đạt ⇒ chập chờn, ghi backlog.
+
+**Chưa chạy**: bản không `--draft`. Máy không có `pwsh` (tải tarball chạy thử bị chặn, đã xoá; chủ dự án tự cài) và không có `onnx/`. Nhánh `--models` của script, `gen-licenses.ps1` trên Mac, trang giấy phép trong `.app` chưa chạy lần nào. Sửa `build-installer.ps1` chưa chạy trên Windows.
+
+**Sửa ngoài spec**: `licenses_path` trong `.app` trỏ `Contents/Resources/licenses` (trước đây sẽ báo thiếu trang). `build-installer.ps1` bỏ qua mục dylib, nếu không bộ cài Windows dừng vì thiếu tệp khi sổ có mục Mac.
+
+**Opus chọn** (ghi `confirm.md`): không ký lại dylib; bundle id `com.fastcast.app`, giữ nhãn LaunchAgent `com.fastcast.daemon`; arm64, x86_64 mỗi bản một `.dmg`; thiếu model / giấy phép thì dừng, trừ `--draft`.
+
 ## 10. Đề xuất cải tiến
+
+- [ux] Xin quyền micro trước khi bật `fastcast-rec` — `_backlog.md` gd4_19 P2 — cần thử hộp thoại TCC thật, để lại — M — P2.
+- Bảo mật: không áp thêm; `.app` chỉ kèm tệp đã soát sha theo sổ. RAM: `.app` không đổi so với exe rời (7,4 MB). Pro: không áp.

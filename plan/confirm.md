@@ -441,3 +441,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_11] Để lỗi hai màn khác scale, chỉ log + backlog P1 — phương án khác: đổi hệ toạ độ ngay — vì sao: phải sửa cả `video`, ngoài làn, cần hai màn để thử.
 - [gd4_11] Hoãn xin quyền micro sang gd4_13 — phương án khác: làm trong UI ngay — vì sao: không thử được hộp thoại TCC trên máy đang dùng, chưa có `Info.plist`.
 - [gd4_11] Test Mac mở cửa sổ trong suốt, nổi, không bắt chuột (`FASTCAST_TEST_UNSEEN`) — phương án khác: cửa sổ thấy được, chiếm màn lúc chạy test — vì sao: GPUI không vẽ cửa sổ bị che, máy chỉ một màn đang dùng.
+- [gd4_13] Không ký lại `libonnxruntime.dylib` — ký lại + đổi sha trong sổ — `check_runtime` so sha với sổ, tệp gốc đã có chữ ký ad-hoc đủ khi chưa bật hardened runtime.
+- [gd4_13] Bundle id `com.fastcast.app`, giữ nhãn LaunchAgent `com.fastcast.daemon` — dùng chung một tên — một bên là app, một bên là dịch vụ launchd dự phòng.
+- [gd4_13] Arm64, x86_64 mỗi bản một `.dmg` — universal — universal làm gấp đôi exe + dylib 44 MB cho mọi người; hiện mới có dylib arm64.
+- [gd4_13] Thiếu model / trang giấy phép thì script dừng, `--draft` mới cho qua và gắn `-draft` vào tên `.dmg` — chỉ cảnh báo như `build.sh` — tránh phát hành nhầm bản thiếu (D-2).

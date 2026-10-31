@@ -442,3 +442,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_09] Sha ONNX Runtime soát qua digest GitHub + dll trong gói NuGet — tin lần tải đầu — vì sao: `confirm.md` gd3_03 hẹn soát lại khi đưa vào bản cài; đều khớp.
 - [gd4_09] Cài NSIS bằng tệp `winget download` + `RunAsInvoker` vào `E:\codex\tools\nsis` — `winget install` — vì sao: tránh hộp UAC trên màn LG khi chủ dự án vắng.
 - [gd4_09] Chép `setup.exe` vào `fastcast/dist/` (gitignore) sau khi gỡ worktree — bỏ cùng worktree — vì sao: để chủ dự án kiểm tay khỏi dựng lại.
+- [ui-refcell-log] Hạ `window not found` / `Invalid window handle` của GPUI xuống DEBUG trong logger — vá `gpui-pre` hoặc hoãn mọi `remove_window` tới sau khi cửa sổ mất active — vì sao: đều là GPUI gọi vào cửa sổ vừa đóng, không mất sự kiện; vá thư viện phải duy trì bản riêng, đổi 15 chỗ đóng cửa sổ thì dễ sai hơn. `RefCell already borrowed` không hạ, đã sửa ở gốc.
+- [ui-refcell-log] Soi `dismiss` từ luồng nền qua `DismissTarget` — đổi `WindowFromPoint` thành so toạ độ cửa sổ — vì sao: giữ nguyên cách OS phân xử cửa sổ, kể cả cửa sổ IME; `tray_menu` mới gộp dùng chung.
+- [ui-refcell-log] Không sửa `record/frame.rs::center_hits_self` — chuyển luồng nền — vì sao: chỉ chạy một lần ở màn giả để test đọc, không có ở đường dùng thật.
+- [ui-refcell-log] Worktree đặt trong thư mục phiên thay vì `.claude/worktrees/fastcast-<task>` — đúng quy ước — vì sao: hook của phiên chặn ghi ra ngoài worktree phiên; đã gỡ sau khi gộp.

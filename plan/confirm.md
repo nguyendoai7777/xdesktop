@@ -29,7 +29,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 ## fastcast
 
 - [rec-setup] Bảng thiết lập quay luôn ở giữa màn có vùng chọn, có thể che vùng; muốn chỉnh tay nắm phía dưới thì dùng phím mũi tên — phương án khác: giữa màn nhưng né vùng — vì sao: chủ dự án yêu cầu "luôn ở giữa". Vùng vắt hai màn: màn chứa góc dưới phải.
-- [rec-setup] Độ đục giữ nguyên 0,75 (`floating_surface`, D-10): đo trên ảnh chủ dự án gửi thì bảng đã ở mức đó — phương án khác: tăng riêng bảng này lên ~0,9 — vì sao: chủ dự án ghi đúng số 0,75; nếu vẫn thấy trong quá thì cần số cao hơn.
 - [rec-setup] "Fps", "Hex", "Rgb" chỉ hoa chữ đầu — phương án khác: FPS, HEX — vì sao: theo đúng D-13, tránh toàn chữ hoa.
 
 - [debt-notify] Lỗi tự khởi động đi bằng cặp thông điệp mới `AutostartStatusRequest` / `AutostartStatus`, không thêm trường vào `DaemonStatus` như lời khuyên — phương án khác: thêm trường `#[serde(default)]` — vì sao: `crates/ui/tests/settings_hotkeys.rs` dựng `DaemonStatus` bằng struct literal, thêm trường là test đó không biên dịch, mà tệp đang do session khác sửa, không được đụng. Daemon cũ trả `Error`, trang coi như không có gì để báo; `ReloadConfig` giữ nguyên nghĩa.

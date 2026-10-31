@@ -1,8 +1,8 @@
 # Build bản release của fastcast. Hỏi OS → kiến trúc → chip rồi build (Enter = máy đang chạy). Đứng ở gốc workspace:
 #   pwsh ./build.ps1
 #   pwsh ./build.ps1 -Os windows -Arch x64 -Chip intel-amd      # không hỏi
-# Ra fastcast/dist/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst.exe`). Windows x64 phổ thông có đủ NSIS + model
-# thì thêm bản cài fastcast/dist/fastcast-<version>-setup.exe. Chỉ build được cho OS đang chạy: thiếu SDK để link chéo OS.
+# Ra release/fastcast/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst.exe`). Windows x64 phổ thông có đủ NSIS + model
+# thì thêm bản cài release/fastcast/fastcast-<version>-setup.exe. Chỉ build được cho OS đang chạy: thiếu SDK để link chéo OS.
 param(
     [ValidateSet('windows', 'macos', 'linux')] [string] $Os,
     [ValidateSet('x64', 'arm64')] [string] $Arch,
@@ -136,7 +136,8 @@ foreach ($exe in $exes) {
     if ($found) { Write-Error "$exe còn biến chạy thử: $($found -join ', ')" -ErrorAction Continue; exit 1 }
 }
 
-$out = Join-Path $repo "dist/$outName"
+$releaseRoot = Join-Path $root 'release/fastcast'
+$out = Join-Path $releaseRoot $outName
 if (Test-Path -LiteralPath $out) { Remove-Item -Recurse -Force -LiteralPath $out }
 New-Item -ItemType Directory -Force $out | Out-Null
 foreach ($exe in $exes) { Copy-Item -LiteralPath (Join-Path $release "$exe$suffix") -Destination $out }
@@ -167,7 +168,10 @@ if ("$Os-$Arch-$Chip" -eq 'windows-x64-intel-amd' -and $hasModels) {
     if ($nsis) {
         & (Join-Path $repo 'tools/build-installer.ps1') -Target $triple -ModelsSource $models -Makensis $nsis
         $version = ((cargo metadata --format-version 1 --no-deps --manifest-path (Join-Path $repo 'Cargo.toml') | ConvertFrom-Json).packages | Where-Object name -EQ 'fastcast-daemon').version
-        $setup = Join-Path $repo "dist/fastcast-$version-setup.exe"
+        $setup = Join-Path $releaseRoot "fastcast-$version-setup.exe"
+        foreach ($file in "fastcast-$version-setup.exe", "fastcast-$version-setup.exe.sha256") {
+            Move-Item -Force -LiteralPath (Join-Path $repo "dist/$file") -Destination $releaseRoot
+        }
     } else {
         $warnings += 'Không có bản cài: thiếu NSIS (winget install NSIS.NSIS).'
     }

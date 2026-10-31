@@ -28,6 +28,17 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [debt-notify] Lỗi tự khởi động đi bằng cặp thông điệp mới `AutostartStatusRequest` / `AutostartStatus`, không thêm trường vào `DaemonStatus` như lời khuyên — phương án khác: thêm trường `#[serde(default)]` — vì sao: `crates/ui/tests/settings_hotkeys.rs` dựng `DaemonStatus` bằng struct literal, thêm trường là test đó không biên dịch, mà tệp đang do session khác sửa, không được đụng. Daemon cũ trả `Error`, trang coi như không có gì để báo; `ReloadConfig` giữ nguyên nghĩa.
+- [debt-notify] Trang Chung chỉ hỏi daemon sau khi vừa đổi tự khởi động (công tắc, độ trễ) — phương án khác: hỏi sau mọi lần ghi — vì sao: lỗi cũ còn nằm ở daemon tới lần áp sau, đổi cỡ chữ sẽ báo lại. Công tắc giữ ý người dùng, không trả về.
+- [debt-notify] Mất âm báo bằng chữ trên thanh quay, không dùng thông báo nổi — phương án khác: `notice::show` — vì sao: chữ ở lại suốt đoạn mất tiếng, thông báo tắt sau 2,5 s. Có tiếng lại thì đổi chữ và giữ tới hết cuộc quay vì video đã có đoạn không tiếng.
+- [debt-notify] Chỉ báo `AudioLost` khi mở lại thiết bị hỏng — phương án khác: báo mọi lần mất luồng — vì sao: rút tai nghe còn loa thì mở lại được ngay, báo là nhiễu. Thêm `AudioRestored` ngoài biến thể task nêu để thanh không báo mất mãi.
+
+- [tray-menu] Chuột phải vào khay (Windows): daemon gửi `ShowTrayMenu`, `fastcast-ui` vẽ `materiant::menu`; menu của OS giữ làm dự phòng khi UI không bật được, rớt, báo lỗi hoặc im quá 3 s — phương án khác: bỏ hẳn menu OS, hoặc daemon tự vẽ menu bằng GDI — vì sao: Thoát phải chạy được cả khi UI hỏng, daemon không được mang UI (F-4), cũng không thêm phụ thuộc nào vào daemon.
+- [tray-menu] macOS / Linux vẫn dùng menu của OS — phương án khác: bật menu tự vẽ cho macOS luôn — vì sao: chưa thử được trên hai máy đó; thanh AppIndicator của Linux không báo nhấp chuột nên không tự vẽ được.
+- [tray-menu] Mục đầu ("Chụp vùng") được trỏ sẵn khi menu mở — phương án khác: thêm vào `materiant::menu` API mở menu không trỏ mục nào — vì sao: dùng API có sẵn (`OpenContextMenu`), không đụng repo materiant; đổi lại Enter / ↑ ↓ dùng được ngay. Nhấp chuột vẫn bình thường.
+- [tray-menu] Cửa sổ popup lớn hơn khung menu một chút, phần dư trong suốt, nhấp vào đó coi như nhấp ra ngoài — phương án khác: đo chữ trước rồi mở vừa khít — vì sao: cỡ thật chỉ biết sau khung đầu mà gpui-pre không dời được cửa sổ đã mở.
+- [tray-menu] Nền menu theo D-10 (đục 0,75), không acrylic nên trên desktop sặc sỡ có thể hơi khó đọc — phương án khác: nền đặc riêng cho menu khay — vì sao: giữ đúng D-10; chủ dự án thấy khó đọc khi dùng thật thì đổi.
+
 - [gd4_18] Ghi ✅ task dù GĐ4 chưa đóng, Mac + Ubuntu chưa chạy, báo cáo ghi rõ — phương án khác: để 🔄 — vì sao: đúng mục 2 của task, `close-phase` mới chờ kiểm tay.
 - [gd4_18] Thêm `settings-run.ps1 -AllowOnlyScreen` để đo khi máy chỉ còn DELL — phương án khác: chờ cắm lại LG — vì sao: chủ dự án vắng, LG không có trong danh sách màn; cờ vô tác dụng khi có từ hai màn, mỗi bài có soát trước đúng một màn tên DELL.
 - [gd4_18] Làm PageUp / PageDown, nhãn thước theo cỡ chữ trong task nghiệm thu — phương án khác: chỉ ghi nhận — vì sao: P2 / nợ cỡ S, D-8; mã sản phẩm ~40 dòng.

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Đánh tag v<version> cho commit hiện tại của fastcast (version ở Cargo.toml gốc của repo). Đứng ở gốc workspace:
-#   bash tag.sh                 # tag đúng version đang có
+#   bash tag.sh                 # không cờ = --patch
 #   bash tag.sh -p | --patch    # 0.1.0 → 0.1.1, commit version rồi tag
 #   bash tag.sh --minor         # 0.1.0 → 0.2.0
 #   bash tag.sh --major         # 0.1.0 → 1.0.0
+#   bash tag.sh --current       # tag đúng version đang có, không nâng
 #   bash tag.sh -p --push       # đẩy luôn commit + tag lên origin
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,7 +12,7 @@ repo="$root/fastcast"
 
 bump="" push=""
 set_bump() {
-  [ -z "$bump" ] || { echo "Chỉ chọn một trong -p, --minor, --major." >&2; exit 2; }
+  [ -z "$bump" ] || { echo "Chỉ chọn một trong -p, --minor, --major, --current." >&2; exit 2; }
   bump="$1"
 }
 while [ $# -gt 0 ]; do
@@ -19,11 +20,14 @@ while [ $# -gt 0 ]; do
     -p|--patch) set_bump patch ;;
     --minor) set_bump minor ;;
     --major) set_bump major ;;
+    --current) set_bump current ;;
     --push) push=1 ;;
     *) echo "Không hiểu tham số: $1" >&2; exit 2 ;;
   esac
   shift
 done
+
+[ -n "$bump" ] || bump=patch
 
 git -C "$repo" rev-parse --git-dir >/dev/null
 [ -z "$(git -C "$repo" status --porcelain)" ] || { echo "fastcast còn thay đổi chưa commit, tag sẽ không khớp code." >&2; exit 1; }
@@ -42,7 +46,7 @@ next="$major.$minor.$patch"
 tag="v$next"
 [ -z "$(git -C "$repo" tag --list "$tag")" ] || { echo "Tag $tag đã có." >&2; exit 1; }
 
-if [ -n "$bump" ]; then
+if [ "$bump" != current ]; then
   # Chỉ dòng version đầu tiên: của [workspace.package], không đụng dòng version của phụ thuộc.
   tmp="$(mktemp)"
   awk -v next_version="$next" '!done && /^version = "/ { print "version = \"" next_version "\""; done = 1; next } { print }' \

@@ -1,13 +1,15 @@
 # Đánh tag v<version> cho commit hiện tại của fastcast (version ở Cargo.toml gốc của repo). Đứng ở gốc workspace:
-#   pwsh ./tag.ps1                 # tag đúng version đang có
+#   pwsh ./tag.ps1                 # không cờ = --patch
 #   pwsh ./tag.ps1 -p | --patch    # 0.1.0 → 0.1.1, commit version rồi tag
 #   pwsh ./tag.ps1 --minor         # 0.1.0 → 0.2.0
 #   pwsh ./tag.ps1 --major         # 0.1.0 → 1.0.0
+#   pwsh ./tag.ps1 --current       # tag đúng version đang có, không nâng
 #   pwsh ./tag.ps1 -p --push       # đẩy luôn commit + tag lên origin
 param(
     [Alias('p')] [switch] $Patch,
     [switch] $Minor,
     [switch] $Major,
+    [switch] $Current,
     [switch] $Push,
     # PowerShell không tự nhận cờ hai gạch: đọc ở đây để gõ giống tag.sh.
     [Parameter(ValueFromRemainingArguments)] [string[]] $Rest
@@ -20,6 +22,7 @@ foreach ($arg in $Rest) {
         '--patch' { $Patch = $true }
         '--minor' { $Minor = $true }
         '--major' { $Major = $true }
+        '--current' { $Current = $true }
         '--push' { $Push = $true }
         default { throw "Không hiểu tham số: $arg" }
     }
@@ -27,7 +30,8 @@ foreach ($arg in $Rest) {
 
 function Invoke-Git { & git -C $repo @args; if ($LASTEXITCODE -ne 0) { throw "git $args failed (exit $LASTEXITCODE)" } }
 
-if (@($Patch, $Minor, $Major).Where({ $_ }).Count -gt 1) { throw 'Chỉ chọn một trong -p, --minor, --major.' }
+if (@($Patch, $Minor, $Major, $Current).Where({ $_ }).Count -gt 1) { throw 'Chỉ chọn một trong -p, --minor, --major, --current.' }
+if (-not ($Patch -or $Minor -or $Major -or $Current)) { $Patch = $true }
 if (Invoke-Git status --porcelain) { throw 'fastcast còn thay đổi chưa commit, tag sẽ không khớp code.' }
 $branch = Invoke-Git branch --show-current
 if ($branch -ne 'master') { throw "fastcast đang ở nhánh '$branch', chỉ tag trên master." }
@@ -47,7 +51,7 @@ $next = "$x.$y.$z"
 $tag = "v$next"
 if (Invoke-Git tag --list $tag) { throw "Tag $tag đã có." }
 
-if ($Patch -or $Minor -or $Major) {
+if (-not $Current) {
     $line = "version = `"$next`"$($found.Groups[4].Value)"
     $text = $text.Remove($found.Index, $found.Length).Insert($found.Index, $line)
     [IO.File]::WriteAllText($manifest, $text, [Text.UTF8Encoding]::new($false))

@@ -65,7 +65,7 @@ Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -
 
 ## Đánh tag
 
-`bash tag.sh` / `pwsh ./tag.ps1`: tag `v<version>` cho commit hiện tại của fastcast. `-p` / `--patch`, `--minor`, `--major` nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
+`bash tag.sh` / `pwsh ./tag.ps1`: nâng version trong `Cargo.toml` + `Cargo.lock` của fastcast, commit rồi tag `v<version>`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
 
 ## Lệnh chung
 

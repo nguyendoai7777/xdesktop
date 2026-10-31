@@ -3,7 +3,7 @@
 #   bash build.sh
 #   bash build.sh --os linux --arch x64 --chip intel-amd      # không hỏi
 #   bash build.sh -f                                          # --force: biên dịch lại mã của ta, giữ thư viện đã build
-# Ra release/fastcast/<target>[-avx2]/ (macOS: fastcast.app + .dmg để cài; OS khác: bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
+# Ra release/fastcast/<target>[-avx2]/ (macOS: Fastcast.app + .dmg để cài; OS khác: bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

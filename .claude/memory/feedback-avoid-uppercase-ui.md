@@ -13,3 +13,5 @@ Nhãn trên giao diện viết thường, rất hạn chế dùng toàn chữ ho
 **Why:** chủ dự án nói chữ hoa "rất khó chịu khi nhìn" (30/10/2026, khi xem kính lúp lấy màu gd1_09).
 
 **How to apply:** khi thêm nhãn, chip, tab, tiêu đề ở fastcast / materiant thì viết thường, không dùng uppercase transform. Giá trị do chính người dùng chép (mã `#1E90FF`) là dữ liệu, không phải nhãn.
+
+**Ngoại lệ:** tên app viết hoa chữ đầu: `Fastcast` ở mọi chữ hiển thị (chủ dự án yêu cầu 31/10/2026). Định danh, tên crate, đường dẫn vẫn viết thường.

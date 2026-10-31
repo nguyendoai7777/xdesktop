@@ -62,12 +62,16 @@ Sửa nhánh Windows. Trộn âm hệ thống với micro (F-7 chỉ chọn mộ
 
 - `macos/audio.rs`: `System` = `SCStream` riêng (2 × 2, 1 fps, 48 kHz, stereo, bỏ âm của chính tiến trình); `Mic` = `AVCaptureSession`, định dạng đọc lại từ từng `CMSampleBuffer`. Đổi về `AudioPacket` bằng `Converter`, `PacketClock` có sẵn.
 - `writer.rs`: track AAC 128 kbps; `write_audio` chỉ xếp hàng (`AudioQueue`), `pump_audio` đưa cho input khi còn chỗ, âm trễ > 200 ms thành im lặng, `close_audio` lấp tới hết video.
-- Mất nguồn giữa lượt quay: không mở lại, khoảng thiếu thành im lặng (khác Windows có mở lại thiết bị). Từ chối quyền, không có thiết bị: `AudioUnavailable`.
+- Mất nguồn giữa lượt quay: khoảng thiếu thành im lặng; micro mở lại thiết bị mặc định như Windows (`AudioCapture::keep_alive`, soát mỗi 1 s). Từ chối quyền, không có thiết bị: `AudioUnavailable`.
 - Opus chọn 30/10/2026: đồng hồ mic đổi qua `synchronizationClock` + `CMSyncConvertTime`, mốc lệch giờ nhận quá 2 s thì lấy giờ nhận, vì chưa kiểm được đồng hồ của `AVCaptureSession` trên Mac. Khoá `AV*Key` dùng chuỗi thay vì thêm `objc2-avf-audio`. Cả hai ở `plan/confirm.md`.
 - Soát: `cargo check --locked --target aarch64-apple-darwin -p fastcast-video` xanh; clippy target đó `-D warnings` xanh; clippy Windows xanh; `cargo test -p fastcast-video` 59 + 15 + 10 ca xanh (`--test-threads=4`); `cargo deny check licenses` ok. Soát riêng `-p fastcast-video`, không build GPUI.
 - Soi cải tiến: bảo mật — log chỉ có mã lỗi + định dạng, không nội dung âm, tệp thử xoá khi xong. RAM — hàng PCM có trần 5 s (~1,9 MB); đồng hồ nhảy không cấp phát theo độ dài khoảng trống. Pro — không áp.
 
+**Sửa 31/10/2026 theo D-11** (mục 10 đã làm, không còn treo):
+
+- Chờ hộp thoại quyền micro không còn chặn `Stop`: hỏi trước khi mở nguồn quay, `wait_answer` soát lệnh mỗi 50 ms. `Stop` ⇒ `AudioUnavailable`, `Abort` ⇒ thoát êm. Sửa ở `fastcast-rec`, không đụng UI. Chạy thật: chưa có quyền micro ⇒ `Failed { AudioUnavailable }`, tiến trình thoát cùng lúc dừng (3,04 s), không treo; chưa phân biệt được máy đang ở trạng thái chưa hỏi hay đã từ chối.
+- Mở lại micro: đã biên dịch, clippy xanh, **chưa chạy thật** vì thiếu quyền micro và không rút được thiết bị. `startRunning` chặn luồng quay một lúc, chỉ khi vừa mất thiết bị. Bước kiểm: gạch gd4_19 ở `_backlog.md`.
+
 ## 10. Đề xuất cải tiến
 
-- [ux] Chờ hộp thoại quyền micro (tối đa 60 s) chặn luồng quay, `Stop` chỉ được xử lý sau đó; `STOP_TIMEOUT` của UI là 30 s nên có thể giết tiến trình — bằng chứng: `macos/audio.rs::microphone_allowed`, `ui/src/record/mod.rs:36` — đề xuất: xin quyền trước khi bật `fastcast-rec`, ở UI — tránh treo lần đầu — S — P2. Chưa làm: đụng làn `gd4_11`, cần thử trên Mac; đã ghi `_backlog.md`.
-- [ux] Rút micro giữa chừng thành im lặng tới hết lượt quay — bằng chứng: `macos/audio.rs` không nghe `AVCaptureDeviceWasDisconnected` — đề xuất: mở lại thiết bị mặc định như Windows — S — P3. Chưa làm: không thử được nếu không có Mac; đã ghi `_backlog.md`.
+Không còn.

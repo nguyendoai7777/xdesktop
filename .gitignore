@@ -3,6 +3,9 @@
 /fastcast/
 /materiant/
 
+# Bản build do build.ps1 / build.sh sinh
+/release/
+
 # Rust
 target/
 **/*.rs.bk

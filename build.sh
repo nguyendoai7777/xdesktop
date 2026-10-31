@@ -2,7 +2,7 @@
 # Build bản release của fastcast. Hỏi OS → kiến trúc → chip rồi build (Enter = máy đang chạy). Đứng ở gốc workspace:
 #   bash build.sh
 #   bash build.sh --os linux --arch x64 --chip intel-amd      # không hỏi
-# Ra fastcast/dist/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
+# Ra release/fastcast/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -154,7 +154,7 @@ for exe in $exes; do
   fi
 done
 
-out="$repo/dist/$out_name"
+out="$root/release/fastcast/$out_name"
 rm -rf "$out"
 mkdir -p "$out"
 for exe in $exes; do cp "$release/$exe" "$out/"; done

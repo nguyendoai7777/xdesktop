@@ -60,7 +60,7 @@ pwsh ./build.ps1   # Windows
 bash build.sh      # macOS / Ubuntu
 ```
 
-Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `fastcast/dist/<target>/`; Windows x64 phổ thông thêm bản cài NSIS.
+Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `release/fastcast/<target>/` (gitignore); Windows x64 phổ thông thêm bản cài NSIS cạnh đó.
 Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`.
 
 ## Lệnh chung

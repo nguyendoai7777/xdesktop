@@ -28,6 +28,17 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## fastcast
 
+- [debt-notify] Lỗi tự khởi động đi bằng cặp thông điệp mới `AutostartStatusRequest` / `AutostartStatus`, không thêm trường vào `DaemonStatus` như lời khuyên — phương án khác: thêm trường `#[serde(default)]` — vì sao: `crates/ui/tests/settings_hotkeys.rs` dựng `DaemonStatus` bằng struct literal, thêm trường là test đó không biên dịch, mà tệp đang do session khác sửa, không được đụng. Daemon cũ trả `Error`, trang coi như không có gì để báo; `ReloadConfig` giữ nguyên nghĩa.
+- [debt-notify] Trang Chung chỉ hỏi daemon sau khi vừa đổi tự khởi động (công tắc, độ trễ) — phương án khác: hỏi sau mọi lần ghi — vì sao: lỗi cũ còn nằm ở daemon tới lần áp sau, đổi cỡ chữ sẽ báo lại. Công tắc giữ ý người dùng, không trả về.
+- [debt-notify] Mất âm báo bằng chữ trên thanh quay, không dùng thông báo nổi — phương án khác: `notice::show` — vì sao: chữ ở lại suốt đoạn mất tiếng, thông báo tắt sau 2,5 s. Có tiếng lại thì đổi chữ và giữ tới hết cuộc quay vì video đã có đoạn không tiếng.
+- [debt-notify] Chỉ báo `AudioLost` khi mở lại thiết bị hỏng — phương án khác: báo mọi lần mất luồng — vì sao: rút tai nghe còn loa thì mở lại được ngay, báo là nhiễu. Thêm `AudioRestored` ngoài biến thể task nêu để thanh không báo mất mãi.
+
+- [tray-menu] Chuột phải vào khay (Windows): daemon gửi `ShowTrayMenu`, `fastcast-ui` vẽ `materiant::menu`; menu của OS giữ làm dự phòng khi UI không bật được, rớt, báo lỗi hoặc im quá 3 s — phương án khác: bỏ hẳn menu OS, hoặc daemon tự vẽ menu bằng GDI — vì sao: Thoát phải chạy được cả khi UI hỏng, daemon không được mang UI (F-4), cũng không thêm phụ thuộc nào vào daemon.
+- [tray-menu] macOS / Linux vẫn dùng menu của OS — phương án khác: bật menu tự vẽ cho macOS luôn — vì sao: chưa thử được trên hai máy đó; thanh AppIndicator của Linux không báo nhấp chuột nên không tự vẽ được.
+- [tray-menu] Mục đầu ("Chụp vùng") được trỏ sẵn khi menu mở — phương án khác: thêm vào `materiant::menu` API mở menu không trỏ mục nào — vì sao: dùng API có sẵn (`OpenContextMenu`), không đụng repo materiant; đổi lại Enter / ↑ ↓ dùng được ngay. Nhấp chuột vẫn bình thường.
+- [tray-menu] Cửa sổ popup lớn hơn khung menu một chút, phần dư trong suốt, nhấp vào đó coi như nhấp ra ngoài — phương án khác: đo chữ trước rồi mở vừa khít — vì sao: cỡ thật chỉ biết sau khung đầu mà gpui-pre không dời được cửa sổ đã mở.
+- [tray-menu] Nền menu theo D-10 (đục 0,75), không acrylic nên trên desktop sặc sỡ có thể hơi khó đọc — phương án khác: nền đặc riêng cho menu khay — vì sao: giữ đúng D-10; chủ dự án thấy khó đọc khi dùng thật thì đổi.
+
 - [gd4_18] Ghi ✅ task dù GĐ4 chưa đóng, Mac + Ubuntu chưa chạy, báo cáo ghi rõ — phương án khác: để 🔄 — vì sao: đúng mục 2 của task, `close-phase` mới chờ kiểm tay.
 - [gd4_18] Thêm `settings-run.ps1 -AllowOnlyScreen` để đo khi máy chỉ còn DELL — phương án khác: chờ cắm lại LG — vì sao: chủ dự án vắng, LG không có trong danh sách màn; cờ vô tác dụng khi có từ hai màn, mỗi bài có soát trước đúng một màn tên DELL.
 - [gd4_18] Làm PageUp / PageDown, nhãn thước theo cỡ chữ trong task nghiệm thu — phương án khác: chỉ ghi nhận — vì sao: P2 / nợ cỡ S, D-8; mã sản phẩm ~40 dòng.
@@ -114,9 +125,15 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_06] UI **ghi** `config.json` (chỉ khoá `launcher.position`, đọc lại file rồi ghi nguyên tử như `fst autostart`)
   — phương án khác: gửi IPC cho daemon ghi — vì sao: không thêm thông điệp IPC; daemon không giữ bản sao trong bộ nhớ để
   ghi đè. Đổi lại lựa chọn gd1_01 "UI chỉ đọc".
-- [gd1_06] Bấm `open_launcher` khi launcher đang hiện ⇒ ẩn (bật / tắt như Raycast); nhấp một dòng = chọn, nhấp đúp /
-  Enter = chạy — phương án khác: lệnh lặp đưa cửa sổ lên trước như tính năng khác; nhấp một lần là chạy — vì sao: giống
-  Raycast / Spotlight; nhấp một lần chạy dễ chạy nhầm khi chỉ định rê chuột.
+- [gd1_06] Bấm `open_launcher` khi launcher đang hiện ⇒ ẩn (bật / tắt như Raycast) — phương án khác: lệnh lặp đưa cửa sổ
+  lên trước như tính năng khác — vì sao: giống Raycast / Spotlight. **Cập nhật 31/10/2026, chủ dự án đổi ý**: nhấp một
+  dòng = chạy ngay (trước đây nhấp = chọn, nhấp đúp = chạy); rê chuột chỉ tô dòng, Enter giữ nguyên.
+- [launcher-hotkey-fix] Giữ phím mặc định mở launcher `Alt+Space` trên mọi máy — phương án khác: đổi sang `Ctrl+Space` như
+  chủ dự án tự gán — vì sao: `Ctrl+Space` toàn cục cướp gợi ý mã của VS Code và phím đổi bộ gõ, macOS cũng giữ tổ hợp này;
+  `Alt+Space` chỉ đụng app launcher khác (Raycast, PowerToys Run). Muốn đổi thì sửa `Command::default_hotkey`.
+- [launcher-hotkey-fix] Khối nổi đáy màn (thông báo, thanh quay) là viên thuốc nền trong suốt + bóng mờ; bảng quay xong nhiều hàng nút nên chỉ bo 16 px — phương án khác: acrylic thật — vì sao: acrylic phủ cả khung chữ nhật, lộ bốn góc. Nav Settings: có vạch ink, bỏ nền chọn và vòng focus (focus phím nhận biết qua vạch trượt).
+- [launcher-hotkey-fix] Chip `Alt` trên Windows / Linux ghi chữ, chỉ macOS vẽ ⌥; `Ctrl` vẫn vẽ ⌃ theo bộ icon F-11 —
+  phương án khác: đổi cả `Ctrl` sang chữ — vì sao: chỉ ⌥ gây đọc nhầm, chủ dự án đọc ⌃ đúng là Ctrl.
 - [gd1_06] Chân launcher chưa có "Ctrl+K Hành động" (khoá `launcher.actions` đã có trong catalog) — phương án khác: hiện
   sẵn như bố cục mục 7 — vì sao: Ctrl+K làm ở gd1_07, hiện nhãn mà bấm không gì xảy ra gây khó hiểu.
 - [gd1_02] UI đóng băng màn (không phải daemon), ngay khi nhận lệnh, trước khi gắn lại GPU — phương án khác: daemon chụp

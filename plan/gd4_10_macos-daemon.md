@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ✅ mã — chờ chạy trên Mac (30/10/2026) |
+| Trạng thái | ✅ (31/10/2026) đã chạy trên Mac; C7 đỏ (7,7–7,9 MB, ngưỡng 5 MB) chờ chủ dự án chốt; khay, phím tắt, đăng nhập lại chờ kiểm tay |
 | Máy | Viết + `cargo check --target aarch64-apple-darwin` được trên máy nhà; ✅ cuối cần chạy trên Mac |
 | Repo | fastcast |
 | Cỡ | M — ~450 dòng |
@@ -48,10 +48,12 @@ RAM nghỉ `phys_footprint` ≤ 5 MB: bản release, để yên ≥ 10 s.
 - C1 `[opus-run]` ✅ Cho nhánh này, khi `cargo check --locked --target aarch64-apple-darwin -p fastcast-daemon` (+ clippy `--all-targets -D warnings` cùng target, biên dịch cả test macOS), thì xanh.
 - C2 `[opus-run]` ✅ Cho Windows, khi build, clippy, test `-p fastcast-daemon -p fastcast-core` + `cargo deny check licenses`, thì xanh (lý do `-p`: mục 9).
 - C3 `[opus-unit]` ✅ `launch_agent_has_args_and_escaped_path`, `app_bundle_is_recognised` chạy trên Windows.
-- C4 `[owner-qa]` ☐ **Chưa chạy.** Cho Mac, khi `cargo test -p fastcast-daemon -p fastcast-core`, thì xanh, gồm `default_hotkeys_are_free_on_macos`.
-- C5 `[owner-qa]` ☐ **Chưa chạy.** Cho Mac, khi chạy `fst`, thì không icon Dock, có khay, menu mở được, 6 phím tắt bắn lệnh, `fst status` đúng, `fst quit` thoát hẳn, `fst` lần hai mở launcher rồi thoát.
-- C6 `[owner-qa]` ☐ **Chưa chạy.** Exe rời: `fst autostart on` ghi plist, đăng nhập lại daemon lên sau độ trễ, `off` xoá tệp. Trong `.app` (sau gd4_13): `on` qua `SMAppService` hoặc dự phòng, không bật hai lần.
-- C7 `[owner-qa]` ☐ **Chưa đo.** RAM nghỉ `phys_footprint` ≤ 5 MB (`footprint <pid>`, release, ≥ 10 s).
+- C4 `[opus-run]` ✅ Cho Mac, khi `cargo test -p fastcast-daemon -p fastcast-core`, thì xanh, gồm `default_hotkeys_are_free_on_macos`.
+- C5a `[opus-run]` ✅ Cho Mac, khi chạy `fst`, thì `ApplicationType=UIElement` (không icon Dock), `fst status` đúng 6 phím `ok`, `fst quit` thoát hẳn, chạy lại được, `fst` lần hai gửi `open_launcher` rồi thoát mã 0.
+- C5b `[owner-qa]` ☐ Chờ kiểm tay: icon khay hiện, menu mở được, 6 phím tắt bắn lệnh.
+- C6a `[opus-run]` ✅ Exe rời: `fst autostart on` ghi plist hợp lệ (`plutil -lint`), `off` xoá tệp, không còn LaunchAgent sót.
+- C6b `[owner-qa]` ☐ Chờ kiểm tay: đăng nhập lại daemon lên sau độ trễ. Trong `.app` (sau gd4_13): `on` qua `SMAppService` hoặc dự phòng, không bật hai lần.
+- C7 `[opus-run]` ❌ **Đỏ.** RAM nghỉ `phys_footprint` 7,7–7,9 MB, ngưỡng ≤ 5 MB (`footprint <pid>`, release, ≥ 12 s, 4 lần). Sàn của khung hệ thống vượt ngưỡng: mục 9.
 
 ## 8. Nợ chuyển task khác
 
@@ -69,6 +71,25 @@ RAM nghỉ `phys_footprint` ≤ 5 MB: bản release, để yên ≥ 10 s.
 **Ngoài danh sách tệp, chỉ thêm thuộc tính cho OS khác**: `daemon.rs` + `autostart.rs::entry_name` có `cfg_attr(not(windows), allow(dead_code))`, thiếu thì clippy macOS đỏ. Hàm thuần `launchd` đặt ngoài `cfg` theo mẫu `task` / `xdg` để test chạy trên Windows.
 
 **`autostart_failed`**: daemon chỉ log `warn` và trả `Err` cho `fst autostart`; chữ i18n hiện ở UI do làn `gd4_02`. Dự phòng thành công thì không báo lỗi.
+
+**Chạy trên Mac 31/10/2026** (Apple M5 Pro, macOS 26.6.2, một màn Retina): mã FFI chạy đúng, không có lỗi logic nào lộ ra. Soát: core 72 + daemon 29 test, clippy `--workspace --all-targets`, `cargo deny check licenses`, fmt daemon xanh. Test tích hợp `fastcast-ui` không chạy (gd4_11).
+
+**RAM, đo bằng `footprint` sau ≥ 10 s:**
+
+| Bản | Footprint |
+| --- | --- |
+| Tiến trình trống, không AppKit | 1,7 MB |
+| `NSApplication` `Accessory`, chưa khay | 6,7 MB |
+| + khay `tray-icon` (icon 16 hay 32 px như nhau) | 10 MB |
+| + khay, `MallocSpaceEfficient=1` | 7,4 MB |
+| `fst` trước khi sửa | 11 MB |
+| `fst` sau khi sửa | **7,7–7,9 MB** (đỉnh 8,1) |
+
+Riêng `fst` chỉ thêm ~0,5–1 MB, phần còn lại là AppKit + status item. `malloc_zone_pressure_relief` trả 0 byte, không giúp. Các số là một lần đo mỗi dòng trừ dòng cuối; chưa đo lúc máy rảnh hẳn (hai làn khác đang build). Không đạt 5 MB nếu còn dùng AppKit + khay: ngưỡng cần chủ dự án chốt riêng cho macOS (`plan/confirm.md`, `_backlog.md`).
+
+**Sửa thêm ngoài danh sách tệp**: `main.rs`, `platform/mod.rs`, `ui_process.rs`. Nhánh daemon `exec` lại chính mình với `MallocSpaceEfficient=1` (`platform/macos.rs::prepare_daemon_process`, cùng pid, đã soát cả `--autostart --delay`); `ui_process.rs` gỡ biến này khỏi UI con. Fmt `clipboard.rs`.
+
+**Không kiểm được ở phiên này**: `osascript` + System Events hết giờ 12 s (chưa có quyền Automation / Accessibility, không tự cấp) ⇒ chưa giả lập được phím, chưa đọc được menu. Từ macOS 26 cửa sổ status item thuộc `Control Center`, liệt kê cửa sổ không xác nhận được khay; log không có `tray:` lỗi, chưa thấy tận mắt. Chưa bật `fastcast-ui` thật: exe chưa nằm cạnh `fst`, log báo `ui: cannot start`, đúng dự kiến. Lần thử đã tạo `config.json` mặc định trong `~/Library/Application Support/fastcast/`.
 
 ## 10. Đề xuất cải tiến
 

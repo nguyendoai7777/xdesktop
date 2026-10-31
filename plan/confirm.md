@@ -436,3 +436,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_09] Sha ONNX Runtime soát qua digest GitHub + dll trong gói NuGet — tin lần tải đầu — vì sao: `confirm.md` gd3_03 hẹn soát lại khi đưa vào bản cài; đều khớp.
 - [gd4_09] Cài NSIS bằng tệp `winget download` + `RunAsInvoker` vào `E:\codex\tools\nsis` — `winget install` — vì sao: tránh hộp UAC trên màn LG khi chủ dự án vắng.
 - [gd4_09] Chép `setup.exe` vào `fastcast/dist/` (gitignore) sau khi gỡ worktree — bỏ cùng worktree — vì sao: để chủ dự án kiểm tay khỏi dựng lại.
+- [gd4_10] Giữ AppKit + khay, ghi C7 đỏ ở 7,7–7,9 MB, chờ chủ dự án chốt ngưỡng macOS — tách khay sang tiến trình riêng — vì sao: sàn `NSApplication` + khay đã 7,4 MB; tách là đổi kiến trúc F-4, ngoài phạm vi task.
+- [gd4_10] Daemon `exec` lại chính mình với `MallocSpaceEfficient=1`, UI con gỡ biến — đặt trong plist / `LSEnvironment` — vì sao: phủ cả chạy tay, LaunchAgent, `.app`; giảm ~3 MB.

@@ -11,6 +11,17 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
 
+## 0. Bàn giao từ gd4_10 (31/10/2026)
+
+<!-- handoff: gd4_10 -->
+
+- **Đã có sẵn để dùng**: `fst` đã chạy thật trên Mac; UI bật cạnh exe nên bốn exe phải cùng nằm ở `Contents/MacOS/`.
+- **Đã có sẵn để dùng**: autostart trong `.app` đi qua `SMAppService.mainApp`, chưa ký mà bị từ chối thì dự phòng `~/Library/LaunchAgents/com.fastcast.daemon.plist`. Nhãn này do gd4_10 tự chọn, đổi nếu task này chốt bundle id khác.
+- **Đổi so với lúc viết spec này**: daemon tự `exec` lại chính nó với `MallocSpaceEfficient=1` (`platform/macos.rs`), không cần `LSEnvironment` trong `Info.plist`. Sau khi ký, soát lại cờ này vẫn có: `ps eww -p <pid>`.
+- **Bẫy**: bản exe rời đã là `UIElement` nhờ `setActivationPolicy`; `.app` cũng nên có `LSUIElement` để không nháy icon Dock lúc khởi động.
+- **Bẫy**: từ macOS 26 cửa sổ status item thuộc `Control Center`, không soát khay bằng danh sách cửa sổ theo pid.
+- **Soát lại khi làm**: trong `.app` chạy `fst autostart on` rồi `off`, không bật hai lần, không sót plist (C6b của `plan/gd4_10_macos-daemon.md`); `footprint <pid>` sau ≥ 10 s, mốc exe rời 7,7–7,9 MB.
+
 ## 0. Bàn giao từ gd4_12, gd4_19 (31/10/2026)
 
 <!-- handoff: gd4_12 -->

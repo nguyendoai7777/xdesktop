@@ -73,4 +73,4 @@ Dùng hết bằng bàn phím: Tab qua từng điều khiển, Space / Enter đ�
 ## 10. Đề xuất cải tiến
 
 - [ux] Bật tự khởi động hỏng mà người dùng không biết — `daemon.rs::reload` bỏ qua lỗi `autostart::apply` — trả `Message::Error` để hiện `settings.autostart_failed` — báo đúng lỗi — S — P2. Chưa làm: tệp daemon ngoài làn, đổi ngữ nghĩa `ReloadConfig`; vào `_backlog.md`.
-- [ux] Sidebar không theo cỡ chữ — ảnh cỡ 20: nhãn sidebar giữ nguyên — `Tabs` của materiant đọc `font_size` — nhất quán — S — P3. Chưa làm: repo materiant, soát cùng gd4_18.
+- [ux] Sidebar không theo cỡ chữ — ảnh cỡ 20: nhãn sidebar giữ nguyên — `Tabs` của materiant đọc `font_size` — nhất quán — S — P3. Đã làm ở `debt-ui` (31/10/2026).

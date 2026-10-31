@@ -17,7 +17,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd4_13 · owner-qa] Icon khay ẩn khi mở `.app` qua `open` trên macOS 26** — lý do: mục của khay được tạo (x = 1012, 38 điểm) nhưng không lên màn; chạy thẳng `Contents/MacOS/fst` thì hiện đúng. Nghi cài đặt System Settings → Menu Bar → Allow in the Menu Bar đang tắt cho fastcast, chưa xác nhận. Đã có quyền ghi màn (31/10/2026): `cargo test -p fastcast-video --test macos -- --ignored --test-threads=1` đạt 3/3, phần nghe, xem file bằng QuickTime vẫn chờ tay.
 - **[gd4_12 · owner-qa] Quay thật + OCR trên Mac** — lý do: thiếu quyền Screen Recording, Mac không có model. Đã chạy: writer, mọi test không cần quyền. Bước quay: Cài đặt hệ thống → Quyền riêng tư và bảo mật → Ghi màn hình, bật cho app chạy lệnh, mở lại app đó; `cargo test -p fastcast-video --test macos -- --ignored --test-threads=1`; quay thật, mở QuickTime; đo 720p30 (CPU, `footprint`, so với 3,9 % / 26,7 MB). Lúc chưa cấp quyền: xem có hộp thoại OS không (C6). Cần màn thứ hai: vùng vắt hai màn, rút màn giữa lúc quay (C5). Bước OCR: chép `onnx/` từ thư mục `-Out` trên máy Windows vào `fastcast/target/ocr-models/` (sha soát theo sổ), chép cả bộ ảnh `gen-bench` (chỉ sinh được trên Windows), rồi `FASTCAST_OCR_MODELS=<đích> cargo run -p fastcast-ocr --example ocr_bench -- <ảnh> --bench <ảnh>/truth.tsv` (C7). Case: `plan/gd4_12_macos-video.md`.
 - **[gd4_05 · owner-qa] Trình đọc màn hình trên dòng Pro (C6)** — lý do: máy không chạy Narrator trong làn (phát tiếng, lấy focus). Bước: bật Narrator, Cài đặt → Pro, duyệt từng dòng; mong đợi đọc "<tên>, pro" + mô tả, Tab không dừng ở dòng nào.
-- **[gd4_05 · ux P2] Shift+Tab không rời ô số cỡ chữ** — lý do: khả nghi `gpui-base` gán `shift-tab` → `OutdentInline` (`input/base/state.rs:197`), chưa kiểm; sửa ở `materiant` `NumberField`, repo đó đang có thay đổi chưa commit. Tái hiện: `settings-run.ps1 -Page general -Keys "wait tab tab tab tab shift-tab shift-tab shift-tab shift-tab wait down"`, log có `general applied`, không có `settings: page`.
 - **[gd4_19 · owner-qa] Tiếng thật khi quay trên Mac** — lý do: thiếu quyền Screen Recording, Microphone. Đã chạy: track AAC của writer. Bước: cấp hai quyền như gạch gd4_12, `cargo test -p fastcast-video --test macos -- --ignored --test-threads=1` (`records_system_audio`, `records_microphone`); quay kèm âm hệ thống, kèm micro, mở QuickTime nghe khớp hình; từ chối micro ra `AudioUnavailable`, không sót `.part`. Rút micro giữa lúc quay: log `audio: device reopened`, cắm lại có tiếng tiếp. Hộp thoại quyền đang mở mà bấm dừng: kết thúc ngay. Soát thêm: `SCStream` 2 × 2 có giao âm, log `rec: audio clock`. Case C4–C6: `plan/gd4_19_macos-audio.md`.
 - **[gd4_13 · owner-qa] Bản `.dmg` đủ và kiểm từ đầu tới cuối** — lý do: máy không có `pwsh`, `onnx/`. Bước: `brew install --cask powershell`; chép `onnx/` từ máy Windows vào `fastcast/target/ocr-models/`; `bash fastcast/tools/build-macos.sh --models target/ocr-models` (đường dẫn tính từ `fastcast`, chạy trong đó); mở `dist/macos-arm64/*.dmg`, kéo vào Applications, chuột phải → Open qua Gatekeeper; cấp quyền (tên fastcast phải hiện trong danh sách, hộp thoại micro đúng chữ vi / en); khay, phím tắt, chụp, quay, OCR, Giới thiệu → trang giấy phép; `autostart` + đăng nhập lại; kéo vào Thùng rác. Chữ ký ad-hoc đổi mỗi lần build nên có thể phải cấp lại quyền.
 - **[gd4_13 · ký mã] Developer ID + notarize** — lý do: dịch vụ trả phí, chủ dự án quyết. Khi có: ký thêm `--options runtime`, ký lại dylib, cập nhật sha dylib trong sổ. Chưa có thì Gatekeeper chặn lần mở đầu.
@@ -122,8 +121,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_07 · ux] PrintScreen không ghi được từ launcher trên Windows** (GPUI không báo `VK_SNAPSHOT`): subclass HWND
   launcher bắt `WM_KEYUP VK_SNAPSHOT` khi đang ghi — chưa làm vì cần bấm phím thật để kiểm (Win11 có thể giữ PrtSc cho
   Snipping). Mục 10 (1) của gd1_07.
-- **[gd1_07 · ux] Menu Ctrl+K mở giữa launcher** — materiant `ContextMenuExt` nhận điểm mở bằng phím (góc dưới phải như
-  Raycast); chờ materiant mở lại sau nghiệm thu gd1_10. Mục 10 (2).
 - **Dọn dữ liệu thử**: `%APPDATA%\fastcast` + `%LOCALAPPDATA%\fastcast` thật trên máy nhà do lượt chạy Task Scheduler
   29/10/2026 tạo — giữ dùng tiếp, hoặc xoá bằng Explorer (session Claude chỉ thấy bản ảo hoá, memory
   `msix-appdata-virtualization`).
@@ -146,12 +143,7 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **macOS / Ubuntu GĐ1** (gd1_10 C3 — lý do: máy này không có Mac / Ubuntu, không target darwin): gallery + launcher +
   `cargo test`, nhãn RAM `phys_footprint` / `RssAnon` chưa build lần nào — lệnh + chỗ dễ vỡ ở
   `materiant/docs/gd1-report.md` mục 5.
-- **Task dọn nợ GĐ1 → GĐ2** (lý do: chạm ~10 module, vượt cỡ S của gd1_10 — tách task khi mở GĐ2): dời hằng cục bộ lên
-  `style.rs` / `icon.rs` + `optical_lift` thành helper chung; Select neo bằng Popover lật cạnh; `ToastViewport` / Dialog
-  mở bằng code qua `RootPlugin`; `ScrollbarMotion` 1 s + fade; `FieldShell` tách nhãn; `FieldSize::Lg`; vòng focus switch
-  nền tối ~1,3:1. Danh sách + nguồn: `materiant/docs/gd1-report.md` mục 7.
-- **[gd1_10 · ux] `start.ps1 launcher`** cho chủ dự án mở launcher example như `docs` (lý do: `start.ps1` / `start.sh`
-  ở repo gốc ngoài phạm vi tệp của gd1_10). `completed/materiant/gd1/materiant-gd1_10_acceptance.md` mục 10 (2).
+- **[gd1 nợ] `ToastViewport` thành `RootPlugin`; Dialog mở bằng code** (lý do: fastcast đặt `ToastViewport` trong view của overlay, thêm plugin thì vẽ hai lớp, bỏ thì đổi API fastcast đang dùng; Dialog khai báo đủ dùng, chưa có nơi gọi mở bằng code). `materiant/docs/gd1-report.md` mục 7.
 - **[gd1_10 · ram] Trang gallery `button` 24,1 MB** (các trang khác 14–18) — đo phần nào tốn (bóng `elevated`, glyph)
   trước khi fastcast dùng nhiều bóng; lý do treo: không chặn, P3. Mục 10 (3).
 

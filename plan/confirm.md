@@ -166,7 +166,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   chốt cùng lượt, giao đi tốn hơn tự làm.
 - [gd1_07] UI gửi yêu cầu tới daemon trên chính kết nối nhận lệnh (trả lời FIFO) — phương án khác: mở kết nối `Cli` riêng
   mỗi yêu cầu — vì sao: UI chết ⇒ daemon thấy rớt và đăng ký lại phím tắt ngay, không chờ hạn 30 s.
-- [gd1_07] Ctrl+K mở menu GIỮA launcher (`context_menu` trên gốc) — phương án khác: góc dưới phải như Raycast — vì sao:
+- [gd1_07] (**Đã thay ở debt-ui**: mở ngay trên chân, góc phải.) Ctrl+K mở menu GIỮA launcher (`context_menu` trên gốc) — phương án khác: góc dưới phải như Raycast — vì sao:
   `Menu` của materiant chưa mở được theo neo từ code, materiant đang nghiệm thu gd1_10; gạch `_backlog.md`.
 - [gd1_07] Thôi tạm gỡ phím tắt ngay khi bắt được tổ hợp (trước bước hỏi "Lấy phím") — phương án khác: giữ tạm gỡ tới lúc
   ghi xong — vì sao: hỏi / ghi không cần phím tắt tắt, giảm thời gian phím tắt chết.
@@ -202,7 +202,16 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_09] Nhớ định dạng lúc đóng overlay — phương án khác: ghi mỗi lần đổi — vì sao: Tab liên tiếp không ghi đĩa từng lần.
 - [gd1_09] Thêm Shift+mũi tên, Ctrl+C, chuột phải đóng — phương án khác: đúng phím spec — vì sao: cùng phím với chọn vùng.
 
+- [debt-ui] Menu Ctrl+K gắn vào phần thân launcher (thanh trên + kết quả) nên chuột phải trên chân launcher không còn mở menu — phương án khác: thêm chỗ neo riêng để chân vẫn mở — vì sao: Ctrl+K phải neo vào góc của thân thì mới nằm ngay trên chân; giống `examples/launcher.rs`.
+
 ## materiant
+- [debt-ui] Shift+Tab ô số: gốc là `NumberInput` và `InputState` ghi cùng focus handle vào thứ tự Tab, không phải `OutdentInline`. Sửa bằng mốc focus cỡ 0 đứng trước ô — phương án khác: vá `gpui-base`, hoặc bỏ `NumberInput` tự dựng ô số — vì sao: không vá crate ngoài, giữ nguyên ↑ ↓ và nút bước.
+- [debt-ui] `Tabs` theo cỡ chữ: chữ + chiều cao dòng co giãn, đệm và bề ngang sidebar 188 px giữ nguyên — phương án khác: co giãn cả đệm — vì sao: cỡ 20 đã xem ảnh, "Save and record" vừa cột.
+- [debt-ui] Hằng riêng tư của component vào `style::tokens::<module>` (`pub(crate)`), hằng công khai giữ ở module — phương án khác: gộp thành token theme đổi được lúc chạy — vì sao: không đổi giá trị, không đổi API.
+- [debt-ui] Select dùng `overlay::position::anchored` trực tiếp, không bọc `overlay::popover::Popover` — phương án khác: bọc Popover — vì sao: Popover tự bắt bấm, Enter, Space của trigger, trùng `gpui_base::Select`. Panel rộng thêm 2 px để thẳng mép khung ngoài (trước hụt 2 px).
+- [debt-ui] Vòng focus switch nền tối dùng màu `muted` với độ đục vừa đủ 3:1 — phương án khác: tăng độ đục `neutral-400` — vì sao: `neutral-400` đục hẳn chỉ 2,8:1. Nền sáng giữ đúng web.
+- [debt-ui] `ScrollbarMotion` 1 s + mờ 160 ms đặt ở theme `gpui-base`, áp cho mọi thanh cuộn kể cả Settings của fastcast — phương án khác: chỉ một số vùng — vì sao: đúng web, không đổi API. Mờ dần chưa xem được bằng mắt vì máy tắt Animation effects.
+- [debt-ui] Chưa làm `ToastViewport` thành `RootPlugin`, Dialog mở bằng code — phương án khác: làm luôn — vì sao: plugin toast buộc đổi API fastcast đang dùng; Dialog mở bằng code chưa có nơi gọi. Gạch `_backlog.md`.
 - [materiant-gd2_01] `ColorPicker` chỉ là nội dung bảng, `.floating(true)` tự vẽ nền nổi, không tự mở popover — phương án khác: nút màu + popover đóng gói sẵn — vì sao: overlay fastcast tự quản bảng, phím `c`, focus; bọc thêm sẽ phải vòng qua dismiss của Popover khi kéo ra ngoài.
 - [materiant-gd2_01] Ô hex: đủ 6 chữ số áp ngay, 3 chữ số chỉ áp khi Enter / rời ô, chữ sai thì trả về màu hiện tại, không báo đỏ — phương án khác: chỉ áp khi Enter, hoặc viền lỗi — vì sao: thấy màu ngay lúc dán mã; `fff` có thể là nửa chừng của `fff000`; không có chữ báo lỗi cố định trong component.
 - [materiant-gd2_01] Sắc độ kẹp 0–360, không xoay vòng khi bấm mũi tên; kiểu màu `Rgb` u8 đổi được `[u8; 3]` — phương án khác: xoay vòng, dùng `Rgba` f32 — vì sao: thumb không nhảy qua đầu kia; ảnh xuất cần đúng mã 8 bit.

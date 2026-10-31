@@ -80,7 +80,8 @@ function Select-Checklist([string] $Title, [string[]] $Ids, [string[]] $Labels) 
             }
             [Console]::Write("`r$esc[2K$esc[2m$hint$esc[0m")
             $key = [Console]::ReadKey($true)
-            [Console]::Write("`r$esc[$($Ids.Count)A")            switch ($key.Key) {
+            [Console]::Write("`r$esc[$($Ids.Count)A")
+            switch ($key.Key) {
                 'UpArrow' { $cursor = ($cursor + $Ids.Count - 1) % $Ids.Count }
                 'DownArrow' { $cursor = ($cursor + 1) % $Ids.Count }
                 'Spacebar' { $checked[$cursor] = -not $checked[$cursor] }

@@ -11,6 +11,15 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
 
+## 0. Bàn giao từ gd4_11 (31/10/2026)
+
+<!-- handoff: gd4_11 -->
+
+- **Đã có sẵn để dùng**: `platform/macos.rs` đủ hàm, `fastcast_capture::macos::{has_screen_access, request_screen_access}`; thiếu quyền thì `overlay::report_capture_error` báo + mở System Settings đúng trang.
+- **Bẫy**: chưa có `.app` nên quyền ghi màn gắn theo tiến trình cha (terminal, app Claude). Soát lại C5, C6 của `gd4_11` khi có `.app`: tên fastcast phải hiện trong danh sách quyền; cấp xong có thể phải mở lại tiến trình.
+- **Nợ chuyển sang đây**: `NSMicrophoneUsageDescription` trong `Info.plist`; mục `[gd4_19 · ux P2] xin quyền micro` chưa làm, thử cùng lúc khi có `.app`. `LSUIElement` để không hiện Dock: bin thô đang là app thường.
+- **Soát lại khi làm**: `cargo test -p fastcast-ui` trên Mac chừng 3 phút, không treo; đo RAM bằng `footprint <pid>`. Số nền mục 9 của `gd4_11`.
+
 ## 0. Bàn giao từ gd4_10 (31/10/2026)
 
 <!-- handoff: gd4_10 -->

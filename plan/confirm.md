@@ -438,3 +438,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_09] Chép `setup.exe` vào `fastcast/dist/` (gitignore) sau khi gỡ worktree — bỏ cùng worktree — vì sao: để chủ dự án kiểm tay khỏi dựng lại.
 - [gd4_10] Giữ AppKit + khay, ghi C7 đỏ ở 7,7–7,9 MB, chờ chủ dự án chốt ngưỡng macOS — tách khay sang tiến trình riêng — vì sao: sàn `NSApplication` + khay đã 7,4 MB; tách là đổi kiến trúc F-4, ngoài phạm vi task.
 - [gd4_10] Daemon `exec` lại chính mình với `MallocSpaceEfficient=1`, UI con gỡ biến — đặt trong plist / `LSEnvironment` — vì sao: phủ cả chạy tay, LaunchAgent, `.app`; giảm ~3 MB.
+- [gd4_11] Để lỗi hai màn khác scale, chỉ log + backlog P1 — phương án khác: đổi hệ toạ độ ngay — vì sao: phải sửa cả `video`, ngoài làn, cần hai màn để thử.
+- [gd4_11] Hoãn xin quyền micro sang gd4_13 — phương án khác: làm trong UI ngay — vì sao: không thử được hộp thoại TCC trên máy đang dùng, chưa có `Info.plist`.
+- [gd4_11] Test Mac mở cửa sổ trong suốt, nổi, không bắt chuột (`FASTCAST_TEST_UNSEEN`) — phương án khác: cửa sổ thấy được, chiếm màn lúc chạy test — vì sao: GPUI không vẽ cửa sổ bị che, máy chỉ một màn đang dùng.

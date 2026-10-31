@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ✅ (31/10/2026) đã chạy trên Mac; C7 đỏ (7,7–7,9 MB, ngưỡng 5 MB) chờ chủ dự án chốt; khay, phím tắt, đăng nhập lại chờ kiểm tay |
+| Trạng thái | ✅ (31/10/2026) đã chạy trên Mac; C7 đỏ (6,6–6,8 MB, ngưỡng 5 MB), đã ép hết mức có thể khi còn khay; khay, phím tắt, đăng nhập lại chờ kiểm tay |
 | Máy | Viết + `cargo check --target aarch64-apple-darwin` được trên máy nhà; ✅ cuối cần chạy trên Mac |
 | Repo | fastcast |
 | Cỡ | M — ~450 dòng |
@@ -53,7 +53,7 @@ RAM nghỉ `phys_footprint` ≤ 5 MB: bản release, để yên ≥ 10 s.
 - C5b `[owner-qa]` ☐ Chờ kiểm tay: icon khay hiện, menu mở được, 6 phím tắt bắn lệnh.
 - C6a `[opus-run]` ✅ Exe rời: `fst autostart on` ghi plist hợp lệ (`plutil -lint`), `off` xoá tệp, không còn LaunchAgent sót.
 - C6b `[owner-qa]` ☐ Chờ kiểm tay: đăng nhập lại daemon lên sau độ trễ. Trong `.app` (sau gd4_13): `on` qua `SMAppService` hoặc dự phòng, không bật hai lần.
-- C7 `[opus-run]` ❌ **Đỏ.** RAM nghỉ `phys_footprint` 7,7–7,9 MB, ngưỡng ≤ 5 MB (`footprint <pid>`, release, ≥ 12 s, 4 lần). Sàn của khung hệ thống vượt ngưỡng: mục 9.
+- C7 `[opus-run]` ❌ **Đỏ.** RAM nghỉ `phys_footprint` 6,6–6,8 MB, ngưỡng ≤ 5 MB (`footprint <pid>`, release, 15 s, 3 lần). Sàn của khung hệ thống vượt ngưỡng: mục 9.
 
 ## 8. Nợ chuyển task khác
 
@@ -83,11 +83,14 @@ RAM nghỉ `phys_footprint` ≤ 5 MB: bản release, để yên ≥ 10 s.
 | + khay `tray-icon` (icon 16 hay 32 px như nhau) | 10 MB |
 | + khay, `MallocSpaceEfficient=1` | 7,4 MB |
 | `fst` trước khi sửa | 11 MB |
-| `fst` sau khi sửa | **7,7–7,9 MB** (đỉnh 8,1) |
+| `fst` chỉ `MallocSpaceEfficient` | 7,7–7,9 MB |
+| Khay + cả `MallocMaxMagazines=1` | 6,7 MB |
+| Chỉ AppKit, không khay, đủ cờ malloc | 4,4 MB |
+| `fst` sau cùng, hai cờ | **6,6–6,8 MB** |
 
-Riêng `fst` chỉ thêm ~0,5–1 MB, phần còn lại là AppKit + status item. `malloc_zone_pressure_relief` trả 0 byte, không giúp. Các số là một lần đo mỗi dòng trừ dòng cuối; chưa đo lúc máy rảnh hẳn (hai làn khác đang build). Không đạt 5 MB nếu còn dùng AppKit + khay: ngưỡng cần chủ dự án chốt riêng cho macOS (`plan/confirm.md`, `_backlog.md`).
+Riêng `fst` chỉ thêm ~0,5–1 MB, phần còn lại là AppKit + status item. `malloc_zone_pressure_relief` trả 0 byte, không giúp. Các số là một lần đo mỗi dòng trừ dòng cuối; chưa đo lúc máy rảnh hẳn (hai làn khác đang build). Thêm `MallocNanoZone=0` không giảm. Status item một mình tốn ~2,3 MB, sàn có khay 6,7 MB ⇒ không đạt 5 MB khi còn khay. Tách khay sang tiến trình riêng làm tổng RAM tăng, nên không làm. Ngưỡng ghi ở `plan/confirm.md`.
 
-**Sửa thêm ngoài danh sách tệp**: `main.rs`, `platform/mod.rs`, `ui_process.rs`. Nhánh daemon `exec` lại chính mình với `MallocSpaceEfficient=1` (`platform/macos.rs::prepare_daemon_process`, cùng pid, đã soát cả `--autostart --delay`); `ui_process.rs` gỡ biến này khỏi UI con. Fmt `clipboard.rs`.
+**Sửa thêm ngoài danh sách tệp**: `main.rs`, `platform/mod.rs`, `ui_process.rs`. Nhánh daemon `exec` lại chính mình với `MALLOC_ENV` = `MallocSpaceEfficient=1`, `MallocMaxMagazines=1` (`platform/macos.rs::prepare_daemon_process`, cùng pid, đã soát cả `--autostart --delay`); `ui_process.rs` gỡ hai biến này khỏi UI con. Fmt `clipboard.rs`.
 
 **Không kiểm được ở phiên này**: `osascript` + System Events hết giờ 12 s (chưa có quyền Automation / Accessibility, không tự cấp) ⇒ chưa giả lập được phím, chưa đọc được menu. Từ macOS 26 cửa sổ status item thuộc `Control Center`, liệt kê cửa sổ không xác nhận được khay; log không có `tray:` lỗi, chưa thấy tận mắt. Chưa bật `fastcast-ui` thật: exe chưa nằm cạnh `fst`, log báo `ui: cannot start`, đúng dự kiến. Lần thử đã tạo `config.json` mặc định trong `~/Library/Application Support/fastcast/`.
 

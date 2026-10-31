@@ -9,6 +9,8 @@ vào đây. Khung tệp task, trần ước lượng, nhãn phân vai, khuôn b�
 
 Phiên chính là **Opus**. Trả lời chủ dự án **gọn**, tiếng Việt, không tường thuật từng bước.
 
+**Lỗi phát sinh sửa ngay (D-11).** Gặp lỗi lúc làm ⇒ sửa trong lượt, không ghi backlog; backlog chỉ cho việc thiếu máy / dịch vụ trả phí / chờ kiểm tay.
+
 **Không hỏi, không dừng chờ (D-9).** Chủ dự án thường vắng máy ⇒ KHÔNG dùng `AskUserQuestion` ở bất kỳ bước nào. Chỗ
 nào dưới đây ghi "chọn" ⇒ tự chọn phương án tốt nhất, làm luôn, ghi lý do ở mục 9 của task + một gạch vào
 `plan/confirm.md` (`- [<task>] <việc> — <phương án khác> — <vì sao>`) để chủ dự án soát sau. Thiếu máy / dịch vụ trả

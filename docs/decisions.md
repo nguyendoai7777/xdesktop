@@ -17,6 +17,7 @@ Nguồn sự thật dùng chung giữa các máy (máy nhà Windows, máy công 
 | D-8 | **Đề xuất cải tiến chủ dự án xác nhận ⇒ làm ngay trong lượt**, không đưa về backlog. Backlog chỉ giữ việc không làm được trong lượt (thiếu máy / thiết bị, dịch vụ trả phí, chờ quyết định khác) kèm lý do. Quy trình: skill `run-task` mục 5. | 29/10/2026 |
 | D-9 | **Session không hỏi, không dừng chờ chủ dự án.** Dự án chưa cần xác nhận kỹ; chủ dự án thường vắng máy ⇒ mọi lựa chọn (câu hỏi mở của task, đề xuất mục 10, xung đột merge, task nào làm tiếp) Claude tự chọn phương án tốt nhất và làm luôn, ghi lý do ở mục 9 của task + `plan/confirm.md` để soát sau. Không thay luật cứng (giấy phép, dịch vụ trả phí, push, an toàn máy). Quy trình: skill `run-task`. | 30/10/2026 |
 | D-10 | **Nền khối nổi độ đục 0,75** (chủ dự án: "nền của các popover sẽ trong suốt tầm 75%", khoanh nhãn W × H và thanh công cụ trên overlay): popover, menu, select, thanh công cụ + nhãn + bảng lấy màu trên overlay dùng `cx.floating_surface()` (`materiant::style::FLOATING_SURFACE_ALPHA`), chữ theo theme. Dialog, toast giữ nền đặc. | 30/10/2026 |
+| D-11 | **Lỗi phát sinh sửa ngay, không đưa vào backlog** (chủ dự án: "các lỗi phát sinh fix ngay, không đưa vào backlog"). Gặp lỗi lúc đang làm ⇒ sửa trong lượt, kể cả ngoài làn nếu không đụng file làn khác đang mở. `plan/_backlog.md` chỉ nhận việc thật sự không làm được lúc đó: thiếu máy / thiết bị, dịch vụ trả phí, chờ chủ dự án kiểm tay. | 31/10/2026 |
 
 ## fastcast
 

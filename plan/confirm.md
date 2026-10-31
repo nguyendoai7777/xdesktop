@@ -114,9 +114,15 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd1_06] UI **ghi** `config.json` (chỉ khoá `launcher.position`, đọc lại file rồi ghi nguyên tử như `fst autostart`)
   — phương án khác: gửi IPC cho daemon ghi — vì sao: không thêm thông điệp IPC; daemon không giữ bản sao trong bộ nhớ để
   ghi đè. Đổi lại lựa chọn gd1_01 "UI chỉ đọc".
-- [gd1_06] Bấm `open_launcher` khi launcher đang hiện ⇒ ẩn (bật / tắt như Raycast); nhấp một dòng = chọn, nhấp đúp /
-  Enter = chạy — phương án khác: lệnh lặp đưa cửa sổ lên trước như tính năng khác; nhấp một lần là chạy — vì sao: giống
-  Raycast / Spotlight; nhấp một lần chạy dễ chạy nhầm khi chỉ định rê chuột.
+- [gd1_06] Bấm `open_launcher` khi launcher đang hiện ⇒ ẩn (bật / tắt như Raycast) — phương án khác: lệnh lặp đưa cửa sổ
+  lên trước như tính năng khác — vì sao: giống Raycast / Spotlight. **Cập nhật 31/10/2026, chủ dự án đổi ý**: nhấp một
+  dòng = chạy ngay (trước đây nhấp = chọn, nhấp đúp = chạy); rê chuột chỉ tô dòng, Enter giữ nguyên.
+- [launcher-hotkey-fix] Giữ phím mặc định mở launcher `Alt+Space` trên mọi máy — phương án khác: đổi sang `Ctrl+Space` như
+  chủ dự án tự gán — vì sao: `Ctrl+Space` toàn cục cướp gợi ý mã của VS Code và phím đổi bộ gõ, macOS cũng giữ tổ hợp này;
+  `Alt+Space` chỉ đụng app launcher khác (Raycast, PowerToys Run). Muốn đổi thì sửa `Command::default_hotkey`.
+- [launcher-hotkey-fix] Khối nổi đáy màn (thông báo, thanh quay) là viên thuốc nền trong suốt + bóng mờ; bảng quay xong nhiều hàng nút nên chỉ bo 16 px — phương án khác: acrylic thật — vì sao: acrylic phủ cả khung chữ nhật, lộ bốn góc. Nav Settings: có vạch ink, bỏ nền chọn và vòng focus (focus phím nhận biết qua vạch trượt).
+- [launcher-hotkey-fix] Chip `Alt` trên Windows / Linux ghi chữ, chỉ macOS vẽ ⌥; `Ctrl` vẫn vẽ ⌃ theo bộ icon F-11 —
+  phương án khác: đổi cả `Ctrl` sang chữ — vì sao: chỉ ⌥ gây đọc nhầm, chủ dự án đọc ⌃ đúng là Ctrl.
 - [gd1_06] Chân launcher chưa có "Ctrl+K Hành động" (khoá `launcher.actions` đã có trong catalog) — phương án khác: hiện
   sẵn như bố cục mục 7 — vì sao: Ctrl+K làm ở gd1_07, hiện nhãn mà bấm không gì xảy ra gây khó hiểu.
 - [gd1_02] UI đóng băng màn (không phải daemon), ngay khi nhận lệnh, trước khi gắn lại GPU — phương án khác: daemon chụp

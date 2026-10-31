@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ✅ mã — chờ chạy trên Mac (30/10/2026) |
+| Trạng thái | ✅ mã + phần không cần quyền chạy trên Mac (31/10/2026) — quay thật, OCR thật chờ chủ dự án (`_backlog.md`) |
 | Máy | Viết + `cargo check --target` được trên máy nhà; ✅ cuối cần chạy trên Mac |
 | Repo | fastcast |
 | Cỡ | M — ~790 dòng; âm thanh đã tách sang `gd4_19` |
@@ -42,12 +42,12 @@ Toàn bộ `[opus]` (FFI theo OS, đa luồng, hình học đa màn); phần ch�
 
 - C1 `[opus-run]` ✅ Cho master + mã này; khi `cargo check --locked --target aarch64-apple-darwin -p fastcast-video -p fastcast-ocr --all-targets` và clippy cùng target `-D warnings`; thì xanh.
 - C2 `[opus-unit]` ✅ `cargo test -p fastcast-video -p fastcast-ocr` trên Windows: `mac_portable` (validate, mã lỗi writer, `display_rect`, `source_rect`, `scaled_piece`, `blit_bgra`, `Part`), `bundle_models`; test Windows cũ vẫn xanh.
-- C3 `[owner-qa]` ☐ Trên Mac: `cargo test -p fastcast-video --test macos` (writer ra MP4 không cần quyền; âm báo `AudioUnavailable`).
-- C4 `[owner-qa]` ☐ Trên Mac: `cargo test -p fastcast-video --test macos -- --ignored`, quay vùng thật 3 s; tệp mở bằng QuickTime.
+- C3 `[opus-run]` ✅ Trên Mac: `cargo test -p fastcast-video --test macos` (writer ra MP4 không cần quyền; âm báo `AudioUnavailable`).
+- C4 `[owner-qa]` ☐ Trên Mac: `cargo test -p fastcast-video --test macos -- --ignored`, quay vùng thật 3 s; tệp mở bằng QuickTime. **Bị chặn: thiếu quyền Screen Recording** (31/10/2026).
 - C5 `[owner-qa]` ☐ Vùng vắt hai màn: ghép đúng chỗ, khe đen; rút màn giữa lúc quay ⇒ `DisplayChanged`, tệp vẫn còn.
-- C6 `[owner-qa]` ☐ Thiếu quyền Screen Recording: có hộp thoại OS, `Failed { CaptureLost }`, không treo.
-- C7 `[owner-qa]` ☐ OCR: `pwsh tools/fetch-ocr-models.ps1 -Vnocr <vnocr>/models -Out <đích>`, `ocr_bench`, OCR tiếng Việt, `FASTCAST_OCR_MODELS` và `Contents/Resources/models`.
-- C8 `[owner-qa]` ☐ Đo 720p30 trên Mac: CPU, RAM (`footprint`), so với 3,9 % / 26,7 MB của Windows.
+- C6 `[owner-qa]` ☐ Thiếu quyền Screen Recording: có hộp thoại OS, `Failed { CaptureLost }`, không treo. Phần chạy được: `Failed { CaptureLost }`, thoát sau ~3 s, không treo. Hộp thoại OS chưa xác nhận (test chạy không người nhìn).
+- C7 `[owner-qa]` ☐ OCR: `pwsh tools/fetch-ocr-models.ps1 -Vnocr <vnocr>/models -Out <đích>`, `ocr_bench`, OCR tiếng Việt, `FASTCAST_OCR_MODELS` và `Contents/Resources/models`. **Bị chặn: máy không có model.** Phần chạy được: dylib nạp được, thiếu model ra `ModelMissing`.
+- C8 `[owner-qa]` ☐ Đo 720p30 trên Mac: CPU, RAM (`footprint`), so với 3,9 % / 26,7 MB của Windows. **Chưa đo: cần quyền Screen Recording.**
 - Quay kèm tiếng: chuyển sang gd4_19.
 
 ## 8. Nợ chuyển task khác
@@ -59,7 +59,14 @@ Toàn bộ `[opus]` (FFI theo OS, đa luồng, hình học đa màn); phần ch�
 
 ## 9. Bàn giao thực tế
 
-- **Chưa chạy dòng nào trên Mac.** Chỉ biên dịch chéo + test hàm thuần trên Windows; các giả định về hành vi ScreenCaptureKit, AVAssetWriter chờ C3–C8.
+- **Chạy trên Mac 31/10/2026 (Apple M5 Pro, một màn Retina):** `cargo test -p fastcast-video -p fastcast-ocr` xanh (video lib 39, macos 2 pass + 3 ignored; ocr 46 + 1 + 17 + 6), clippy `--workspace --all-targets -D warnings` xanh, `cargo deny check licenses` ok. Không có lỗi mã nào lộ ra ở phần chạy được; quay thật chưa chạy nên hành vi ScreenCaptureKit vẫn là giả định.
+- `AVURLAsset` (script Swift một lần) đọc tệp của `Writer`: `isPlayable` true, H.264 640×360, 1,0 s. Tệp thử dùng khung tổng hợp, đã xoá.
+- **Bị chặn, không báo đạt:** C4, C5, C6 (hộp thoại), C8 cần Screen Recording: `--ignored` cả 3 ca ra `Failed { CaptureLost }`. Không tự đổi cài đặt hệ thống (D-9, luật làn). C5 còn cần màn thứ hai.
+- **OCR, C7:** `ocr_bench` chưa chạy. Máy không có `.onnx` nào: `xbds-workspace/xsys/ocr/core/models` chỉ có sổ và script xuất, Docker daemon không chạy. Không xuất lại từ Hugging Face vì đó không phải nguồn `fetch-ocr-models.ps1` ghi, và nặng. Máy cũng thiếu ảnh đo: `gen-bench.ps1` dùng GDI+, chỉ chạy trên Windows.
+- **Dylib (cho gd4_13):** `onnxruntime-osx-arm64-1.31.1.tgz` khớp sha `2e1344a1…896d6f` của script. `libonnxruntime.dylib` arm64 1.31.1 sha256 `17500d6b1e37e70f43a2c57d94233a1bc29fbcb297be0a5f8c7c13184f3307ba`, 44.797.256 byte, ký adhoc. `dlopen` + `OrtGetApiBase` qua ctypes trả `1.31.1`; `ort::init_from` chưa chạy vì `Engine::load` soát model trước. Thư mục dựng dở (dylib, giấy phép, sổ, chưa có `onnx/`): `fastcast/target/ocr-models`.
+- Test: `tests/macos.rs` thêm `tracks` đọc `moov/trak/mdia`, soát track và độ dài thay vì tìm chuỗi `soun` (máy không có `ffprobe`).
+- Máy thiếu `pwsh` nên các bước của `fetch-ocr-models.ps1` làm bằng shell; nhánh macOS của chính script vẫn chưa chạy.
+- Trên Windows (30/10/2026): biên dịch chéo + test hàm thuần.
 - Soát trên Windows: `cargo check --locked --target aarch64-apple-darwin -p fastcast-video -p fastcast-ocr --all-targets` xanh, clippy hai target `-D warnings` xanh, `cargo test -p fastcast-video -p fastcast-ocr -- --test-threads=4` xanh (lib video 50, encoder 15, session 10; ocr 44 + 1 + 17 + 6), `cargo deny check licenses` ok. Số test `crates/video/tests/macos.rs` trên Windows là 0 vì chỉ biên dịch cho Mac.
 - Tách trước khi code (Opus chọn 30/10/2026): ước lượng lại ~1.210 dòng, vượt trần 900 ⇒ âm thanh sang `gd4_19_macos-audio`. Thực tế: 781 dòng không tính dòng trống + comment + test (~950 dòng thô).
 - Phụ thuộc: 8 crate `objc2-*`, `block2`, `dispatch2` trong khối macOS (vượt trần 2 crate của khung, task đã liệt kê sẵn ba cái, phần còn lại là cùng họ; chỉ `objc2-screen-capture-kit` là mới với lock). Không vào Windows, daemon.

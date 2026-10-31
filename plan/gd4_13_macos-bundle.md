@@ -11,6 +11,17 @@
 | Phụ thuộc mới | — |
 | File đụng tới | MỚI `installer/macos/Info.plist`, `installer/macos/entitlements.plist`, `tools/build-macos.sh` |
 
+## 0. Bàn giao từ gd4_12, gd4_19 (31/10/2026)
+
+<!-- handoff: gd4_12 -->
+<!-- handoff: gd4_19 -->
+
+- **Đã có sẵn để dùng**: `libonnxruntime.dylib` arm64 1.31.1, sha256 `17500d6b1e37e70f43a2c57d94233a1bc29fbcb297be0a5f8c7c13184f3307ba`. Gói nguồn và sha gói ở `tools/fetch-ocr-models.ps1`. Thêm mục `[[runtime]]` `os = "macos"` vào `spikes/ocr/results/manifest.int8-mix.toml`, không thì `check_runtime` chỉ cảnh báo, không chặn dylib lạ.
+- **Đã có sẵn để dùng**: `fastcast/target/ocr-models` có dylib, `onnxruntime-licenses/`, `manifest.toml`; thiếu `onnx/`.
+- **Bẫy**: máy không có `pwsh`; `tools/build-macos.sh` không nên gọi `fetch-ocr-models.ps1`. Dylib đang ký adhoc, ký lại cùng `.app`. Trong gói có bản `.dSYM` lớn và nhiều tên dylib: chỉ lấy `lib/libonnxruntime.dylib`.
+- **Bẫy**: Mac này không có `.onnx`; dựng `.app` có OCR cần chép `onnx/` từ máy Windows (`_backlog.md`, gạch gd4_12).
+- **Soát lại khi làm**: quay thật và OCR thật chưa chạy lần nào trên Mac, có thể lộ lỗi ở `crates/video`. `FASTCAST_OCR_MODELS` chỉ hiệu lực với `dev-env`, bản thật đi `Contents/Resources/models` (`crates/ocr/src/main.rs::bundle_models`, mới có unit test).
+
 ## 0. Bàn giao từ gd4_06 (30/10/2026)
 
 <!-- handoff: gd4_06 -->

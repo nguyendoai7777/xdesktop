@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Trạng thái | ✅ mã — chờ chạy trên Mac (30/10/2026) |
+| Trạng thái | ✅ mã + phần không cần quyền chạy trên Mac (31/10/2026) — tiếng thật chờ chủ dự án (`_backlog.md`) |
 | Máy | Viết + `cargo check --target` được trên máy nhà; ✅ cuối cần chạy trên Mac |
 | Repo | fastcast |
 | Cỡ | M — ~420 dòng |
@@ -46,16 +46,19 @@ Sửa nhánh Windows. Trộn âm hệ thống với micro (F-7 chỉ chọn mộ
 |---|---|---|---|
 | C1 | Máy Windows / soát / `cargo check --locked --target aarch64-apple-darwin -p fastcast-video`, clippy target đó, `cargo test -p fastcast-video` xanh | [opus-run] | ✅ |
 | C2 | Định dạng PCM thật / đọc ASBD, xen kẽ, căn `pts`, lấp im lặng, trần RAM / đúng hợp đồng | [opus-unit] `portable.rs` | ✅ (chạy trên Windows) |
-| C3 | Mac / `writer_muxes_aac_without_any_permission` / tệp có track `soun` | [owner-qa] | chờ Mac |
-| C4 | Mac, có quyền / `records_system_audio`, `records_microphone` (`--ignored`) / `Finished`, có track âm | [owner-qa] | chờ Mac |
-| C5 | Mac / quay kèm âm hệ thống, kèm micro, mở QuickTime / tiếng khớp hình | [owner-qa] | chờ Mac |
-| C6 | Mac / từ chối quyền micro / `Failed { AudioUnavailable }`, không sót `.part` | [owner-qa] | chờ Mac |
+| C3 | Mac / `writer_muxes_aac_without_any_permission` / tệp có track `soun` | [opus-run] | ✅ 31/10/2026: AAC 48 kHz, 2 kênh, 1,0 s, video 1,0 s |
+| C4 | Mac, có quyền / `records_system_audio`, `records_microphone` (`--ignored`) / `Finished`, có track âm | [owner-qa] | bị chặn: thiếu Screen Recording |
+| C5 | Mac / quay kèm âm hệ thống, kèm micro, mở QuickTime / tiếng khớp hình | [owner-qa] | bị chặn: thiếu Screen Recording |
+| C6 | Mac / từ chối quyền micro / `Failed { AudioUnavailable }`, không sót `.part` | [owner-qa] | bị chặn: `check_permission` của màn dừng trước khi tới micro |
 
 ## 8. Nợ chuyển task khác
 
 ## 9. Bàn giao thực tế
 
-**Chưa chạy dòng nào trên Mac**: mã mới qua biên dịch chéo, clippy và test hàm thuần. Bước chạy: `plan/_backlog.md`.
+**Chạy trên Mac 31/10/2026:** C3 xanh, tức `AVAssetWriterInput` nhận các khoá chuỗi `AV*Key` và `close_audio` lấp im lặng tới hết video (`afinfo`: AAC 48 kHz, 2 kênh, 1,0 s; `AVURLAsset`: `isPlayable` true, track `vide` + `soun`). Bitrate đo 36 kbps vì đoạn thử phần lớn im, không phải số của tiếng thật.
+
+**Chưa kiểm, cần quyền:** `SCStream` 2 × 2 có giao âm không, đồng hồ `AVCaptureSession`, log `rec: audio clock`, khớp hình, từ chối micro. Bước chạy: `plan/_backlog.md`. Ca `records_*` nay soát cả độ dài `vide`, `soun`.
+
 
 - `macos/audio.rs`: `System` = `SCStream` riêng (2 × 2, 1 fps, 48 kHz, stereo, bỏ âm của chính tiến trình); `Mic` = `AVCaptureSession`, định dạng đọc lại từ từng `CMSampleBuffer`. Đổi về `AudioPacket` bằng `Converter`, `PacketClock` có sẵn.
 - `writer.rs`: track AAC 128 kbps; `write_audio` chỉ xếp hàng (`AudioQueue`), `pump_audio` đưa cho input khi còn chỗ, âm trễ > 200 ms thành im lặng, `close_audio` lấp tới hết video.

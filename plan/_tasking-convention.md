@@ -130,6 +130,11 @@ Theo `CLAUDE.md` gốc: mỗi repo bị sửa một worktree `claude/<task>`, đ
 `branch -d`. Có xung đột thì dừng hỏi. Task chỉ sửa plan / tài liệu ⇒ làm thẳng `master` của repo gốc, commit theo
 đường dẫn.
 
+**Kéo remote không sinh commit `Merge…` (D-12)**: `git pull --rebase` (repo con: `git -C <repo> pull --rebase`), không có
+commit mới thì `git pull --ff-only`. Chỉ rebase commit chưa push; commit đã push thì không rebase, không force push. Xung
+đột: sửa tệp → `git add` → `git rebase --continue`, không xong thì `git rebase --abort`. Không rebase repo đang có session
+khác ghi vào. Merge commit của `merge --no-ff claude/<task>` vẫn giữ: nó đánh dấu ranh giới task, không phải commit rác.
+
 ## 8. Phân vai Opus ↔ Sonnet
 
 Opus (session chính) bàn với chủ dự án, viết plan, **tự code phần khó**, giao Sonnet phần đã đặc tả kỹ, đọc diff + log

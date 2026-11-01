@@ -7,6 +7,17 @@ khác> — <vì sao chọn>`. Chủ dự án đọc: đồng ý ⇒ xoá gạch 
 
 Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Write` cả tệp — nhiều session cùng ghi).
 
+## Kéo hình + dán vào overlay (01/11/2026)
+
+- [ink-move-paste] "Viewport" là vùng đang chọn — phương án khác: cả màn overlay — vì sao: chú thích bị cắt theo vùng, ngoài vùng không thấy và không vào ảnh xuất.
+- [ink-move-paste] Không bật công cụ thì nhấn trúng nét là kéo hình, đang bật công cụ thì Alt + kéo — phương án khác: thêm nút công cụ "Chọn" riêng — vì sao: không thêm nút, không phải tắt công cụ mỗi lần; Alt + kéo có thể bị trình quản lý cửa sổ trên vài bản Linux giành mất.
+- [ink-move-paste] Tay nắm vùng thắng hình, hình thắng thân vùng; chữ nhật, elip chỉ trúng ở nét, ảnh + chữ trúng cả khối — phương án khác: trúng cả phần rỗng — vì sao: hình to phủ hết vùng thì không còn chỗ kéo vùng.
+- [ink-move-paste] Con trỏ kéo bị kẹp trong vùng, hình có thể thò ra ngoài một phần; Shift khoá trục; thứ tự chồng không đổi khi kéo — phương án khác: kẹp cả hình trong vùng, kéo là đưa lên trên cùng — vì sao: hình lớn hơn vùng không kẹp được; đưa lên trên làm undo phải nhớ thêm thứ tự.
+- [ink-move-paste] Dán: góc trên trái tại con trỏ (chữ: con trỏ giữa dòng đầu như ô soạn), không lọt thì lùi vào trong; con trỏ ngoài vùng thì giữa vùng; chưa có vùng thì bỏ qua — phương án khác: tâm mục dán tại con trỏ, ngoài vùng thì bỏ qua — vì sao: khớp cách đặt chữ đang có; đang chọn vùng mà bấm dán không nên mất việc.
+- [ink-move-paste] Clipboard có cả chữ lẫn ảnh thì lấy chữ, tệp ảnh chép từ Explorer cũng dán được, SVG thì bỏ — phương án khác: ưu tiên ảnh — vì sao: Excel, Word chép chữ kèm ảnh của chính nó; chép ảnh thật gần như không kèm chữ.
+- [ink-move-paste] Ảnh to hơn vùng thu lại vừa vùng lúc dán, ảnh chỉ một bản trong RAM ở cỡ đã thu; chưa có tay nắm đổi cỡ ảnh — phương án khác: giữ nguyên cỡ, cắt theo vùng — vì sao: không có cách đổi cỡ thì ảnh to chỉ thấy một góc. Thu xong phóng vùng ra thì ảnh không to lại.
+- [ink-move-paste] Chữ dán cắt ở 16 KB / 200 dòng, có báo — phương án khác: không giới hạn — vì sao: chữ vẽ lại từng dòng mỗi khung.
+
 ## Điều phối (session cha, 30/10/2026)
 
 - [điều phối] Session con không hỏi chủ dự án nữa (`AskUserQuestion`): tự chọn phương án khuyên dùng + tự chọn đề xuất

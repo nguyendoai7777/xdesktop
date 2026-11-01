@@ -151,3 +151,4 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - Agent riêng cho Rust (kiểu `be-builder` / `ui-builder` của xbds) — hiện run-task giao `general-purpose` + `model:
   sonnet`; viết agent khi thấy lời giao lặp lại.
 - Hook `Stop` nhắc bàn giao (kiểu `tools/handoff-check.sh` của xbds) — chưa chuyển.
+- Lịch sử clipboard trên macOS, Linux: cần máy thử (`watch_clipboard` đang là stub).

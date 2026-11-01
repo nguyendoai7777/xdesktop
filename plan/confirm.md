@@ -494,3 +494,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [ui-refcell-log] Soi `dismiss` từ luồng nền qua `DismissTarget` — đổi `WindowFromPoint` thành so toạ độ cửa sổ — vì sao: giữ nguyên cách OS phân xử cửa sổ, kể cả cửa sổ IME; `tray_menu` mới gộp dùng chung.
 - [ui-refcell-log] Không sửa `record/frame.rs::center_hits_self` — chuyển luồng nền — vì sao: chỉ chạy một lần ở màn giả để test đọc, không có ở đường dùng thật.
 - [ui-refcell-log] Worktree đặt trong thư mục phiên thay vì `.claude/worktrees/fastcast-<task>` — đúng quy ước — vì sao: hook của phiên chặn ghi ra ngoài worktree phiên; đã gỡ sau khi gộp.
+- [ink-resize-clip] Lịch sử clipboard lưu trên đĩa không mã hoá, mặc định bật, tắt được trong Cài đặt — mặc định tắt / mã hoá — vì sao: cần có sẵn như Raycast; tệp và nội dung app đánh dấu nhạy cảm không bao giờ được lưu.
+- [ink-resize-clip] Chỉ Windows thu clipboard, macOS / Linux lịch sử rỗng — làm cả ba — vì sao: không có máy thử trong lượt này.
+- [ink-resize-clip] Plugin: mô-đun biên dịch sẵn sau `features.rs`, chưa cài / xoá — nạp DLL / tiến trình con — vì sao: `fastcast/docs/plugin-evaluation.md`, số thêm là ước lượng.
+- [ink-resize-clip] Dán từ bảng đặt giữa vùng; ảnh Shift bỏ giữ tỉ lệ, hình khác Shift giữ tỉ lệ — vì sao: con trỏ đang nằm trên bảng; ảnh thường cần giữ tỉ lệ.

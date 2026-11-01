@@ -63,6 +63,10 @@ bash build.sh      # macOS / Ubuntu
 `-f` / `--force`: biên dịch lại mã của ta, giữ thư viện đã build. Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `release/fastcast/<target>/` (gitignore); macOS ra `Fastcast.app` + `.dmg` (thiếu model / `pwsh` thì bản `-draft`); Windows x64 phổ thông thêm bản cài NSIS cạnh đó.
 Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`.
 
+## Dọn dung lượng
+
+`pwsh ./clean.ps1` / `bash clean.sh`: xoá phần build sinh ra, giữ model OCR ở `fastcast/target/release/models` và cache build release (`-All` / `--all` xoá luôn). Không chạy lúc có session đang build.
+
 ## Đánh tag
 
 `bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. Nâng materiant thì fastcast có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
@@ -80,4 +84,4 @@ Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -
 Làm trong worktree `claude/<task>` (đặt ở `.claude/worktrees/<repo>-<task>` của repo gốc) là chuyện của Claude; chủ dự
 án chỉ nhìn `master`. Hết task: kiểm xanh (`cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
 `cargo deny check licenses`) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → gỡ
-worktree rồi `branch -d`. Có xung đột thì dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.
+worktree, `branch -d`, xoá thư mục build (`CARGO_TARGET_DIR`) của task. Có xung đột thì dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.

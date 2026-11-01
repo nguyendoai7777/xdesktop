@@ -116,7 +116,7 @@ quyết định D-* / F-* đã chốt.
    `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Gộp
    `master` vào nhánh trước khi merge; xung đột ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau), soát xanh lại,
    ghi mục 9. Gỡ worktree từ shell đang đứng TRONG nó (Windows) ⇒ "Permission denied", git vẫn gỡ đăng ký nhưng
-   để lại thư mục rỗng: `cd` ra gốc trước, sót thì `git worktree prune` + xoá thư mục. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
+   để lại thư mục rỗng: `cd` ra gốc trước, sót thì `git worktree prune` + xoá thư mục. Gỡ worktree xong xoá luôn `CARGO_TARGET_DIR` của task: mỗi thư mục build 8–20 GB, không ai dùng lại. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
 4. Commit plan ở repo gốc theo đường dẫn: `git commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<các task nhận>
    plan/_backlog.md` (+ `docs/decisions.md` nếu có quyết định mới; lộ trình repo commit ở repo đó).
 

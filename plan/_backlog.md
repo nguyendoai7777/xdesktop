@@ -133,7 +133,6 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
 - **[materiant-gd5_01] Kiểm tay Slider** (lý do: chuột thật + trình đọc màn hình không giả lập được): `pwsh start.ps1 docs slider`; kéo thanh tua, nhãn giây vẫn chạy mà thumb bám tay; NVDA / Narrator tăng / giảm được giá trị và giá trị giữ nguyên.
-- **[materiant-gd5_02] Kiểm tay Progress** (lý do: ảnh tĩnh không soát được độ mượt): `pwsh start.ps1 docs progress`; thanh và vòng không xác định chạy mượt, không giật ở chỗ lặp chu kỳ.
 
 ### GĐ1 — port component (đóng 30/10/2026, `completed/materiant/gd1/`)
 

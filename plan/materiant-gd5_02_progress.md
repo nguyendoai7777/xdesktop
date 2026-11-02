@@ -29,7 +29,7 @@ Toàn bộ `[opus]`: một module + một trang, hình học và keyframe gắn 
 - C4 — Cho thanh không xác định, thì hai vạch luôn trong track và ra ngoài track ở đầu / cuối chu kỳ. `[opus-unit]` ✅
 - C5 — Cho dạng xác định, bị cắt khỏi vùng nhìn, hoặc đã gỡ khỏi cây, thì không xin khung. `ui-tests/tests/progress.rs` ✅
 - C6 — Trang `progress` đúng sáng / tối; bấm Hide thì `FRAMES` dừng. `[opus-run]` ✅
-- C7 — Vòng và thanh nhìn mượt khi chạy liên tục (ảnh tĩnh không soát được chuyển động). `[owner-qa]`: `pwsh start.ps1 docs progress`.
+- C7 — Vòng và thanh nhìn mượt khi chạy liên tục (ảnh tĩnh không soát được chuyển động). `[owner-qa]` ✅ (chủ dự án xác nhận 02/11/2026)
 
 ## 9. Bàn giao thực tế
 - API: `materiant::progress::{ProgressBar, ProgressCircular}`; `.value(0..=1)` (không gọi = không xác định), `.tone(Accent)`; thanh có `.stroke_width(px)`, `.rtl()`; vòng có `.scale(f)` trên cỡ gốc 64 px. Thanh rộng theo khung cha.
@@ -40,7 +40,7 @@ Toàn bộ `[opus]`: một module + một trang, hình học và keyframe gắn 
 - Đo (`--page progress`, bản release, màn 144 Hz): 144 fps, RAM 18,5 MB. Bấm Hide: `FRAMES` dừng sau khi ripple của nút tan, im suốt 3 s chờ. Dạng xác định không xin khung (test).
 - Soát trên nhánh sau khi gộp `master`: build, clippy, test, `deny check licenses` xanh; `cargo tree -i gpui-component` không có gói.
 - Thêm tệp ngoài bảng "File đụng tới": `ui-tests/tests/progress.rs` (đúng luật test UI của `materiant/CLAUDE.md`).
-- Chờ kiểm tay: C7. Lăng kính run-task: bảo mật không áp; UI/UX, RAM đã xử lý như trên; bàn phím không áp (không tương tác).
+- C7 chủ dự án đã kiểm: chạy mượt. Lăng kính run-task: bảo mật không áp; UI/UX, RAM đã xử lý như trên; bàn phím không áp (không tương tác).
 - Không có task nào phụ thuộc task này ⇒ không có khối bàn giao.
 
 ## 10. Đề xuất cải tiến

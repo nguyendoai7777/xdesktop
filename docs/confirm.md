@@ -63,3 +63,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_16 OCR] CER Linux đo trên bộ ảnh vẽ lại bằng font Linux (`spikes/ocr/linux-bench`, resvg) — dựng lại GDI+ của `gen-bench.ps1` — Linux không có GDI+; số không so 1:1 với 2,45 % của Windows.
 
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.
+
+## Thanh cuộn sát mép (02/11/2026)
+
+- [scrollbar-edge] Thêm `padding_x` cho `ScrollArea` và `VirtualList` (như `VirtualGrid`): padding ngang nằm trong vùng cuộn, thumb bám mép bề mặt (cách viền 3 px) — vá từng chỗ bằng `pr`/`px` ở app — một API chung cho mọi bề mặt có padding; mặc định 0 nên chỗ khác không đổi.
+- [scrollbar-edge] Select / menu của materiant, launcher, lịch sử clipboard dời padding ngang 4 / 8 px vào vùng cuộn ⇒ thumb nằm trong dải padding, phủ đầu phải nền dòng chọn 1–5 px — giữ thumb nằm hẳn trên dòng (cách viền 7–11 px như cũ) — chủ dự án muốn thanh gần mép, cân đối; dropdown của web cũng phủ như vậy.
+- [scrollbar-edge] Bảng OCR: vùng cuộn tràn ra padding panel bằng `mx(-PAD)` + `padding_x(PAD)` — đổi panel sang `py` rồi thêm `px` cho từng con — chỉ chạm dòng `ScrollArea`, tránh đụng phần bố cục session OCR khác đang sửa.

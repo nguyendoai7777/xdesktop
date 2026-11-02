@@ -56,5 +56,10 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_17] Gỡ gói xoá autostart của người dùng ngay ở `postrm` (chỉ tệp có `Exec` trỏ `/opt/fastcast/`), không đợi "lúc chạy kế" — để lại tệp mồ côi — tệp gói đã mất thì không còn mã nào chạy để xoá.
 - [gd4_17] `Depends` lấy từ `dpkg-shlibdeps` + `libwayland-client0`, `libwayland-egl1`, `libegl1` (nạp lúc chạy) — chỉ thư viện ELF khai — ELF không khai thư viện nạp bằng `dlopen`; `Recommends` encoder / driver VA.
 - [gd4_17] Bản `.deb` chỉ dựng được `-draft` tới khi sổ model có `libonnxruntime.so` Linux — tự tải một bản ONNX Runtime và ghi sha — không tự nhận thư viện lạ vào sổ.
+  - [gd4_16 OCR, 02/11/2026] Đã ghi sổ: `onnxruntime-linux-x64-1.31.1.tgz` tải với đồng ý của chủ dự án, sha tệp nén khớp GitHub, `.so` nạp chạy được.
+- [gd4_16 OCR] `build.sh` (Linux) tự chạy `fetch-ocr-models.sh` (tải ONNX Runtime khi thiếu, sha ghim trong script) và `cargo install cargo-about` khi thiếu — chỉ báo thiếu rồi ra `-draft` như cũ — chủ dự án muốn dựng OCR tự động như Windows; không sudo, tải từ nguồn ghim sha.
+- [gd4_16 OCR] Trang giấy phép trên Linux bằng `tools/gen-licenses.sh` (bash + `python3`) — cài `pwsh` (snap) — Ubuntu có sẵn `python3`, khỏi thêm công cụ; vẫn cần `cargo-about`.
+- [gd4_16 OCR] `fastcast-ocr` không thấy `models/` cạnh exe thì mượn `/opt/fastcast/models` của bản cài — chỉ cạnh exe — exe build tay chạy được OCR mà không chép 260 MB model; sha vẫn soát theo sổ.
+- [gd4_16 OCR] CER Linux đo trên bộ ảnh vẽ lại bằng font Linux (`spikes/ocr/linux-bench`, resvg) — dựng lại GDI+ của `gen-bench.ps1` — Linux không có GDI+; số không so 1:1 với 2,45 % của Windows.
 
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.

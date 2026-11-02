@@ -220,8 +220,19 @@ if [ "$os" = linux ]; then
   package=(--skip-build --arch "$arch" --out "$out" --release-dir "$release")
   models=""
   if [ -d "$target_dir/release/models/onnx" ] && [ "$arch" = "$host_arch" ]; then models="$target_dir/release/models"; fi
+  # Tự dựng nốt phần OCR: model đã giải nén (export-ocr) thì soát sổ + tải ONNX Runtime chính thức nếu thiếu (sha256 ghim
+  # trong script); hỏng thì vẫn ra bản `-draft` thay vì dừng.
+  if [ -n "$models" ] && [ "$arch" = x64 ]; then
+    bash "$repo/tools/fetch-ocr-models.sh" --out "$models" || echo "⚠ Không dựng xong model OCR, gói sẽ là bản -draft." >&2
+  fi
+  # Trang giấy phép cần cargo-about: thiếu thì cài vào ~/.cargo (không sudo, vài phút lần đầu).
+  if ! command -v cargo-about >/dev/null 2>&1; then
+    echo "==> Cài cargo-about (trang giấy phép)"
+    cargo install cargo-about --locked --features cli || echo "⚠ Cài cargo-about không xong." >&2
+  fi
   [ -z "$models" ] || package+=(--models "$models")
-  if [ -z "$models" ] || ! command -v pwsh >/dev/null 2>&1 || ! command -v cargo-about >/dev/null 2>&1; then
+  if [ -z "$models" ] || ! command -v cargo-about >/dev/null 2>&1 \
+    || ! { command -v pwsh >/dev/null 2>&1 || command -v python3 >/dev/null 2>&1; }; then
     package+=(--draft)
   fi
   bash "$repo/tools/build-deb.sh" "${package[@]}"

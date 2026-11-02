@@ -38,4 +38,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_15] Font giao diện theo `fc-match sans-serif` (tiến trình con lúc khởi động, máy này ra Noto Sans) — đọc `font-name` của GNOME (Ubuntu Sans) — fontconfig chạy được ngoài GNOME.
 - [gd4_14] App id `com.fastcast.app`, đổi tệp autostart thành `com.fastcast.app.desktop`, daemon tự ghi `.desktop` ẩn khi chạy rời — giữ `fastcast.desktop`, chờ gói `.deb` — portal cần `.desktop` theo id, scope của GNOME lấy id từ tên tệp.
 - [gd4_14] Clipboard trên GNOME đi X11 qua Xwayland, không có Xwayland thì chép báo lỗi — tự viết đường khác — Mutter 50 không có data-control.
+- [gd4_16] Quay Linux gọi tiến trình con `gst-launch-1.0`, cả âm trong đó, không `cpal` — link GStreamer / thu âm riêng — D-2 cấm link khi chưa hỏi, chung đồng hồ khỏi tự canh tiếng khớp hình. Không tách `gd4_20`.
+- [gd4_16] `mp4mux` ghi theo mảnh 2 s — `moov` cuối tệp — giết cứng chỉ mất đoạn cuối; chưa soát mở trên Media Player, QuickTime, không hợp thì bỏ một tham số.
+- [gd4_16] Dùng portal của gd4_15, thêm `open_session_with`, `watch_closed` vào `capture/src/portal.rs`; chưa có token thì `fastcast-rec` hiện hộp thoại — báo thiếu quyền như `freeze` — quay đã qua overlay nên hiếm gặp, bấm dừng vẫn thoát được.
+- [gd4_16] Đóng hộp thoại chọn màn báo `PermissionDenied`, tệp đứng 8 s báo `CaptureLost` — thêm mã lỗi mới — làn không được sửa `core`, `i18n`.
+
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.

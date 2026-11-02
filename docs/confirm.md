@@ -32,6 +32,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd0_07] Chụp đóng băng Linux bằng `ScreenCast` + token — portal `Screenshot` — Screenshot nháy + kêu trên GNOME gốc và ghi ảnh vào Pictures.
 - [gd0_07] Vá `gpui-pre-linux` để fullscreen đúng màn — đổi nền UI — bản vá 7 dòng, D-6 giữ nguyên.
 - [gd0_07] Gán phím trên Linux đi qua hộp thoại hệ thống, lệch F-2 — ghi thẳng dconf — dconf là bố cục nội bộ của GNOME.
+  - [hotkey-override, 02/11/2026] Bỏ hướng "không ghi dconf" trên GNOME: `custom-keybindings` là schema công khai, gán phím có hiệu lực ngay và ghi đè được — phương án khác: giữ portal + hộp thoại.
 - [gd4_15] Giữ `ScreenCast` dù ảnh đóng băng dính chip cam "đang chia sẻ màn" ở góc trên phải thanh GNOME — đổi sang `Screenshot` (không chip, nhưng nháy + kêu, ghi tạm vào Pictures) — chốt của gd0_07 giữ nguyên; **cần chủ dự án chọn**, chip lọt vào ảnh khi vùng chọn chạm góc đó.
 - [gd4_15] Thêm `Message::ActivationToken` trong `crates/core`, ngoài danh sách tệp của task — chỉ dùng biến môi trường lúc bật UI — UI đang giữ ấm không nhận được biến môi trường, gd4_14 phải gửi trước `Run`.
 - [gd4_15] Cấp quyền xong bấm lại phím tắt — tự chụp ngay sau hộp thoại — tự chụp dễ dính cửa sổ làm quen vào ảnh.

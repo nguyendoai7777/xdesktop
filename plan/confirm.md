@@ -498,3 +498,7 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [ink-resize-clip] Chỉ Windows thu clipboard, macOS / Linux lịch sử rỗng — làm cả ba — vì sao: không có máy thử trong lượt này.
 - [ink-resize-clip] Plugin: mô-đun biên dịch sẵn sau `features.rs`, chưa cài / xoá — nạp DLL / tiến trình con — vì sao: `fastcast/docs/plugin-evaluation.md`, số thêm là ước lượng.
 - [ink-resize-clip] Dán từ bảng đặt giữa vùng; ảnh Shift bỏ giữ tỉ lệ, hình khác Shift giữ tỉ lệ — vì sao: con trỏ đang nằm trên bảng; ảnh thường cần giữ tỉ lệ.
+- [shape-bar] Ảnh dán không có thanh chỉnh kiểu — hiện thanh rỗng — vì sao: ảnh không có màu, cỡ nét; thu / phóng vẫn bằng tay nắm.
+- [shape-bar] Kéo trong bảng màu (các lần đổi cách nhau dưới 300 ms) gộp thành một bước hoàn tác, bấm từng màu là từng bước — mỗi sự kiện một bước — vì sao: kéo bắn hàng chục sự kiện, hoàn tác từng cái vô nghĩa.
+- [shape-bar] Đổi cỡ, kiểu chữ giữ nguyên chỗ xuống dòng cũ, lùi góc chữ để lọt vùng — xuống dòng lại — vì sao: dòng đã chốt lúc gõ; chữ to hơn vùng thì phần tràn bị cắt như khi xuất.
+- [shape-bar] Phím `[` `]` và con lăn vẫn chỉ đổi cỡ của công cụ, không đổi hình đang chọn — áp cho hình — vì sao: yêu cầu chỉ nói thanh nổi.

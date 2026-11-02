@@ -24,7 +24,7 @@ Mỗi app một thư mục plan trong repo của nó (D-7, đổi 02/11/2026). T
 - Lộ trình + bảng task từng giai đoạn của một app nằm ở **repo của app**: `fastcast/ROADMAP.md`. Bảng chỉ có tên tệp +
   một dòng mô tả + phụ thuộc; chi tiết và trạng thái ở tệp task (một nguồn sự thật).
 - Spike sống trong repo nó phục vụ: `<repo>/spikes/<tên>/` (crate riêng, ngoài cargo workspace), báo cáo
-  `<repo>/docs/spikes/<tên>.md`.
+  `<repo>/spikes/<tên>/README.md` hoặc mục 9 của task spike. Repo con không có `docs/` (D-7).
 
 ## 1. Khung bắt buộc của một tệp task
 

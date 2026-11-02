@@ -6,16 +6,17 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 
 | Dự án | Thư mục | Nạp ngữ cảnh |
 | --- | --- | --- |
-| **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/ROADMAP.md`, task `fastcast/plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
+| **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — lộ trình `fastcast/ROADMAP.md`, task `fastcast/plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
 | **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI; nền GPUI (D-6); lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` |
-| **groove** (trình phát nhạc Groove X, viết lại từ Tauri + Vue sang Rust + GPUI, G-1) | `groove/` — đặc tả `groove/docs/rewrite-spec.md`, so bản cũ `groove/docs/parity.md`, lộ trình `groove/ROADMAP.md`, task `groove/plan/groove-gd1_*.md`; bản Tauri còn tới khi gộp nhánh `claude/remove-tauri` (tag `tauri-final`) | `groove/CLAUDE.md`, skill `/groove` |
+| **groove** (trình phát nhạc Groove X, viết lại từ Tauri + Vue sang Rust + GPUI, G-1) | `groove/` — lộ trình `groove/ROADMAP.md`, task `groove/plan/groove-gd1_*.md`; bản Tauri còn tới khi gộp nhánh `claude/remove-tauri` (tag `tauri-final`) | `groove/CLAUDE.md`, skill `/groove` |
 
 Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
 
 **Plan: mỗi app một thư mục `<repo>/plan/`** (D-7) — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
 `docs/tasking-convention.md`; việc treo: `<repo>/plan/_backlog.md`, việc chung `docs/backlog.md`; giai đoạn đã đóng: `<repo>/plan/completed/gd<N>/`. Lộ trình
 của app nằm ở repo app (`<repo>/ROADMAP.md`). Spike sống trong repo nó phục vụ: `<repo>/spikes/<tên>/`, báo cáo
-`<repo>/docs/spikes/<tên>.md`.
+ở `<repo>/spikes/<tên>/README.md` hoặc mục 9 của task spike. Repo con không có `docs/`: luật, bẫy, lệnh vào `CLAUDE.md`,
+quyết định vào `docs/decisions.md`; báo cáo giai đoạn, đặc tả đã làm xong chỉ còn trong lịch sử git.
 
 **Quyết định đã chốt: `docs/decisions.md`** — đọc trước khi đề xuất thứ gì trái với nó. Chủ dự án chốt thêm ⇒ ghi
 vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `docs/decisions.md` đi theo git).

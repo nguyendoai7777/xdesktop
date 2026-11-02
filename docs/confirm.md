@@ -69,4 +69,12 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_16 OCR] `fastcast-ocr` không thấy `models/` cạnh exe thì mượn `/opt/fastcast/models` của bản cài — chỉ cạnh exe — exe build tay chạy được OCR mà không chép 260 MB model; sha vẫn soát theo sổ.
 - [gd4_16 OCR] CER Linux đo trên bộ ảnh vẽ lại bằng font Linux (`spikes/ocr/linux-bench`, resvg) — dựng lại GDI+ của `gen-bench.ps1` — Linux không có GDI+; số không so 1:1 với 2,45 % của Windows.
 
+- [materiant ripple-hit, 02/11] Vùng bấm của checkbox / radio = hình vuông bao vòng phản hồi (40 px) + nhãn, gồm cả bốn
+  góc ngoài vòng tròn — cắt đúng hình tròn — ripple cũng bắt chuột theo hình vuông đó, nên "ripple chạy ⇔ tick" khớp.
+  Bố cục ngoài giữ nguyên (đệm + lề âm).
+- [materiant ripple-hit, 02/11] Hàng checkbox / radio chặn chuột tới phần tử phía sau (`block_mouse_except_scroll`):
+  hai hàng xếp dọc sát nhau có vòng chồng 12 px thì chỗ chồng thuộc hàng dưới (vẽ sau) — chia đôi chỗ chồng — chia đôi
+  phải tính ở cấp nhóm; không chặn thì một cú bấm đổi cả hai ô. Hệ quả: hover / click của phần tử cha không nhận khi
+  chuột ở trên ô (như nút trong vùng kéo phải `.occlude()`).
+
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.

@@ -8,6 +8,9 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 | --- | --- | --- |
 | **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/ROADMAP.md`, task `plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
 | **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI; nền GPUI (D-6); lộ trình `materiant/ROADMAP.md`, task `plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` |
+| **groove** (trình phát nhạc, đang viết lại từ Tauri + Vue sang Rust, G-1) | `groove/` — chưa có `CLAUDE.md`, lộ trình | skill `/groove` |
+
+Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
 
 **Plan: một thư mục `plan/` ở gốc cho cả workspace** — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
 `plan/_tasking-convention.md`; việc treo: `plan/_backlog.md`; giai đoạn đã đóng: `completed/<repo>/gd<N>/`. Lộ trình
@@ -50,7 +53,7 @@ pwsh init.ps1      # Windows
 bash init.sh       # macOS / Ubuntu (Git Bash trên Windows tự đá sang init.ps1)
 ```
 
-Idempotent, chạy lại lúc nào cũng được: nối memory, hỏi init project nào rồi clone repo còn thiếu (fastcast kéo cả
+Idempotent, chạy lại lúc nào cũng được: nối memory, hỏi init project nào rồi clone repo còn thiếu (fastcast, groove kéo cả
 materiant; repo có rồi thì không đụng; remote của materiant tên `materiant-rust`), soát công cụ. Không hỏi: `-Project fastcast` / `bash init.sh fastcast`.
 
 ## Build bản release

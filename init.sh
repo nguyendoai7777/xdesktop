@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Dựng máy mới cho workspace xdesktop (macOS / Linux). Idempotent — chạy lại lúc nào cũng được.
 #   bash init.sh                 hỏi init project nào
-#   bash init.sh fastcast        không hỏi (fastcast, materiant; nhiều project thì liệt kê)
+#   bash init.sh fastcast        không hỏi (fastcast, materiant, groove; nhiều project thì liệt kê)
 # Git Bash trên Windows ⇒ đá sang init.ps1 (junction cần PowerShell).
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -58,6 +58,7 @@ repo_url() {
   case "$1" in
     fastcast) echo https://github.com/nguyendoai7777/fastcast.git ;;
     materiant) echo https://github.com/nguyendoai7777/materiant-rust.git ;;
+    groove) echo https://github.com/nguyendoai7777/groove.git ;;
   esac
 }
 
@@ -112,13 +113,15 @@ select_checklist() {
 selected="$*"
 if [ -z "$selected" ] && [ -t 0 ]; then
   select_checklist 'Bạn muốn init project nào:' \
-    'fastcast|fastcast   (kéo fastcast + materiant)' 'materiant|materiant  (chỉ thư viện UI)'
+    'fastcast|fastcast   (kéo fastcast + materiant)' 'materiant|materiant  (chỉ thư viện UI)' \
+    'groove|groove     (kéo groove + materiant)'
 fi
 if [ -z "$selected" ]; then
   # Stdin là pipe: không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
   echo 'Bạn muốn init project nào:'
   echo '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
   echo '  [2] materiant  (chỉ thư viện UI)'
+  echo '  [3] groove     (kéo groove + materiant)'
   while [ -z "$selected" ]; do
     printf 'Chọn (nhiều project thì cách bằng dấu phẩy): '
     read -r answer || answer=""
@@ -127,7 +130,8 @@ if [ -z "$selected" ]; then
       case "$pick" in
         1) selected="$selected fastcast" ;;
         2) selected="$selected materiant" ;;
-        *) echo 'Nhập 1, 2 hoặc 1,2.'; selected=""; break ;;
+        3) selected="$selected groove" ;;
+        *) echo 'Nhập 1, 2, 3 hoặc nhiều số như 1,3.'; selected=""; break ;;
       esac
     done
   done
@@ -138,6 +142,7 @@ for project in $selected; do
   case "$project" in
     fastcast) wanted="$wanted fastcast materiant" ;;
     materiant) wanted="$wanted materiant" ;;
+    groove) wanted="$wanted groove materiant" ;;
     *) echo "✗ không có project $project" >&2; exit 1 ;;
   esac
 done

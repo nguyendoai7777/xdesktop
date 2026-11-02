@@ -4,7 +4,7 @@
 # 1. Nối memory của Claude trên máy này vào .claude/memory (track trong git) bằng junction.
 # 2. Clone repo của project được chọn (bảng $repos, $projects); repo đã có thì giữ nguyên, không pull.
 # 3. Soát công cụ.
-param([ValidateSet('fastcast', 'materiant')] [string[]] $Project)
+param([ValidateSet('fastcast', 'materiant', 'groove')] [string[]] $Project)
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
@@ -55,13 +55,15 @@ if ($item -and $item.LinkType -eq 'Junction') {
 $repos = [ordered]@{
     'fastcast'  = 'https://github.com/nguyendoai7777/fastcast.git'
     'materiant' = 'https://github.com/nguyendoai7777/materiant-rust.git'
+    'groove'    = 'https://github.com/nguyendoai7777/groove.git'
 }
 # Project → các repo cần có.
 $projects = [ordered]@{
     'fastcast'  = @('fastcast', 'materiant')
     'materiant' = @('materiant')
+    'groove'    = @('groove', 'materiant')
 }
-$labels = @('fastcast   (kéo fastcast + materiant)', 'materiant  (chỉ thư viện UI)')
+$labels = @('fastcast   (kéo fastcast + materiant)', 'materiant  (chỉ thư viện UI)', 'groove     (kéo groove + materiant)')
 
 # ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.
 function Select-Checklist([string] $Title, [string[]] $Ids, [string[]] $Labels) {
@@ -109,12 +111,13 @@ if (-not $Project) {
     Write-Host 'Bạn muốn init project nào:'
     Write-Host '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
     Write-Host '  [2] materiant  (chỉ thư viện UI)'
+    Write-Host '  [3] groove     (kéo groove + materiant)'
     while (-not $Project) {
         Write-Host -NoNewline 'Chọn (nhiều project thì cách bằng dấu phẩy): '
         $answer = [Console]::In.ReadLine()
         if ([string]::IsNullOrWhiteSpace($answer)) { $answer = '1' }
         $picks = @($answer -split '[,\s]+' | Where-Object { $_ })
-        if ($picks | Where-Object { $_ -notin '1', '2' }) { Write-Host 'Nhập 1, 2 hoặc 1,2.'; continue }
+        if ($picks | Where-Object { $_ -notin '1', '2', '3' }) { Write-Host 'Nhập 1, 2, 3 hoặc nhiều số như 1,3.'; continue }
         $Project = @($picks | ForEach-Object { @($projects.Keys)[[int]$_ - 1] })
     }
 }

@@ -2,6 +2,7 @@
 # clone vào thư mục con — KHÔNG phải submodule, repo gốc không ghim commit của chúng.
 /fastcast/
 /materiant/
+/groove/
 
 # Bản build do build.ps1 / build.sh sinh
 /release/

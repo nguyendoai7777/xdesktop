@@ -6,3 +6,5 @@
 - [Chữ hoa trên UI](feedback-avoid-uppercase-ui.md) — viết hoa chữ cái đầu dòng, không viết toàn chữ hoa (D-13); tên app là Fastcast
 - [Lỗi phát sinh sửa ngay](feedback-fix-bugs-now.md) — không đưa lỗi vào backlog (D-11), backlog chỉ cho việc thiếu máy / trả phí / kiểm tay
 - [Lỗi phát sinh sửa luôn](feedback-fix-dont-backlog.md) — không đẩy về backlog, backlog chỉ cho việc thật sự không làm được trong lượt
+- [Cách ly khỏi kit máy](feedback-isolate-from-machine-config.md) — chỉ máy công ty Linux: không theo hook, skill, xưng hô của kit; worktree mới chép settings.local.json (D-15); Windows / Mac không áp dụng
+- [Test fastcast trong màn ảo](feedback-fastcast-tests-headless.md) — Linux: cargo test fastcast-ui mở cửa sổ thật, luôn chạy qua tools/headless-test.sh

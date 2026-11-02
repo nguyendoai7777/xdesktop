@@ -38,6 +38,12 @@ Nguồn sự thật dùng chung giữa các máy (máy nhà Windows, máy công 
 | F-11 | **Bộ icon chức năng + phím**: cùng hệ với icon materiant — viewBox 24, nét 2 (trừ `stroke_width`: 1 / 2 / 4 có chủ đích), đầu tròn, `currentColor`, nạp bằng `svg()`, màu theo theme (`Icon.color(cx.theme().colors().primary)`). Bản đã chọn → tệp `design/fastcast-icons/<tên>.svg`: 1.6 `ruler`, 2.7 `capture_region`, 3.2 `record_region`, 4.1 `pen`, 5.1 `arrow`, 6.3 `color_picker`, 7.1 `ocr`, 8.1 `rectangle`, 9.1 `ellipse`, 10.1 `text`, 11.6 `blur`, 12.6 `save`, 13.2 `save_as`, 14.5 `copy`, 15.1 `stroke_width`; phím: 16.1 `key_cmd`, 17.1 `key_ctrl`, 18.1 `key_option`, 19.1 `key_shift`, 20.1 `key_enter`, 21.1 `key_tab`, 22.9 `key_esc`, 23.1 `key_space`, 24.3 `key_backspace`, 25.9 `key_delete`, 26.1 `key_caps_lock`, 27.1 `key_up`, 28.1 `key_down`, 29.1 `key_left`, 30.1 `key_right`, 31.2 `key_super`. Bản đặc giữ đặc, cùng khung với bản nét. Trang soát: `design/fastcast-icons.html`; các mẫu đã xem: `design/fastcast-feature-icons.html`. Đã nối vào app: `fastcast/crates/ui/assets/icons/` + `assets::AppIcon` (dòng launcher, thanh công cụ overlay, chip phím `Kbd`); chưa dùng tới (GĐ2 chú thích): `pen`, `arrow`, `rectangle`, `ellipse`, `text`, `blur`, `stroke_width`. | 30/10/2026 |
 | F-12 | **Icon tuỳ chỉnh là chức năng Pro** (D-4, chỉ đặt chỗ, làm ở GĐ4): người dùng thay từng icon bằng tệp ảnh, tên tệp ở F-11 là mã của slot. Hướng làm: `materiant::icon` nhận nguồn "icon có sẵn (`svg()`, tô theo theme) hoặc tệp ảnh (`img()`, giữ màu gốc)"; cấu hình `customIcons` { mã slot: đường dẫn }; tệp lỗi / hết Pro ⇒ về icon có sẵn. Định dạng theo thẻ `<img>` của HTML, theo mã `gpui-pre` 0.3.10 (đọc mã, chưa chạy thử): PNG, JPEG, GIF / WebP động, SVG, BMP, ICO được; APNG chỉ khung đầu; AVIF chưa giải mã được (crate `image` không bật feature `avif`, muốn có thì soát giấy phép + đo RAM). | 30/10/2026 |
 
+## groove
+
+| Mã | Quyết định | Ngày |
+|---|---|---|
+| G-1 | **Viết lại groove bằng Rust + GPUI + materiant, bỏ Tauri + Vue** (chủ dự án 02/11/2026: "ta sẽ write lại rồi"). Không debug thêm lỗi riêng của bản Tauri, như nền mờ xám trắng trên macOS; lỗi đó soát lại sau khi viết lại: `plan/_backlog.md` mục groove. | 02/11/2026 |
+
 ## Câu hỏi mở
 
 | Mã | Câu hỏi | Đề xuất |

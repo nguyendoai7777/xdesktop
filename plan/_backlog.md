@@ -146,6 +146,10 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - **[gd1_10 · ram] Trang gallery `button` 24,1 MB** (các trang khác 14–18) — đo phần nào tốn (bóng `elevated`, glyph)
   trước khi fastcast dùng nhiều bóng; lý do treo: không chặn, P3. Mục 10 (3).
 
+## groove
+
+- **[viết lại · owner-qa] Soát nền mờ sidenav trên macOS sau khi viết lại bằng GPUI (G-1)** — lý do: bản Tauri mờ đúng trên Windows, nhưng trên macOS vùng đáng ra mờ lại xám trắng; không debug bản Tauri vì sẽ bỏ, và máy Windows không kiểm được. Dự đoán từ đọc mã, chưa chạy thử: GPUI (`gpui-pre-macos` 0.3.10 `window.rs`, `blurred_view_update_layer`) bóc màu phủ của `NSVisualEffectView` nên sẽ hết xám. Bước: cửa sổ `WindowBackgroundAppearance::Blurred`, sidenav nền alpha, vùng nội dung đục; chạy trên Mac ở cả chế độ sáng / tối của hệ thống, trên hình nền sáng và tối. Mong đợi: thấy desktop nhoè, không ngả xám trắng, chữ sidenav đọc được, mờ không lem ra ngoài góc bo cửa sổ. Còn xám ⇒ sửa ngay trong task viết lại (D-11).
+
 ## Workspace
 
 - Agent riêng cho Rust (kiểu `be-builder` / `ui-builder` của xbds) — hiện run-task giao `general-purpose` + `model:

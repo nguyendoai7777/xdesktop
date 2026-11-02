@@ -1,11 +1,11 @@
 ---
 name: handoff
-description: Bàn giao khi xong việc trong workspace xdesktop. Chế độ plan — một task trong `plan/` (`gd<N>_<NN>` của fastcast, `<repo>-gd<N>_<NN>` của repo khác) vừa ✅, trước khi gộp master: chèn khối "## 0. Bàn giao từ <task>" vào task nhận nó (task kế theo số, hoặc các task ghi nó ở dòng "Phụ thuộc" khi làm làn song song), task cuối giai đoạn thì ghi vào lộ trình repo. Skill run-task mục 6 gọi skill này. Ngoài plan: nén cuộc trò chuyện thành tài liệu bàn giao cho session / agent khác. Dùng khi chủ dự án nói "handoff", "bàn giao", "ghi bàn giao cho task sau", "viết handoff cho session mới".
+description: Bàn giao khi xong việc trong workspace xdesktop. Chế độ plan — một task trong `<repo>/plan/` (`gd<N>_<NN>` của fastcast, `<repo>-gd<N>_<NN>` của repo khác) vừa ✅, trước khi gộp master: chèn khối "## 0. Bàn giao từ <task>" vào task nhận nó (task kế theo số, hoặc các task ghi nó ở dòng "Phụ thuộc" khi làm làn song song), task cuối giai đoạn thì ghi vào lộ trình repo. Skill run-task mục 6 gọi skill này. Ngoài plan: nén cuộc trò chuyện thành tài liệu bàn giao cho session / agent khác. Dùng khi chủ dự án nói "handoff", "bàn giao", "ghi bàn giao cho task sau", "viết handoff cho session mới".
 argument-hint: "<mã task vừa xong, vd gd1_03 · materiant-gd1_04> hoặc 'phiên sau sẽ làm gì'"
 ---
 
 Bản xdesktop của skill cùng tên ở xbds. Hai chế độ, chọn theo ngữ cảnh, không hỏi: có mã task / task vừa ✅ trong
-`plan/` ⇒ **A**; còn lại ⇒ **B**. Luật gốc: `plan/_tasking-convention.md` mục 0 (tên tệp), mục 6 (khuôn bàn giao).
+`plan/` ⇒ **A**; còn lại ⇒ **B**. Luật gốc: `docs/tasking-convention.md` mục 0 (tên tệp), mục 6 (khuôn bàn giao).
 
 ## A. Chế độ plan — một task vừa ✅
 
@@ -15,7 +15,7 @@ Chạy SAU khi task đã điền mục 9 + `Trạng thái` ✅, TRƯỚC khi g�
 ### 1. Tìm task nhận bàn giao
 
 Gọi task vừa xong là `T` (`gd1_03` của fastcast, hoặc `materiant-gd1_04`). Chỉ xét task **cùng repo, cùng giai đoạn**:
-fastcast ⇒ `plan/gd<N>_*.md`; repo khác ⇒ `plan/<repo>-gd<N>_*.md`.
+fastcast ⇒ `fastcast/plan/gd<N>_*.md`; repo khác ⇒ `<repo>/plan/<repo>-gd<N>_*.md`.
 
 1. **Các task ghi `T` ở dòng `| Phụ thuộc |`** — đọc dòng đó của từng tệp. Cách đọc: cụm sau dấu `·` mang tiền tố repo
    (`materiant-gd1_02 (…), gd1_03 (…)`) là task của repo đó **cả cụm** — `gd1_03` ở đây là `materiant-gd1_03`, không
@@ -50,17 +50,17 @@ thuộc tính, TRƯỚC mục đầu tiên; có khối bàn giao cũ thì đặt
 
 - `<T>` ghi đúng mã có tiền tố repo (`materiant-gd1_04`, `gd1_03`). Dấu `<!-- handoff: <T> -->` để soát (và hook
   sau này) tìm — luôn có.
-- 5–15 gạch, mỗi gạch hành động được. KHÔNG chép lại mục 9 của `T` — trỏ `plan/<tệp T>` mục 9 cho chi tiết.
+- 5–15 gạch, mỗi gạch hành động được. KHÔNG chép lại mục 9 của `T` — trỏ `<repo>/plan/<tệp T>` mục 9 cho chi tiết.
 - Khối cho các task nhận khác nhau viết riêng theo nhu cầu từng task, không dán một bản cho tất cả.
 
 ### 3. Soát + commit
 
 ```bash
-grep -ln "<!-- handoff: <T> -->" plan/*.md <repo>/ROADMAP.md   # đúng các tệp ở bước 1
-git commit -m "plan: <T> ✅ + bàn giao" -- plan/<tệp T> plan/<tệp nhận>… [<repo>/ROADMAP.md → commit ở repo đó]
+grep -ln "<!-- handoff: <T> -->" <repo>/plan/*.md <repo>/ROADMAP.md   # đúng các tệp ở bước 1
+git -C <repo> commit -m "plan: <T> ✅ + bàn giao" -- plan/<tệp T> plan/<tệp nhận>… ROADMAP.md
 ```
 
-Repo gốc commit theo đường dẫn (session song song có thể đang sửa tệp khác của `plan/`). Lộ trình nằm trong repo app ⇒
+Commit theo đường dẫn (session song song có thể đang sửa tệp khác của `plan/`). Lộ trình nằm trong repo app ⇒
 `git -C <repo> commit -- ROADMAP.md`. Không push.
 
 Báo trong câu trả lời cuối của run-task: một dòng "Bàn giao → <các task nhận>" (+ task nhận nào đang 🔄 của session
@@ -73,7 +73,7 @@ Viết tài liệu bàn giao tóm cuộc trò chuyện hiện tại để một 
 - Nơi lưu: session có thư mục ghi chú chung (dòng "Shared notes folder" trong ngữ cảnh) ⇒ lưu ở đó; không thì thư mục
   tạm của OS (scratchpad của session nếu có). **Không** lưu vào workspace.
 - Mở đầu: mục tiêu, trạng thái (đã xong / đang dở / chưa làm), repo + nhánh / worktree đang mở, commit cuối từng repo.
-- Không chép lại thứ đã có ở tệp khác (task trong `plan/`, `ROADMAP.md`, `docs/decisions.md`, commit, diff) — trỏ
+- Không chép lại thứ đã có ở tệp khác (task trong `<repo>/plan/`, `ROADMAP.md`, `docs/decisions.md`, commit, diff) — trỏ
   đường dẫn. Câu hỏi đang chờ chủ dự án ghi nguyên văn.
 - Mục "Skill nên gọi": `run-task <mã>` cho task kế, `close-phase` nếu giai đoạn đã xong, `handoff` khi xong task.
 - Che thông tin nhạy cảm (khoá API, mật khẩu, dữ liệu cá nhân, đường dẫn ảnh chụp màn hình của chủ dự án).

@@ -21,14 +21,14 @@ lại bằng Rust + GPUI + materiant. Hệ quả:
 1. `groove/CLAUDE.md`, `groove/ROADMAP.md` nếu đã có (lúc viết skill này chưa có; `groove/README.md` chỉ là mẫu Tauri,
    không cần đọc).
 2. `docs/decisions.md`, mục `Chung cho workspace` và `groove` (G-*).
-3. `plan/_backlog.md`, mục `groove`.
+3. `groove/plan/_backlog.md`.
 
 ## Đọc khi việc cần
 
 | Cần gì | Đọc |
 | --- | --- |
-| Component đang làm cho groove | `plan/materiant-gd5_*.md` (slider, progress, textarea, virtual grid) |
-| Task của groove | `plan/groove-gd<N>_*.md` nếu có, khung tệp ở `plan/_tasking-convention.md` |
+| Component đang làm cho groove | `materiant/plan/completed/gd5/` (slider, progress, textarea, virtual grid) |
+| Task của groove | `groove/plan/groove-gd<N>_*.md` nếu có, khung tệp ở `docs/tasking-convention.md` |
 | Component UI | `materiant/src/<component>`, xem mục dưới |
 
 ## materiant
@@ -39,7 +39,7 @@ materiant.
 
 ## Không đọc
 
-- `fastcast/`, mục `fastcast` của `docs/decisions.md` (F-*), `plan/gd<N>_*.md` (đó là task của fastcast).
+- `fastcast/`, mục `fastcast` của `docs/decisions.md` (F-*), `fastcast/plan/`.
 - `groove/node_modules/`, `groove/dist/`, `groove/release/`, `groove/src-tauri/target/`, `groove/src-tauri/gen/`.
 - `materiant/spikes/` trừ khi tài liệu đang đọc trỏ tới.
 

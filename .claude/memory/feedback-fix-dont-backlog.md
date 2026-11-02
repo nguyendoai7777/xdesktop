@@ -1,6 +1,6 @@
 ---
 name: feedback-fix-dont-backlog
-description: "Lỗi phát sinh khi làm task thì sửa luôn trong lượt, không đẩy về plan/_backlog.md"
+description: "Lỗi phát sinh khi làm task thì sửa luôn trong lượt, không đẩy về <repo>/plan/_backlog.md"
 metadata:
   node_type: memory
   type: feedback
@@ -12,4 +12,4 @@ Lỗi phát sinh trong lúc làm thì sửa luôn, không đưa về backlog.
 
 **Why:** chủ dự án nói rõ 31/10/2026 sau khi gd4_10 ghi C7 (RAM) vào backlog chờ chốt.
 
-**How to apply:** `plan/_backlog.md` chỉ còn cho việc thật sự không làm được trong lượt: cần mắt người / máy khác / dịch vụ trả phí. Không làm được thì nêu bằng chứng đã thử gì. Bổ sung cho [[feedback-no-blocking-questions]].
+**How to apply:** `<repo>/plan/_backlog.md` chỉ còn cho việc thật sự không làm được trong lượt: cần mắt người / máy khác / dịch vụ trả phí. Không làm được thì nêu bằng chứng đã thử gì. Bổ sung cho [[feedback-no-blocking-questions]].

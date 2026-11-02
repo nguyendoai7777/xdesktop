@@ -17,8 +17,8 @@ Session này chỉ làm **fastcast**. groove không liên quan: hai app chỉ d�
 | --- | --- |
 | Tính năng phải chạy thế nào | `fastcast/docs/MVP.md` |
 | Đang ở giai đoạn nào, làn nào sở hữu tệp nào | `fastcast/ROADMAP.md`, chỉ phần liên quan |
-| Task | `plan/gd<N>_*.md`, khung tệp ở `plan/_tasking-convention.md` |
-| Số đo, kiểm tay của giai đoạn trước | `fastcast/docs/gd<N>-report.md`, `completed/fastcast/gd<N>/` |
+| Task | `fastcast/plan/gd<N>_*.md`, khung tệp ở `docs/tasking-convention.md` |
+| Số đo, kiểm tay của giai đoạn trước | `fastcast/docs/gd<N>-report.md`, `fastcast/plan/completed/gd<N>/` |
 | Component UI | `materiant/src/<component>`, xem mục dưới |
 
 ## materiant
@@ -29,9 +29,9 @@ của fastcast, và soát bằng lệnh của materiant.
 
 ## Không đọc
 
-- `groove/`, mục `groove` của `docs/decisions.md` và `plan/_backlog.md`.
-- `plan/materiant-gd*` trừ khi task fastcast ghi phụ thuộc vào nó.
-- `target/`, `dist/`, `release/`, `completed/` của repo khác, `materiant/spikes/` trừ khi `fastcast/CLAUDE.md` trỏ tới.
+- `groove/`, mục `groove` của `docs/decisions.md`.
+- `materiant/plan/` trừ khi task fastcast ghi phụ thuộc vào nó.
+- `target/`, `dist/`, `release/`, `plan/completed/` của repo khác, `materiant/spikes/` trừ khi `fastcast/CLAUDE.md` trỏ tới.
 
 Tìm kiếm luôn truyền `path` hẹp (`fastcast/crates/ui/src`, không phải gốc workspace): quét từ gốc đi qua thư mục build
 nên dễ quá hạn.

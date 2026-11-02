@@ -1,19 +1,19 @@
 # Workspace xdesktop — app desktop Rust, nhiều repo
 
-Repo gốc chỉ giữ cấu hình workspace, tài liệu chỉ đạo và plan. Mỗi app / thư viện là **repo git riêng** clone vào thư
+Repo gốc chỉ giữ cấu hình workspace và tài liệu chỉ đạo; plan nằm trong repo từng app. Mỗi app / thư viện là **repo git riêng** clone vào thư
 mục con (không submodule). File này chỉ giữ định tuyến + luật chung mọi dự án; **luôn đọc `CLAUDE.md` của repo mình
 đang chạm trước khi sửa code**.
 
 | Dự án | Thư mục | Nạp ngữ cảnh |
 | --- | --- | --- |
-| **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/ROADMAP.md`, task `plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
-| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI; nền GPUI (D-6); lộ trình `materiant/ROADMAP.md`, task `plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` |
+| **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — spec `fastcast/docs/MVP.md`, lộ trình `fastcast/ROADMAP.md`, task `fastcast/plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
+| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI; nền GPUI (D-6); lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` |
 | **groove** (trình phát nhạc, đang viết lại từ Tauri + Vue sang Rust, G-1) | `groove/` — chưa có `CLAUDE.md`, lộ trình | skill `/groove` |
 
 Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
 
-**Plan: một thư mục `plan/` ở gốc cho cả workspace** — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
-`plan/_tasking-convention.md`; việc treo: `plan/_backlog.md`; giai đoạn đã đóng: `completed/<repo>/gd<N>/`. Lộ trình
+**Plan: mỗi app một thư mục `<repo>/plan/`** (D-7) — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
+`docs/tasking-convention.md`; việc treo: `<repo>/plan/_backlog.md`, việc chung `docs/backlog.md`; giai đoạn đã đóng: `<repo>/plan/completed/gd<N>/`. Lộ trình
 của app nằm ở repo app (`<repo>/ROADMAP.md`). Spike sống trong repo nó phục vụ: `<repo>/spikes/<tên>/`, báo cáo
 `<repo>/docs/spikes/<tên>.md`.
 
@@ -35,9 +35,9 @@ vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `doc
   Thêm phụ thuộc lớn vào tiến trình nền ⇒ đo RAM trước / sau.
 - **`.claude` chỉ ở repo gốc**: rule, skill, agent, memory của mọi repo con sống ở `<gốc>/.claude`. Không `.agents/`,
   `.codex/`, `AGENTS.md`.
-- Quy trình Opus điều phối + subagent Sonnet (D-5, bê từ `xbds`): skill **`run-task`** (làm một task trong `plan/`),
+- Quy trình Opus điều phối + subagent Sonnet (D-5, bê từ `xbds`): skill **`run-task`** (làm một task trong `<repo>/plan/`),
   **`handoff`** (bàn giao khi task ✅ — run-task gọi; hoặc tài liệu bàn giao cho session khác) và **`close-phase`** (đóng
-  giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style `terse`, agent riêng, hook nhắc bàn giao — `plan/_backlog.md`.
+  giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style `terse`, agent riêng, hook nhắc bàn giao — `docs/backlog.md`.
 
 ## Memory của Claude dùng chung giữa các máy
 

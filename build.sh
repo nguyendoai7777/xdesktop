@@ -147,6 +147,17 @@ else
   [ -n "$valid" ] || { echo "Chip $chip không có ở $os $arch." >&2; exit 1; }
 fi
 
+# Linux: GPUI + quay cần thư viện dev của hệ thống, thiếu thì cargo chỉ báo lỗi build script giữa chừng.
+if [ "$os" = linux ]; then
+  missing=""
+  for lib in egl gbm libpipewire-0.3; do pkg-config --exists "$lib" 2>/dev/null || missing="$missing $lib"; done
+  command -v clang >/dev/null 2>&1 || missing="$missing clang"
+  if [ -n "$missing" ]; then
+    echo "Thiếu gói dev:$missing. Cài: sudo apt install libegl-dev libgbm-dev libpipewire-0.3-dev clang" >&2
+    exit 1
+  fi
+fi
+
 if [ ! -f "$repo/Cargo.toml" ] || [ ! -f "$root/materiant/Cargo.toml" ]; then
   echo "Thiếu fastcast hoặc materiant: chạy bash init.sh rồi chọn fastcast." >&2
   exit 1

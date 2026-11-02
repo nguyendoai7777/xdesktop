@@ -502,3 +502,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [shape-bar] Kéo trong bảng màu (các lần đổi cách nhau dưới 300 ms) gộp thành một bước hoàn tác, bấm từng màu là từng bước — mỗi sự kiện một bước — vì sao: kéo bắn hàng chục sự kiện, hoàn tác từng cái vô nghĩa.
 - [shape-bar] Đổi cỡ, kiểu chữ giữ nguyên chỗ xuống dòng cũ, lùi góc chữ để lọt vùng — xuống dòng lại — vì sao: dòng đã chốt lúc gõ; chữ to hơn vùng thì phần tràn bị cắt như khi xuất.
 - [shape-bar] Phím `[` `]` và con lăn vẫn chỉ đổi cỡ của công cụ, không đổi hình đang chọn — áp cho hình — vì sao: yêu cầu chỉ nói thanh nổi.
+- [materiant-gd5_01] Giá trị Slider do app giữ qua `.value()`, slider tự bỏ qua lúc đang kéo — lộ `Entity<SliderState>` cho app — vì sao: cùng kiểu `Switch`, tua bài chỉ cần đẩy vị trí phát, không phải lo cờ đang kéo.
+- [materiant-gd5_01] Rail / halo đổi tức thì khi rê, không animate 160 ms như web — animate — vì sao: luật hover trong `materiant/CLAUDE.md`.

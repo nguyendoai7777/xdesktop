@@ -84,3 +84,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [scrollbar-edge] Thêm `padding_x` cho `ScrollArea` (mặc định 0, nội dung tự đệm) và `VirtualList` (mặc định `TRACK_THICKNESS` 9 px theo D-16) như `VirtualGrid` — vá từng chỗ ở app — một API chung; `ScrollArea` để 0 vì nội dung tuỳ ý (bảng cuộn ngang, trang Settings đã đệm trong con).
 - [scrollbar-edge] Select, menu, launcher, lịch sử clipboard: padding ngang 4 / 8 px của bề mặt dời vào vùng cuộn và nâng lên 9 px (D-16 đòi ≥ `TRACK_THICKNESS`) ⇒ dòng hẹp lại 5 px mỗi bên ở select / menu / clipboard, 1 px ở launcher — giữ 4 px cho dòng rộng như cũ, để thumb đè mép dòng — luật D-16.
 - [scrollbar-edge] Bảng OCR: lúc hiện chữ panel chỉ giữ padding dọc, padding ngang 12 px nằm trong vùng cuộn + dòng gợi ý; các trạng thái khác giữ `p(12)` — margin âm cho vùng cuộn tràn ra padding — D-16: nơi chứa quyết định padding.
+
+## Bảng quay xong (02/11/2026)
+
+- [record-panel-tidy] Phím tắt Lưu / Lưu thành chỉ ở tooltip (`materiant::overlay::tooltip`), dạng "Lưu  Ctrl+S" / "Lưu thành  Ctrl+Shift+S" (macOS "⌘S", "⇧⌘S") như thanh công cụ overlay — chip `Kbd` có icon phím trong tooltip — tooltip của materiant chỉ nhận chữ. Bỏ (Discard) không có tooltip: không có phím tắt.
+- [record-panel-tidy] Bỏ ba chấm cả trong câu báo lỗi lưu: "Không lưu được vào {dir}. Thử Lưu thành" / "Try Save as" (không thêm dấu chấm cuối, như các thông báo khác) — giữ "…" riêng ở câu đó — chủ dự án nói mọi chữ "Lưu thành…". Các chữ "…" khác ("Chọn…", "Đang đọc…", "Gán phím tắt…") giữ nguyên.
+- [record-panel-tidy] Bấm Bỏ là xoá ngay, không hộp hỏi lại; Esc / Enter / Ctrl+S vẫn là giữ nên không có phím nào xoá nhầm — giữ hộp xác nhận — chủ dự án yêu cầu.

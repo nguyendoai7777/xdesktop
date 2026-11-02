@@ -508,3 +508,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [materiant-gd5_02] `.value` nhận 0..=1 — 0..=100 — vì sao: web không có dạng xác định, tỷ lệ tiện cho tua nhạc và đỡ một lần chia.
 - [materiant-gd5_03] Tab / Shift+Tab trong `TextArea` chuyển focus — để Tab thụt lề như mặc định gpui-base — vì sao: giống `<textarea>` web, bàn phím không kẹt trong ô.
 - [materiant-gd5_03] Giữ dán 5.000 dòng chặn UI 0,45–1,1 s, ghi số đo — chèn từng đợt (mất undo một bước) hoặc vá gpui-base (trái D-6) — vì sao: nguyên nhân nằm trong thư viện đã ghim, bài thật ~100 dòng ước tính dưới 25 ms.
+- [materiant-gd5_04] ← → đi theo thứ tự ô, hết hàng sang hàng kế — dừng ở mép hàng — vì sao: giống Explorer, đi hết lưới được bằng một phím.
+- [materiant-gd5_04] Đổi cỡ chỉ giữ ô chọn khi nó đang trong khung — luôn kéo ô chọn về khung — vì sao: không giật khỏi chỗ người dùng đang xem.
+- [materiant-gd5_04] Thêm `LruImageCache` + `.height_per_width` ngoài chữ của task — để groove tự viết — vì sao: `img()` trần ngốn 541 MB / 1.500 ảnh, LRU 67 MB; bìa album cần vuông khi ô giãn.

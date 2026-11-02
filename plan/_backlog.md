@@ -134,6 +134,8 @@ ngay, không vào đây). Có task thì trỏ tới tệp task, đừng chép l�
 - Output style `terse` của quy trình xbds (D-5) — phần còn lại của T0b cũ (plan materiant trước khi tách tệp).
 - **[materiant-gd5_01] Kiểm tay Slider** (lý do: chuột thật + trình đọc màn hình không giả lập được): `pwsh start.ps1 docs slider`; kéo thanh tua, nhãn giây vẫn chạy mà thumb bám tay; NVDA / Narrator tăng / giảm được giá trị và giá trị giữ nguyên.
 - **[materiant-gd5_03] Kiểm tay bộ gõ `TextArea`** (lý do: bộ gõ tiếng Việt không giả lập được): `pwsh start.ps1 docs input`; gõ tiếng Việt bằng Unikey / EVKey trong ô `Fixed, 4 rows`, mong đợi dấu đúng, không mất chữ, Enter xuống dòng.
+- **[materiant-gd5_04] Kiểm tay `VirtualGrid`** (lý do: kéo đổi cỡ cửa sổ thật + màn khác DPI không giả lập được): `pwsh start.ps1 docs virtual_grid`; kéo hẹp / rộng cửa sổ ⇒ số cột đổi, ô chọn đang trong khung không mất; ← → ↑ ↓ End đúng ở màn khác DPI; nền sáng dễ nhìn.
+- **[materiant-gd5_04] Bảo vệ ảnh trong khung ở `LruImageCache`** (lý do: cửa sổ test không chạy callback khung, chưa kiểm tự động được): `capacity` nhỏ hơn số ảnh một khung thì nạp lại không ngừng; đếm khung bằng `on_next_frame`, không đẩy ảnh vừa dùng trong khung hiện tại.
 
 ### GĐ1 — port component (đóng 30/10/2026, `completed/materiant/gd1/`)
 

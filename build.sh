@@ -9,9 +9,10 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo="$root/fastcast"
 
-os="" arch="" chip="" force=""
+os="" arch="" chip="" force="" project=""
 while [ $# -gt 0 ]; do
   case "$1" in
+    --project) project="$2"; shift 2 ;;
     --os) os="$2"; shift 2 ;;
     --arch) arch="$2"; shift 2 ;;
     --chip) chip="$2"; shift 2 ;;
@@ -19,6 +20,22 @@ while [ $# -gt 0 ]; do
     *) echo "Không hiểu tham số: $1" >&2; exit 1 ;;
   esac
 done
+
+# Groove X: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
+if [ "$project" = groove ]; then
+  if [ -n "$os$arch$chip$force" ]; then
+    echo "--project groove chỉ build cho máy đang chạy, không nhận --os, --arch, --chip, --force." >&2
+    exit 1
+  fi
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*) exec pwsh -NoProfile -File "$(cygpath -w "$root/build.ps1")" -Project groove ;;
+    Darwin) exec bash "$root/groove/packaging/macos/build-macos.sh" --out "$root/release/groove/macos-$(uname -m)" ;;
+    *) exec bash "$root/groove/packaging/linux/build-deb.sh" --out "$root/release/groove" ;;
+  esac
+elif [ -n "$project" ] && [ "$project" != fastcast ]; then
+  echo "--project: fastcast hoặc groove" >&2
+  exit 1
+fi
 
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*)

@@ -5,6 +5,7 @@
 #   bash start.sh docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                       chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   bash start.sh launcher              launcher example của materiant (bản master; tham số 2 = worktree)
+#   bash start.sh groove                Groove X (bản master)
 #   bash start.sh list                  liệt kê worktree đang mở
 # Master build ở materiant/target/start; worktree build ở materiant/target/<worktree> (thư mục của chính session đó —
 # không build nguội lại, nhưng có thể chờ khoá khi session đang build). Không trộn: cargo dễ đưa ra exe của nguồn khác.
@@ -61,6 +62,11 @@ case "$app" in
     echo "launcher từ $dir"
     exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
     ;;
+  groove)
+    # Dữ liệu thật của máy, cửa sổ ở nơi OS hoặc vị trí đã lưu chọn: lệnh này để chủ dự án xem tay.
+    export CARGO_TARGET_DIR="$root/groove/target/start"
+    exec cargo run --manifest-path "$root/groove/Cargo.toml" -p groove-app
+    ;;
   list) show_worktrees ;;
-  *) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//' ;;
 esac

@@ -64,7 +64,7 @@ bash build.sh      # macOS / Ubuntu
 ```
 
 `-f` / `--force`: biên dịch lại mã của ta, giữ thư viện đã build. Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `release/fastcast/<target>/` (gitignore); macOS ra `Fastcast.app` + `.dmg` (thiếu model / `pwsh` thì bản `-draft`); Windows x64 phổ thông thêm bản cài NSIS cạnh đó.
-Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`.
+Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`. Groove X: `pwsh ./build.ps1 -Project groove` / `bash build.sh --project groove`, bản cài cho máy đang chạy ở `release/groove/`.
 
 ## Dọn dung lượng
 
@@ -79,7 +79,7 @@ Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -
 - Rust stable (≥ 1.96), MSVC Build Tools + Windows SDK trên Windows. Repo con: `git -C <repo> …`.
 - Repo gốc commit theo đường dẫn: `git commit -- <paths>` (tránh kéo tệp người khác đã stage).
 - Chủ dự án xem tay: `pwsh start.ps1 docs [trang] [worktree]` (`bash start.sh …`) — gallery materiant từ master hoặc
-  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree. App mới ⇒ thêm nhánh vào
+  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master. App mới ⇒ thêm nhánh vào
   cả hai script.
 
 ## Xong task thì gộp về `master` và dọn nhánh

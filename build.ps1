@@ -8,12 +8,21 @@ param(
     [ValidateSet('windows', 'macos', 'linux')] [string] $Os,
     [ValidateSet('x64', 'arm64')] [string] $Arch,
     [ValidateSet('intel-amd', 'avx2', 'intel', 'apple', 'snapdragon', 'arm')] [string] $Chip,
-    [Alias('f')] [switch] $Force
+    [Alias('f')] [switch] $Force,
+    [ValidateSet('fastcast', 'groove')] [string] $Project = 'fastcast'
 )
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
 $repo = Join-Path $root 'fastcast'
+
+# Groove X: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
+if ($Project -eq 'groove') {
+    if ($Os -or $Arch -or $Chip -or $Force) { throw '-Project groove chỉ build cho máy đang chạy, không nhận -Os, -Arch, -Chip, -Force.' }
+    if (-not $IsWindows) { throw 'macOS, Linux: bash build.sh --project groove' }
+    & (Join-Path $root 'groove/packaging/windows/build-installer.ps1') -OutDir (Join-Path $root 'release/groove')
+    exit 0
+}
 
 # ↑ ↓ di chuyển, Enter chọn; vẽ lại tại chỗ bằng mã ANSI. Stdin là pipe (mintty của Git Bash, script): không đọc được phím
 # lẻ ⇒ gõ số qua [Console]::In; hết stdin thì lấy mặc định.

@@ -4,6 +4,7 @@
 #   pwsh start.ps1 docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                        chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   pwsh start.ps1 launcher              launcher example của materiant (bản master; tham số 2 = worktree)
+#   pwsh start.ps1 groove                Groove X (bản master)
 #   pwsh start.ps1 list                  liệt kê worktree đang mở
 # Master build ở materiant/target/start; worktree build ở materiant/target/<worktree> (thư mục của chính session đó —
 # không build nguội lại, nhưng có thể chờ khoá khi session đang build). Không trộn: cargo dễ đưa ra exe của nguồn khác.
@@ -65,8 +66,14 @@ switch ($App) {
         & cargo run --manifest-path (Join-Path $dir 'Cargo.toml') -p materiant --example launcher
         exit $LASTEXITCODE
     }
+    'groove' {
+        # Dữ liệu thật của máy, cửa sổ ở nơi OS hoặc vị trí đã lưu chọn: lệnh này để chủ dự án xem tay.
+        $env:CARGO_TARGET_DIR = Join-Path $root 'groove\target\start'
+        & cargo run --manifest-path (Join-Path $root 'groove\Cargo.toml') -p groove-app
+        exit $LASTEXITCODE
+    }
     'list' { Show-Worktrees }
     default {
-        Get-Content $PSCommandPath -TotalCount 10 | ForEach-Object { $_ -replace '^# ?', '' }
+        Get-Content $PSCommandPath -TotalCount 11 | ForEach-Object { $_ -replace '^# ?', '' }
     }
 }

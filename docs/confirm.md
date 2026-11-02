@@ -32,4 +32,10 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd0_07] Chụp đóng băng Linux bằng `ScreenCast` + token — portal `Screenshot` — Screenshot nháy + kêu trên GNOME gốc và ghi ảnh vào Pictures.
 - [gd0_07] Vá `gpui-pre-linux` để fullscreen đúng màn — đổi nền UI — bản vá 7 dòng, D-6 giữ nguyên.
 - [gd0_07] Gán phím trên Linux đi qua hộp thoại hệ thống, lệch F-2 — ghi thẳng dconf — dconf là bố cục nội bộ của GNOME.
+- [gd4_15] Giữ `ScreenCast` dù ảnh đóng băng dính chip cam "đang chia sẻ màn" ở góc trên phải thanh GNOME — đổi sang `Screenshot` (không chip, nhưng nháy + kêu, ghi tạm vào Pictures) — chốt của gd0_07 giữ nguyên; **cần chủ dự án chọn**, chip lọt vào ảnh khi vùng chọn chạm góc đó.
+- [gd4_15] Thêm `Message::ActivationToken` trong `crates/core`, ngoài danh sách tệp của task — chỉ dùng biến môi trường lúc bật UI — UI đang giữ ấm không nhận được biến môi trường, gd4_14 phải gửi trước `Run`.
+- [gd4_15] Cấp quyền xong bấm lại phím tắt — tự chụp ngay sau hộp thoại — tự chụp dễ dính cửa sổ làm quen vào ảnh.
+- [gd4_15] Font giao diện theo `fc-match sans-serif` (tiến trình con lúc khởi động, máy này ra Noto Sans) — đọc `font-name` của GNOME (Ubuntu Sans) — fontconfig chạy được ngoài GNOME.
+- [gd4_14] App id `com.fastcast.app`, đổi tệp autostart thành `com.fastcast.app.desktop`, daemon tự ghi `.desktop` ẩn khi chạy rời — giữ `fastcast.desktop`, chờ gói `.deb` — portal cần `.desktop` theo id, scope của GNOME lấy id từ tên tệp.
+- [gd4_14] Clipboard trên GNOME đi X11 qua Xwayland, không có Xwayland thì chép báo lỗi — tự viết đường khác — Mutter 50 không có data-control.
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.

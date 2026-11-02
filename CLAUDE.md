@@ -32,6 +32,8 @@ vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `doc
   hỏi chủ dự án. Repo app soát bằng `cargo deny check licenses`.
 - **Dịch vụ trả phí — chủ dự án tự trả**: không tự bật dịch vụ tính tiền (runner CI macOS, chứng chỉ ký code, Apple
   Developer, máy chủ tải model…), không gọi API trả phí khi chưa hỏi.
+- **UI**: xong một component / màn thì soát theo `materiant/CLAUDE.md` mục "Soát trước khi xong một component / màn" (đệm,
+  cuộn, bo góc + cắt, độ đậm, màu theme, vòng focus, hoạt ảnh, nút icon, hộp thoại, nút cửa sổ) — áp cho mọi app.
 - **RAM là tính năng**: tiến trình nền không mang framework UI / GPU / model; thứ nặng chỉ nạp khi dùng và nhả khi xong.
   Thêm phụ thuộc lớn vào tiến trình nền ⇒ đo RAM trước / sau.
 - **`.claude` chỉ ở repo gốc**: rule, skill, agent, memory của mọi repo con sống ở `<gốc>/.claude`. Không `.agents/`,

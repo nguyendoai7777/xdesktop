@@ -137,6 +137,14 @@ khác ghi vào. Merge commit của `merge --no-ff claude/<task>` vẫn giữ: n�
 
 ## 8. Phân vai Opus ↔ Sonnet
 
+**Cấp task (D-14)**: Opus đánh giá lúc chia task, ghi dòng `| Model | sonnet / opus |` trong bảng thuộc tính; mở session con thì truyền đúng `model`.
+
+- `sonnet`: task dễ, chủ yếu code UI, không chứa nghiệp vụ, không cần tư duy cao về hiệu năng.
+- `opus`: task cần nghiệp vụ và tư duy, phải làm kỹ, triệt để: dữ liệu, đồng thời, âm thanh, hiệu năng, kiến trúc, tích hợp OS.
+- Không chắc ⇒ `opus`. Task `sonnet` gặp chỗ phải quyết định nghiệp vụ ⇒ dừng phần đó, ghi rõ ở mục 8 của task để Opus làm, không đoán.
+
+Bên dưới là phân vai **trong** một task Opus:
+
 Opus (session chính) bàn với chủ dự án, viết plan, **tự code phần khó**, giao Sonnet phần đã đặc tả kỹ, đọc diff + log
 để verify. Sonnet = `Agent` với `subagent_type: "general-purpose"`, `model: "sonnet"` (workspace chưa có agent riêng).
 

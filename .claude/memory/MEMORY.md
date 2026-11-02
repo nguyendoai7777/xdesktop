@@ -2,6 +2,7 @@
 - [AppData ảo hoá MSIX](msix-appdata-virtualization.md) — exe chạy từ app Claude ghi config/log vào LocalCache của gói, khác AppData thật
 - [Không dừng hỏi](feedback-no-blocking-questions.md) — session nào cũng tự chọn, ghi plan/confirm.md, không AskUserQuestion (D-9)
 - [Chạy thử ở màn DELL](feedback-test-on-dell.md) — cửa sổ thử chỉ mở ở màn phụ DELL, màn LG để chủ dự án dùng
+- [Giao việc theo độ khó](feedback-task-model-by-difficulty.md) — UI dễ không nghiệp vụ giao Sonnet, task cần nghiệp vụ và tư duy giao Opus (D-14)
 - [Chữ hoa trên UI](feedback-avoid-uppercase-ui.md) — viết hoa chữ cái đầu dòng, không viết toàn chữ hoa (D-13); tên app là Fastcast
 - [Lỗi phát sinh sửa ngay](feedback-fix-bugs-now.md) — không đưa lỗi vào backlog (D-11), backlog chỉ cho việc thiếu máy / trả phí / kiểm tay
 - [Lỗi phát sinh sửa luôn](feedback-fix-dont-backlog.md) — không đẩy về backlog, backlog chỉ cho việc thật sự không làm được trong lượt

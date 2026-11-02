@@ -48,6 +48,8 @@ chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật,
 
 ## 3. Phân vai + Case test (thiếu thì Opus viết, không chờ duyệt)
 
+Dòng `Model` của task (D-14, `_tasking-convention.md` mục 8): task `sonnet` chạy trọn bằng Sonnet, không giao tiếp subagent; gặp chỗ phải quyết định nghiệp vụ thì ghi lại cho Opus, không đoán.
+
 - `## 2b. Phân vai`: bảng phần việc → `[opus]` / `[sonnet]` / `[owner-qa]` theo `_tasking-convention.md` mục 8.
   Mặc định `[opus]`: toạ độ / hình học đa màn, đa luồng + vòng sự kiện, IPC + giao thức, `unsafe` / FFI theo OS, interface
   giữa crate. `[sonnet]`: ghép UI từ component `materiant`, catalog i18n, đọc / ghi cấu hình đơn giản, test theo case.

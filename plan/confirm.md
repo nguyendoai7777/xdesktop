@@ -504,3 +504,5 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [shape-bar] Phím `[` `]` và con lăn vẫn chỉ đổi cỡ của công cụ, không đổi hình đang chọn — áp cho hình — vì sao: yêu cầu chỉ nói thanh nổi.
 - [materiant-gd5_01] Giá trị Slider do app giữ qua `.value()`, slider tự bỏ qua lúc đang kéo — lộ `Entity<SliderState>` cho app — vì sao: cùng kiểu `Switch`, tua bài chỉ cần đẩy vị trí phát, không phải lo cờ đang kéo.
 - [materiant-gd5_01] Rail / halo đổi tức thì khi rê, không animate 160 ms như web — animate — vì sao: luật hover trong `materiant/CLAUDE.md`.
+- [materiant-gd5_02] Vòng tròn vẽ bằng `canvas` + path — SVG xoay — vì sao: xoay SVG không đổi được độ dài cung.
+- [materiant-gd5_02] `.value` nhận 0..=1 — 0..=100 — vì sao: web không có dạng xác định, tỷ lệ tiện cho tua nhạc và đỡ một lần chia.

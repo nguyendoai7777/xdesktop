@@ -66,6 +66,8 @@ bash build.sh      # macOS / Ubuntu
 `-f` / `--force`: biên dịch lại mã của ta, giữ thư viện đã build. Hỏi OS → kiến trúc → chip (Enter = máy đang chạy), ra `release/fastcast/<target>/` (gitignore); macOS ra `Fastcast.app` + `.dmg` (thiếu model / `pwsh` thì bản `-draft`); Windows x64 phổ thông thêm bản cài NSIS cạnh đó.
 Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -Chip intel-amd` / `--os … --arch … --chip …`. Groove X: `pwsh ./build.ps1 -Project groove` / `bash build.sh --project groove`, bản cài cho máy đang chạy ở `release/groove/`.
 
+Model OCR không nằm trong git. Chép sang máy khác: `pwsh ./export-ocr.ps1` / `bash export-ocr.sh` soát sha256 theo sổ rồi nén `fastcast/target/release/models` (bỏ thư viện ONNX Runtime vì theo OS) ra `release/fastcast/fastcast-ocr-models.tar.gz` + `.sha256`; đổi nguồn: `-Models <thư mục>` / đối số đầu. Máy nhận giải nén vào `fastcast/target/release/models`.
+
 ## Dọn dung lượng
 
 `pwsh ./clean.ps1` / `bash clean.sh`: xoá phần build sinh ra, giữ model OCR ở `fastcast/target/release/models` và cache build release (`-All` / `--all` xoá luôn). Không chạy lúc có session đang build.

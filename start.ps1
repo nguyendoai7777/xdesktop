@@ -61,7 +61,7 @@ switch ($App) {
             }
         }
         $name = if ($wt) { $wt } else { 'start' }
-        $env:CARGO_TARGET_DIR = Join-Path $root "materiant	arget\"
+        $env:CARGO_TARGET_DIR = Join-Path $root "materiant\target\$name"
         Write-Host "launcher từ $dir"
         & cargo run --manifest-path (Join-Path $dir 'Cargo.toml') -p materiant --example launcher
         exit $LASTEXITCODE

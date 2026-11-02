@@ -21,6 +21,7 @@ Nguồn sự thật dùng chung giữa các máy (máy nhà Windows, máy công 
 | D-12 | **Kéo remote bằng rebase, không sinh commit `Merge…`** (chủ dự án: "merge mà k sinh commit rác"). `git pull --rebase`, chỉ rebase commit chưa push. `merge --no-ff claude/<task>` giữ nguyên. Chi tiết: `docs/tasking-convention.md` mục 7. | 31/10/2026 |
 | D-13 | **Chữ giao diện viết hoa chữ cái đầu dòng** ("Quay vùng", "Hex"), không viết toàn chữ hoa; tên app hiển thị là `Fastcast`. Chữ của người dùng / mã màu là dữ liệu, không đụng. | 31/10/2026 |
 | D-14 | **Giao việc theo độ khó** (chủ dự án 02/11/2026): task dễ, chủ yếu code UI, không chứa nghiệp vụ, không cần tư duy cao về hiệu năng ⇒ **Sonnet**. Task cần nghiệp vụ và tư duy, phải làm kỹ, triệt để ⇒ **Opus**. Opus đánh giá khi chia task, ghi ở dòng `Model` của tệp task, không chắc thì chọn Opus. Chi tiết: mục 8 của quy ước task. | 02/11/2026 |
+| D-16 | **Khung cuộn quyết định padding, thanh cuộn tuỳ chỉnh không quyết định** (chủ dự án 02/11/2026: "KHÔNG để custom scrollbar quyết định padding, phải là nơi chứa nó quyết định"): khung cuộn chạm mép nhìn thấy của khối chứa, padding ngang nằm trong nội dung cuộn, bằng nhau hai bên và chừa đủ chỗ cho thumb, để thumb sát mép phải và nội dung cân đối. Chi tiết: `materiant/CLAUDE.md` mục "Khung cuộn + thanh cuộn". | 02/11/2026 |
 
 ## fastcast
 

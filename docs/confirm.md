@@ -42,5 +42,8 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [gd4_16] `mp4mux` ghi theo mảnh 2 s — `moov` cuối tệp — giết cứng chỉ mất đoạn cuối; chưa soát mở trên Media Player, QuickTime, không hợp thì bỏ một tham số.
 - [gd4_16] Dùng portal của gd4_15, thêm `open_session_with`, `watch_closed` vào `capture/src/portal.rs`; chưa có token thì `fastcast-rec` hiện hộp thoại — báo thiếu quyền như `freeze` — quay đã qua overlay nên hiếm gặp, bấm dừng vẫn thoát được.
 - [gd4_16] Đóng hộp thoại chọn màn báo `PermissionDenied`, tệp đứng 8 s báo `CaptureLost` — thêm mã lỗi mới — làn không được sửa `core`, `i18n`.
+- [gd4_17] Gỡ gói xoá autostart của người dùng ngay ở `postrm` (chỉ tệp có `Exec` trỏ `/opt/fastcast/`), không đợi "lúc chạy kế" — để lại tệp mồ côi — tệp gói đã mất thì không còn mã nào chạy để xoá.
+- [gd4_17] `Depends` lấy từ `dpkg-shlibdeps` + `libwayland-client0`, `libwayland-egl1`, `libegl1` (nạp lúc chạy) — chỉ thư viện ELF khai — ELF không khai thư viện nạp bằng `dlopen`; `Recommends` encoder / driver VA.
+- [gd4_17] Bản `.deb` chỉ dựng được `-draft` tới khi sổ model có `libonnxruntime.so` Linux — tự tải một bản ONNX Runtime và ghi sha — không tự nhận thư viện lạ vào sổ.
 
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.

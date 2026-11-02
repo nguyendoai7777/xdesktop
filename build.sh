@@ -197,6 +197,19 @@ if [ "$os" = macos ]; then
   exit 0
 fi
 
+# Linux phát hành bằng `.deb` (Ubuntu), cùng cách với macOS: đủ model + giấy phép thì bản đủ, thiếu thì `-draft` kèm cảnh báo.
+if [ "$os" = linux ]; then
+  package=(--skip-build --arch "$arch" --out "$out" --release-dir "$release")
+  models=""
+  if [ -d "$target_dir/release/models/onnx" ] && [ "$arch" = "$host_arch" ]; then models="$target_dir/release/models"; fi
+  [ -z "$models" ] || package+=(--models "$models")
+  if [ -z "$models" ] || ! command -v pwsh >/dev/null 2>&1 || ! command -v cargo-about >/dev/null 2>&1; then
+    package+=(--draft)
+  fi
+  bash "$repo/tools/build-deb.sh" "${package[@]}"
+  exit 0
+fi
+
 rm -rf "$out"
 mkdir -p "$out"
 for exe in $exes; do cp "$release/$exe" "$out/"; done

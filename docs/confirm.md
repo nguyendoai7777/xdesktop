@@ -78,3 +78,9 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
   chuột ở trên ô (như nút trong vùng kéo phải `.occlude()`).
 
 - [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.
+
+## Thanh cuộn sát mép (02/11/2026)
+
+- [scrollbar-edge] Thêm `padding_x` cho `ScrollArea` (mặc định 0, nội dung tự đệm) và `VirtualList` (mặc định `TRACK_THICKNESS` 9 px theo D-16) như `VirtualGrid` — vá từng chỗ ở app — một API chung; `ScrollArea` để 0 vì nội dung tuỳ ý (bảng cuộn ngang, trang Settings đã đệm trong con).
+- [scrollbar-edge] Select, menu, launcher, lịch sử clipboard: padding ngang 4 / 8 px của bề mặt dời vào vùng cuộn và nâng lên 9 px (D-16 đòi ≥ `TRACK_THICKNESS`) ⇒ dòng hẹp lại 5 px mỗi bên ở select / menu / clipboard, 1 px ở launcher — giữ 4 px cho dòng rộng như cũ, để thumb đè mép dòng — luật D-16.
+- [scrollbar-edge] Bảng OCR: lúc hiện chữ panel chỉ giữ padding dọc, padding ngang 12 px nằm trong vùng cuộn + dòng gợi ý; các trạng thái khác giữ `p(12)` — margin âm cho vùng cuộn tràn ra padding — D-16: nơi chứa quyết định padding.

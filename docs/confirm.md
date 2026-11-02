@@ -25,3 +25,11 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 - [điều phối] Session fastcast gd1_01 mới để ở dạng thẻ đề xuất (app không cho tự mở session từ lượt do sự kiện nền);
   materiant gd1_07 / gd1_09 chờ gd1_03 (Button) gộp xong mới mở. Spike OCR (gd0_05) / quay video (gd0_06) KHÔNG mở khi
   vắng — cần chụp / quay màn hình thật của máy và tải ONNX Runtime lúc build.
+
+## Linux (gd0_07, 02/11/2026)
+
+- [gd0_07] Khay Linux tự viết SNI trên `zbus` — thêm Unlicense vào D-2 rồi dùng `ksni` (ít mã hơn) — D-2 không có Unlicense, Claude không tự nới luật giấy phép.
+- [gd0_07] Chụp đóng băng Linux bằng `ScreenCast` + token — portal `Screenshot` — Screenshot nháy + kêu trên GNOME gốc và ghi ảnh vào Pictures.
+- [gd0_07] Vá `gpui-pre-linux` để fullscreen đúng màn — đổi nền UI — bản vá 7 dòng, D-6 giữ nguyên.
+- [gd0_07] Gán phím trên Linux đi qua hộp thoại hệ thống, lệch F-2 — ghi thẳng dconf — dconf là bố cục nội bộ của GNOME.
+- [pull 02/11] Số D-14 bị trùng giữa remote (giao việc theo độ khó) và sửa chưa commit của session khác (cách ly máy công ty): đổi bản chưa commit thành D-15, vẫn để chưa commit.

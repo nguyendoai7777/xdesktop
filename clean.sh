@@ -23,8 +23,7 @@ for repo in fastcast materiant groove; do
     fi
   done
 done
-# Cache build của bản Tauri cũ (G-1, không còn ai build).
-rm -rf "$root/groove/src-tauri/target" 2>/dev/null || echo "chưa xoá hết: groove/src-tauri/target (groovex.exe cũ đang chạy?)"
+# KHÔNG đụng `groove/src-tauri/target`: `x86_64-pc-windows-msvc/release/groovex.exe` là bản Tauri để đối soát.
 # Thư mục build tạm của worktree trên Windows (ổ ngoài repo).
 [ -d /c/xdesktop-target ] && find /c/xdesktop-target -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 du -sh "$root/fastcast/target" "$root/materiant/target" "$root/groove/target" 2>/dev/null

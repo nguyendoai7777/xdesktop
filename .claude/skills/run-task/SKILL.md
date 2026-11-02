@@ -60,15 +60,21 @@ Dòng `Model` của task (D-14, `docs/tasking-convention.md` mục 8): task `son
 
 ## 4. Thực thi
 
-1. Nhánh: mỗi repo bị sửa một worktree đặt ở `.claude/worktrees/` của **repo gốc** (`.claude` chỉ ở gốc, đã gitignore):
+1. Nhánh: mỗi repo bị sửa dùng một **worktree cố định** (D-18) ở `.claude/worktrees/` của **repo gốc** (`.claude` chỉ ở gốc,
+   đã gitignore), tên `<repo>-w<N>`, build ở `<repo>/target/w<N>`. Worktree và thư mục build KHÔNG xoá khi xong task: task
+   sau mượn lại, chỉ biên dịch lại phần mã đã đổi (khỏi build nguội 3–5 phút mỗi task).
    ```bash
-   git -C <repo> worktree add ../.claude/worktrees/<repo>-<task> -b claude/<task> master
-   export CARGO_TARGET_DIR="$PWD/<repo>/target/<task>"   # RIÊNG từng worktree (nằm trong target/ ⇒ đã gitignore)
+   git -C <repo> worktree list        # worktree rảnh = sạch, HEAD tách (detached) — không đứng trên nhánh claude/*
+   # mượn w<N> rảnh, số nhỏ nhất:
+   git -C .claude/worktrees/<repo>-w<N> switch -c claude/<task> master
+   # không còn cái rảnh (session khác đang giữ) ⇒ tạo cái kế, chỉ một lần trong đời:
+   git -C <repo> worktree add ../.claude/worktrees/<repo>-w<N> -b claude/<task> master
+   export CARGO_TARGET_DIR="$PWD/<repo>/target/w<N>"   # gắn với worktree, không với task
    ```
-   **Không** dùng chung `<repo>/target` giữa các worktree: fingerprint của package path theo đường dẫn tương đối +
-   mtime ⇒ build ở worktree này sau worktree khác có thể báo `Fresh` mà exe / test là code của worktree kia (đã dính
-   30/10/2026: gallery của gd1_03 ra trang stub của master). Lần đầu build nguội vài phút — chấp nhận. Gỡ worktree thì
-   xoá luôn `<repo>/target/<task>`.
+   Mỗi worktree một thư mục build, **không** dùng chung `<repo>/target` giữa các worktree: fingerprint của package path theo
+   đường dẫn tương đối + mtime ⇒ build ở worktree này sau worktree khác có thể báo `Fresh` mà exe / test là code của worktree
+   kia (đã dính 30/10/2026). Cùng một worktree đổi nhánh thì an toàn: tệp đổi có mtime mới, cargo build lại. Tối đa 3 worktree
+   mỗi repo (mỗi thư mục build 8–20 GB); cần cái thứ 4 thì chờ.
    Task chỉ sửa plan / tài liệu ⇒ không worktree, làm thẳng `master` của repo chứa tệp đó.
 2. Opus code `[opus]` + test `[opus-unit]`, chốt interface, commit trên nhánh.
 3. Giao Sonnet: `Agent` với `subagent_type: "general-purpose"`, `model: "sonnet"`. Lời giao gồm: đường dẫn tệp task +
@@ -115,10 +121,10 @@ quyết định D-* / F-* đã chốt.
    task này ở dòng "Phụ thuộc" khi lộ trình có làn song song), chèn khối `## 0. Bàn giao từ <task>` + dấu
    `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `docs/tasking-convention.md` mục 6.
 3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
-   `git -C <repo> worktree remove ../.claude/worktrees/<repo>-<task>` → `git -C <repo> branch -d claude/<task>`. Gộp
-   `master` vào nhánh trước khi merge; xung đột ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau), soát xanh lại,
-   ghi mục 9. Gỡ worktree từ shell đang đứng TRONG nó (Windows) ⇒ "Permission denied", git vẫn gỡ đăng ký nhưng
-   để lại thư mục rỗng: `cd` ra gốc trước, sót thì `git worktree prune` + xoá thư mục. Gỡ worktree xong xoá luôn `CARGO_TARGET_DIR` của task: mỗi thư mục build 8–20 GB, không ai dùng lại. Không push (chưa có remote — Q-2; có rồi cũng hỏi trước).
+   trả worktree về rảnh `git -C .claude/worktrees/<repo>-w<N> switch --detach master` → `git -C <repo> branch -d
+   claude/<task>`. Gộp `master` vào nhánh trước khi merge; xung đột ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau),
+   soát xanh lại, ghi mục 9. KHÔNG gỡ worktree, KHÔNG xoá `<repo>/target/w<N>` (D-18). Còn tệp sinh ra chưa track trong
+   worktree (ảnh chụp, tệp tạm) ⇒ xoá trước khi trả. Không push (hỏi trước).
 4. Commit plan ở repo chứa nó, theo đường dẫn: `git -C <repo> commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<các task nhận>
    plan/_backlog.md ROADMAP.md`; `docs/decisions.md` nếu có quyết định mới thì commit ở repo gốc.
 

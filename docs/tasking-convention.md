@@ -125,9 +125,9 @@ task trong làn song song — lộ trình có sơ đồ làn, vd `materiant/ROAD
 
 ## 7. Nhánh + gộp
 
-Theo `CLAUDE.md` gốc: mỗi repo bị sửa một worktree `claude/<task>`, đặt ở `<gốc>/.claude/worktrees/<repo>-<task>`
-(`.claude` chỉ ở repo gốc, thư mục này đã gitignore). Xong: soát xanh → `merge --no-ff` vào `master` → gỡ worktree →
-`branch -d`. Có xung đột thì dừng hỏi. Task chỉ sửa plan / tài liệu ⇒ làm thẳng `master` của repo chứa tệp đó, commit theo
+Theo `CLAUDE.md` gốc: mỗi repo bị sửa một nhánh `claude/<task>` trong worktree cố định `<gốc>/.claude/worktrees/<repo>-w<N>`
+(D-18; `.claude` chỉ ở repo gốc, thư mục này đã gitignore). Xong: soát xanh → `merge --no-ff` vào `master` → trả worktree
+về HEAD tách → `branch -d`; giữ worktree và `<repo>/target/w<N>`. Có xung đột thì dừng hỏi. Task chỉ sửa plan / tài liệu ⇒ làm thẳng `master` của repo chứa tệp đó, commit theo
 đường dẫn.
 
 **Kéo remote không sinh commit `Merge…` (D-12)**: `git pull --rebase` (repo con: `git -C <repo> pull --rebase`), không có

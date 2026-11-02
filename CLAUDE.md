@@ -89,7 +89,9 @@ Model OCR không nằm trong git. Chép sang máy khác: `pwsh ./export-ocr.ps1`
 
 ## Xong task thì gộp về `master` và dọn nhánh
 
-Làm trong worktree `claude/<task>` (đặt ở `.claude/worktrees/<repo>-<task>` của repo gốc) là chuyện của Claude; chủ dự
-án chỉ nhìn `master`. Hết task: kiểm xanh (`cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
-`cargo deny check licenses`) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → gỡ
-worktree, `branch -d`, xoá thư mục build (`CARGO_TARGET_DIR`) của task. Có xung đột thì dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.
+Làm trên nhánh `claude/<task>` trong một **worktree cố định** (D-18: `.claude/worktrees/<repo>-w<N>` của repo gốc, build ở
+`<repo>/target/w<N>`, không xoá, task sau dùng lại cả mã lẫn cache build) là chuyện của Claude; chủ dự án chỉ nhìn `master`.
+Hết task: kiểm xanh (`cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
+`cargo deny check licenses`) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → trả
+worktree về rảnh (`git -C <worktree> switch --detach master`), `branch -d`; giữ worktree và thư mục build. Có xung đột thì
+dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.

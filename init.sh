@@ -154,7 +154,79 @@ for name in $(printf '%s\n' $wanted | awk '!seen[$0]++'); do
   echo "✓ $name đã clone"
 done
 
-# --- 3. Công cụ ---------------------------------------------------------------------------------------------------
+# --- 3. Gói hệ thống (Linux) --------------------------------------------------------------------------------------
+# Đủ mọi thư viện để build, chạy app của project đã chọn, kể cả gói -dev, để không phải cài tay. Thiếu thì cài, có rồi
+# thì bỏ qua. Danh sách lấy từ cây `cargo tree --target x86_64-unknown-linux-gnu` (các crate `-sys`) và đã thử build
+# trong container Ubuntu sạch. Thêm crate có thư viện hệ thống ⇒ thêm gói vào đây.
+linux_packages() {
+  # Nền GPUI / materiant: trình biên dịch C, X11 / Wayland, font, Vulkan; portal cho hộp chọn tệp.
+  echo build-essential pkg-config cmake clang curl git ca-certificates \
+    libfontconfig-dev libfreetype-dev libwayland-dev libxkbcommon-dev libxkbcommon-x11-dev \
+    libx11-dev libx11-xcb-dev libxcb1-dev libvulkan-dev libvulkan1 mesa-vulkan-drivers \
+    xdg-desktop-portal xdg-desktop-portal-gtk
+  for project in $wanted; do
+    case "$project" in
+      # Âm thanh ALSA (G-2, link động), đóng gói .deb.
+      groove) echo libasound2-dev dpkg-dev ;;
+      # Chụp màn hình X11 / Wayland (xcap, PipeWire), bindgen cần libclang.
+      fastcast) echo libclang-dev libpipewire-0.3-dev libspa-0.2-dev libgbm-dev libdrm-dev libegl-dev \
+        libxcb-randr0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-shape0-dev ;;
+    esac
+  done
+}
+
+if [ "$(uname -s)" = Linux ]; then
+  if command -v apt-get >/dev/null 2>&1; then
+    missing=""
+    for pkg in $(linux_packages | tr ' ' '\n' | awk 'NF && !seen[$0]++'); do
+      dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q 'install ok installed' || missing="$missing $pkg"
+    done
+    if [ -n "$missing" ]; then
+      echo "→ cài gói hệ thống còn thiếu:$missing"
+      sudo=""; [ "$(id -u)" = 0 ] || sudo=sudo
+      $sudo apt-get update
+      # shellcheck disable=SC2086
+      $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $missing
+    fi
+    echo "✓ gói hệ thống đủ cho:$selected"
+  else
+    echo "✗ chỉ tự cài được trên Ubuntu / Debian (apt). Cài các gói tương đương rồi chạy lại:" >&2
+    echo "  $(linux_packages | tr '\n' ' ')" >&2
+    exit 1
+  fi
+fi
+
+# --- 4. Rust và công cụ cargo -------------------------------------------------------------------------------------
+min_rust=1.99
+if ! command -v cargo >/dev/null 2>&1 && [ -x "$HOME/.cargo/bin/cargo" ]; then export PATH="$HOME/.cargo/bin:$PATH"; fi
+if ! command -v cargo >/dev/null 2>&1; then
+  echo "→ cài Rust qua rustup"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --component clippy,rustfmt
+  export PATH="$HOME/.cargo/bin:$PATH"
+  fresh_rust=1
+fi
+version_ge() { [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -1)" = "$2" ]; }
+rust_now="$(rustc --version | awk '{print $2}')"
+if ! version_ge "$rust_now" "$min_rust"; then
+  if command -v rustup >/dev/null 2>&1; then
+    echo "→ Rust $rust_now cũ hơn $min_rust, cập nhật stable"
+    rustup update stable
+  else
+    echo "✗ Rust $rust_now cũ hơn $min_rust và không có rustup — cập nhật tay." >&2
+    exit 1
+  fi
+fi
+if command -v rustup >/dev/null 2>&1; then
+  for component in clippy rustfmt; do
+    rustup component list --installed 2>/dev/null | grep -q "^$component" || rustup component add "$component"
+  done
+fi
+if ! cargo deny --version >/dev/null 2>&1; then
+  echo "→ cài cargo-deny (soát giấy phép, D-2)"
+  cargo install --locked cargo-deny
+fi
 for tool in git cargo rustc; do
-  if command -v "$tool" >/dev/null 2>&1; then echo "✓ $tool  $("$tool" --version | head -1)"; else echo "⚠ thiếu $tool" >&2; fi
+  if command -v "$tool" >/dev/null 2>&1; then echo "✓ $tool  $("$tool" --version | head -1)"; else echo "✗ thiếu $tool" >&2; exit 1; fi
 done
+echo "✓ cargo-deny  $(cargo deny --version)"
+if [ -n "${fresh_rust:-}" ]; then echo "⚠ Rust vừa cài: mở terminal mới (hoặc '. ~/.cargo/env') để có cargo trong PATH." >&2; fi

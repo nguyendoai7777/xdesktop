@@ -45,6 +45,7 @@ Nguồn sự thật dùng chung giữa các máy (máy nhà Windows, máy công 
 |---|---|---|
 | G-1 | **Viết lại groove bằng Rust + GPUI + materiant, bỏ Tauri + Vue** (chủ dự án 02/11/2026: "ta sẽ write lại rồi"). Không debug thêm lỗi riêng của bản Tauri, như nền mờ xám trắng trên macOS; lỗi đó soát lại sau khi viết lại: `groove/plan/_backlog.md`. | 02/11/2026 |
 | G-2 | **Chấp nhận `libasound` (LGPL-2.1) cho âm thanh trên Linux** (chủ dự án 02/11/2026, ngoại lệ theo D-2): `cpal` qua ALSA, chỉ link động với thư viện hệ thống, không kèm vào bản cài, gói `.deb` khai là phụ thuộc, ghi trong trang giấy phép bên thứ ba. | 02/11/2026 |
+| G-3 | **Chấp nhận GStreamer (LGPL) cho quay video trên Linux** (chủ dự án 02/11/2026, ngoại lệ theo D-2): chỉ link động với thư viện hệ thống, không kèm vào bản cài, gói `.deb` khai là phụ thuộc, ghi trong trang giấy phép bên thứ ba. Không phụ thuộc `gstreamer1.0-libav`; máy không có VAAPI dùng OpenH264 tải khi cần (F-7). | 02/11/2026 |
 
 ## Câu hỏi mở
 

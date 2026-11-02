@@ -87,6 +87,6 @@ Session thêm gạch bằng `Edit` chèn vào mục của task mình (không `Wr
 
 ## Bảng quay xong (02/11/2026)
 
-- [record-panel-tidy] Phím tắt Lưu / Lưu thành chỉ ở tooltip (`materiant::overlay::tooltip`), dạng "Lưu  Ctrl+S" / "Lưu thành  Ctrl+Shift+S" (macOS "⌘S", "⇧⌘S") như thanh công cụ overlay — chip `Kbd` có icon phím trong tooltip — tooltip của materiant chỉ nhận chữ. Bỏ (Discard) không có tooltip: không có phím tắt.
+- [record-panel-tidy] Phím tắt Lưu / Lưu thành chỉ ở tooltip (`materiant::overlay::tooltip`), chỉ phím tắt ("Ctrl+S", "Ctrl+Shift+S"; macOS "⌘S", "⇧⌘S"), không lặp tên nút (chủ dự án yêu cầu 02/11) — chip `Kbd` có icon phím trong tooltip — tooltip của materiant chỉ nhận chữ. Bỏ (Discard) không có tooltip: không có phím tắt.
 - [record-panel-tidy] Bỏ ba chấm cả trong câu báo lỗi lưu: "Không lưu được vào {dir}. Thử Lưu thành" / "Try Save as" (không thêm dấu chấm cuối, như các thông báo khác) — giữ "…" riêng ở câu đó — chủ dự án nói mọi chữ "Lưu thành…". Các chữ "…" khác ("Chọn…", "Đang đọc…", "Gán phím tắt…") giữ nguyên.
 - [record-panel-tidy] Bấm Bỏ là xoá ngay, không hộp hỏi lại; Esc / Enter / Ctrl+S vẫn là giữ nên không có phím nào xoá nhầm — giữ hộp xác nhận — chủ dự án yêu cầu.

@@ -147,14 +147,21 @@ else
   [ -n "$valid" ] || { echo "Chip $chip không có ở $os $arch." >&2; exit 1; }
 fi
 
-# Linux: GPUI + quay cần thư viện dev của hệ thống, thiếu thì cargo chỉ báo lỗi build script giữa chừng.
+# Linux: GPUI + quay cần thư viện dev của hệ thống, `dpkg-shlibdeps` để dựng `.deb`. Có đủ thì thôi, thiếu thì tự cài
+# (apt hỏi mật khẩu sudo ngay trong terminal này); không có apt thì in danh sách rồi dừng.
 if [ "$os" = linux ]; then
+  dev_packages="pkg-config clang libegl-dev libgbm-dev libpipewire-0.3-dev dpkg-dev"
   missing=""
-  for lib in egl gbm libpipewire-0.3; do pkg-config --exists "$lib" 2>/dev/null || missing="$missing $lib"; done
-  command -v clang >/dev/null 2>&1 || missing="$missing clang"
+  for package in $dev_packages; do
+    dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q 'install ok installed' || missing="$missing $package"
+  done
   if [ -n "$missing" ]; then
-    echo "Thiếu gói dev:$missing. Cài: sudo apt install libegl-dev libgbm-dev libpipewire-0.3-dev clang" >&2
-    exit 1
+    if ! command -v apt-get >/dev/null 2>&1; then
+      echo "Thiếu gói dev:$missing — máy không có apt, cài bằng trình quản lý gói của OS rồi chạy lại." >&2
+      exit 1
+    fi
+    echo "==> Cài gói dev còn thiếu:$missing"
+    sudo apt-get install -y $missing || { echo "Cài gói dev không xong." >&2; exit 1; }
   fi
 fi
 

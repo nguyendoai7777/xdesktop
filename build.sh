@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Build bản release của fastcast. Hỏi OS → kiến trúc → chip rồi build (Enter = máy đang chạy). Đứng ở gốc workspace:
+# Build bản release. Hỏi project (fastcast / groove / materiant docs) rồi, với fastcast, OS → kiến trúc → chip (Enter = máy
+# đang chạy). Groove X: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra
+# release/materiant/materiant-docs. Đứng ở gốc workspace:
 #   bash build.sh
-#   bash build.sh --os linux --arch x64 --chip intel-amd      # không hỏi
+#   bash build.sh --project fastcast --os linux --arch x64 --chip intel-amd      # không hỏi
 #   bash build.sh -f                                          # --force: biên dịch lại mã của ta, giữ thư viện đã build
 # Ra release/fastcast/<target>[-avx2]/ (macOS: Fastcast.app + .dmg để cài; OS khác: bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
@@ -21,25 +23,11 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# Groove X: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
-if [ "$project" = groove ]; then
-  if [ -n "$os$arch$chip$force" ]; then
-    echo "--project groove chỉ build cho máy đang chạy, không nhận --os, --arch, --chip, --force." >&2
-    exit 1
-  fi
-  case "$(uname -s)" in
-    MINGW*|MSYS*|CYGWIN*) exec pwsh -NoProfile -File "$(cygpath -w "$root/build.ps1")" -Project groove ;;
-    Darwin) exec bash "$root/groove/packaging/macos/build-macos.sh" --out "$root/release/groove/macos-$(uname -m)" ;;
-    *) exec bash "$root/groove/packaging/linux/build-deb.sh" --out "$root/release/groove" ;;
-  esac
-elif [ -n "$project" ] && [ "$project" != fastcast ]; then
-  echo "--project: fastcast hoặc groove" >&2
-  exit 1
-fi
-
+# Git Bash trên Windows: mọi việc (cả câu hỏi) do build.ps1 làm.
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*)
     forward=()
+    [ -n "$project" ] && forward+=(-Project "$project")
     [ -n "$os" ] && forward+=(-Os "$os")
     [ -n "$arch" ] && forward+=(-Arch "$arch")
     [ -n "$chip" ] && forward+=(-Chip "$chip")
@@ -53,7 +41,7 @@ case "$(uname -m)" in
   *) host_arch=x64 ;;
 esac
 
-# select_option <tiêu đề> <số thứ tự mặc định> <id|nhãn>… ⇒ gán $picked. ↑ ↓ di chuyển, Enter chọn; vẽ lại tại chỗ bằng mã
+# select_option <tiêu đề> <số thứ tự mặc định> <id|nhãn>… ⇒ gán $picked. Radio, chỉ chọn một: ↑ ↓ di chuyển, Enter chọn; vẽ lại tại chỗ bằng mã
 # ANSI. `read -t` số nguyên: bash 3.2 của macOS không nhận số lẻ. Stdin là pipe ⇒ gõ số; hết stdin thì lấy mặc định.
 select_option() {
   local title="$1" default="$2" answer i=1 item
@@ -67,9 +55,9 @@ select_option() {
     while :; do
       for ((i = 0; i < count; i++)); do
         if [ "$i" = "$cursor" ]; then
-          printf '\r\033[2K\033[36m> %s\033[0m\n' "${items[i]#*|}"
+          printf '\r\033[2K\033[36m(•) %s\033[0m\n' "${items[i]#*|}"
         else
-          printf '\r\033[2K  %s\n' "${items[i]#*|}"
+          printf '\r\033[2K( ) %s\n' "${items[i]#*|}"
         fi
       done
       printf '\r\033[2K\033[2m%s\033[0m' '↑ ↓ di chuyển · enter chọn'
@@ -113,6 +101,47 @@ select_option() {
     echo "Nhập số từ 1 đến $#."
   done
 }
+
+# --os / --arch / --chip chỉ có ở fastcast: có cờ đó thì khỏi hỏi project.
+[ -n "$project$os$arch$chip" ] || { select_option 'Build project nào:' 1 'fastcast|Fastcast' 'groove|Groove X' 'materiant|materiant (docs only)'; project="$picked"; }
+project="${project:-fastcast}"
+
+case "$project" in
+  # Groove X: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
+  groove)
+    if [ -n "$os$arch$chip" ]; then
+      echo "groove chỉ build cho máy đang chạy, không nhận --os, --arch, --chip." >&2
+      exit 1
+    fi
+    if [ -n "$force" ]; then
+      clean_target=()
+      if [ "$host_os" = macos ]; then
+        case "$host_arch" in arm64) clean_target=(--target aarch64-apple-darwin) ;; *) clean_target=(--target x86_64-apple-darwin) ;; esac
+      fi
+      cargo clean --release --manifest-path "$root/groove/Cargo.toml" ${clean_target[@]+"${clean_target[@]}"} \
+        -p groove-app -p groove -p groove-audio -p groove-core -p groove-library -p materiant
+    fi
+    case "$host_os" in
+      macos) exec bash "$root/groove/packaging/macos/build-macos.sh" --out "$root/release/groove/macos-$(uname -m)" ;;
+      *) exec bash "$root/groove/packaging/linux/build-deb.sh" --out "$root/release/groove" ;;
+    esac ;;
+  # materiant chỉ có gallery docs (assets nhúng sẵn trong exe).
+  materiant)
+    if [ -n "$os$arch$chip" ]; then
+      echo "materiant chỉ build cho máy đang chạy, không nhận --os, --arch, --chip." >&2
+      exit 1
+    fi
+    manifest="$root/materiant/Cargo.toml"
+    [ -f "$manifest" ] || { echo "Thiếu materiant: chạy bash init.sh." >&2; exit 1; }
+    [ -z "$force" ] || cargo clean --release --manifest-path "$manifest" -p materiant
+    cargo build --release --locked --manifest-path "$manifest" -p materiant --example gallery
+    mkdir -p "$root/release/materiant"
+    cp "${CARGO_TARGET_DIR:-$root/materiant/target}/release/examples/gallery" "$root/release/materiant/materiant-docs"
+    printf '\nXong: %s\n' "$root/release/materiant/materiant-docs"
+    exit 0 ;;
+  fastcast) ;;
+  *) echo "--project: fastcast, groove hoặc materiant" >&2; exit 1 ;;
+esac
 
 if [ -z "$os" ]; then
   case "$host_os" in macos) d=2 ;; *) d=3 ;; esac

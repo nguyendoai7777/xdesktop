@@ -84,7 +84,7 @@ Model OCR không nằm trong git. Chép sang máy khác: `pwsh ./export-ocr.ps1`
 - Rust stable (≥ 1.99; `init.sh` tự cài / nâng), MSVC Build Tools + Windows SDK trên Windows; Linux: `init.sh` tự cài mọi gói hệ thống (apt). Repo con: `git -C <repo> …`.
 - Repo gốc commit theo đường dẫn: `git commit -- <paths>` (tránh kéo tệp người khác đã stage).
 - Chủ dự án xem tay: `pwsh start.ps1 docs [trang] [worktree]` (`bash start.sh …`) — gallery materiant từ master hoặc
-  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master. App mới ⇒ thêm nhánh vào
+  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master. Bản debug (cả hai lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` (`materiant/CLAUDE.md`, mục Lệnh). App mới ⇒ thêm nhánh vào
   cả hai script.
 
 ## Xong task thì gộp về `master` và dọn nhánh

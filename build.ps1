@@ -182,6 +182,10 @@ foreach ($exe in $exes) {
     $text = [Text.Encoding]::Latin1.GetString([IO.File]::ReadAllBytes((Join-Path $release "$exe$suffix")))
     $found = $devVars | Where-Object { $text.Contains($_) }
     if ($found) { Write-Error "$exe còn biến chạy thử: $($found -join ', ')" -ErrorAction Continue; exit 1 }
+    # Inspector (D-19) chỉ có ở bản debug: bản cài mà còn chuỗi của nó thì build sai profile.
+    if ($exe -eq 'fastcast-ui' -and ('inspector-pick', 'Hover to highlight' | Where-Object { $text.Contains($_) })) {
+        Write-Error 'fastcast-ui còn inspector (bản debug?)' -ErrorAction Continue; exit 1
+    }
 }
 
 $releaseRoot = Join-Path $root 'release/fastcast'

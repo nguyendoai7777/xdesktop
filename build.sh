@@ -224,6 +224,11 @@ for exe in $exes; do
     exit 1
   fi
 done
+# Inspector (D-19) chỉ có ở bản debug: bản cài mà còn chuỗi của nó thì build sai profile.
+if grep -a -q -e 'inspector-pick' -e 'Hover to highlight' "$release/fastcast-ui"; then
+  echo "fastcast-ui còn inspector (bản debug?)" >&2
+  exit 1
+fi
 
 out="$root/release/fastcast/$out_name"
 

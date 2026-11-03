@@ -9,6 +9,8 @@
 #   bash start.sh fastcast [màn]        Fastcast bản debug (inspector: Ctrl+Shift+I, Ctrl+Shift+C) + daemon giả + cấu hình dev riêng;
 #                                       màn = settings (mặc định) | launcher | overlay | ruler | picker (Linux: overlay/ruler/picker dùng fastcast/tools/fake-screens.sh)
 #   bash start.sh list                  liệt kê worktree đang mở
+# docs / launcher / groove mặc định theo dõi mã (tools/watch-run.mjs): lưu tệp ⇒ build lại, mở lại app (mất trạng thái đang mở).
+# Thêm --no-watch (ở vị trí bất kỳ) hoặc XDESKTOP_NO_WATCH=1 để chỉ build rồi chạy một lần.
 # Master build ở materiant/target/start; worktree build ở materiant/target/<worktree> (thư mục của chính session đó —
 # không build nguội lại, nhưng có thể chờ khoá khi session đang build). Không trộn: cargo dễ đưa ra exe của nguồn khác.
 # Trong gallery: ↑ / ↓ đổi trang, Ctrl+T xoay Light / Dark / System.
@@ -54,6 +56,32 @@ EOF
   mv "$file.tmp" "$file"
 }
 
+watch=1
+args=()
+for a in "$@"; do
+  if [ "$a" = --no-watch ]; then watch=0; else args+=("$a"); fi
+done
+[ "${XDESKTOP_NO_WATCH:-}" = 1 ] && watch=0
+set -- "${args[@]+"${args[@]}"}"
+
+# Build rồi chạy: watch ⇒ tools/watch-run.mjs (build qua cargo-prune, theo dõi các thư mục --watch); không ⇒ build một lần rồi exec.
+#   run_app <exe> <thư mục theo dõi, cách nhau ":"> <đối số app…> -- <đối số cargo build…>
+run_app() {
+  local exe="$1" dirs="$2"; shift 2
+  local app_args=()
+  while [ "$1" != -- ]; do app_args+=("$1"); shift; done
+  shift
+  if [ "$watch" = 1 ]; then
+    local opts=(--exe "$exe") d a
+    IFS=: read -ra ds <<< "$dirs"
+    for d in "${ds[@]}"; do opts+=(--watch "$d"); done
+    for a in "${app_args[@]+"${app_args[@]}"}"; do opts+=(--arg "$a"); done
+    exec node "$root/tools/watch-run.mjs" "${opts[@]}" -- "$@"
+  fi
+  node "$prune" build "$@"
+  exec "$exe" "${app_args[@]+"${app_args[@]}"}"
+}
+
 app="${1:-help}" page="${2:-}" worktree="${3:-}"
 case "$app" in
   docs)
@@ -70,12 +98,10 @@ case "$app" in
     name="${worktree#materiant-}"; name="${name:-start}"
     export CARGO_TARGET_DIR="$root/materiant/target/$name"
     echo "gallery từ $dir"
-    node "$prune" build --manifest-path "$dir/Cargo.toml" -p materiant --example gallery
-    if [ -n "$page" ]; then
-      exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example gallery -- --page "$page"
-    else
-      exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example gallery
-    fi
+    page_args=()
+    [ -n "$page" ] && page_args=(--page "$page")
+    run_app "$CARGO_TARGET_DIR/debug/examples/gallery" "$dir/src:$dir/examples:$dir/assets:$dir/vendor:$dir/Cargo.toml" \
+      "${page_args[@]+"${page_args[@]}"}" -- --manifest-path "$dir/Cargo.toml" -p materiant --example gallery
     ;;
   launcher)
     # `start.sh launcher <worktree>`: launcher không có trang nên worktree là tham số thứ hai.
@@ -91,15 +117,17 @@ case "$app" in
     fi
     export CARGO_TARGET_DIR="$root/materiant/target/${wt:-start}"
     echo "launcher từ $dir"
-    node "$prune" build --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
-    exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
+    run_app "$CARGO_TARGET_DIR/debug/examples/launcher" "$dir/src:$dir/examples:$dir/assets:$dir/vendor:$dir/Cargo.toml" \
+      -- --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
     ;;
   groove)
     # Dữ liệu thật của máy, cửa sổ ở nơi OS hoặc vị trí đã lưu chọn: lệnh này để chủ dự án xem tay.
     export CARGO_TARGET_DIR="$root/groove/target/start"
     [ "$(uname -s)" = Linux ] && groove_dev_desktop_entry
-    node "$prune" build --manifest-path "$root/groove/Cargo.toml" -p groove-app
-    exec cargo run --manifest-path "$root/groove/Cargo.toml" -p groove-app
+    m="$root/materiant"
+    run_app "$CARGO_TARGET_DIR/debug/groove" \
+      "$root/groove/crates:$root/groove/i18n:$root/groove/Cargo.toml:$m/src:$m/assets:$m/vendor:$m/Cargo.toml" \
+      -- --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;
   fastcast)
     # Bản debug có inspector, daemon giả (không phím tắt toàn cục, không khay), cấu hình dev riêng: không đụng Fastcast đã cài.
@@ -163,5 +191,5 @@ case "$app" in
     exit $?
     ;;
   list) show_worktrees ;;
-  *) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//' ;;
 esac

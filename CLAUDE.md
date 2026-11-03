@@ -80,6 +80,11 @@ dùng trong 7 ngày, sổ ở `<profile>/.prune-ledger.json`) và `incremental/`
 `target/w<N>` (cache clippy / test của session) và build của Groove X (script trong repo groove). `XDESKTOP_NO_PRUNE=1` tắt,
 `XDESKTOP_PRUNE_DAYS` đổi số ngày.
 
+`start.sh docs | launcher | groove` mặc định theo dõi mã (`tools/watch-run.mjs`, Node): lưu tệp hay gộp vào master ⇒ build lại
+(~2 s khi sửa một tệp view) ⇒ đóng app cũ, mở bản mới; build lỗi thì giữ app cũ; đóng cửa sổ app là lệnh thoát theo. Không phải
+hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` / `XDESKTOP_NO_WATCH=1` chỉ chạy một lần. Chưa áp cho
+`start.sh fastcast` và `start.ps1`.
+
 ## Đánh tag
 
 `bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. Nâng materiant thì fastcast có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.

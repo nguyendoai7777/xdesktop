@@ -82,7 +82,7 @@ dùng trong 7 ngày, sổ ở `<profile>/.prune-ledger.json`) và `incremental/`
 
 `start.sh docs | launcher | groove` mặc định theo dõi mã (`tools/watch-run.mjs`, Node): lưu tệp hay gộp vào master ⇒ build lại
 (~2 s khi sửa một tệp view) ⇒ đóng app cũ, mở bản mới; build lỗi thì giữ app cũ; đóng cửa sổ app là lệnh thoát theo. Không phải
-hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` / `XDESKTOP_NO_WATCH=1` chỉ chạy một lần. Chưa áp cho
+hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` / `XDESKTOP_NO_WATCH=1` chỉ chạy một lần. Linux: groove chạy trong scope systemd riêng `app-xdesktop-groove-*.scope` để Mission Center hiện thành dòng riêng, không gộp vào terminal. Chưa áp cho
 `start.sh fastcast` và `start.ps1`.
 
 ## Đánh tag

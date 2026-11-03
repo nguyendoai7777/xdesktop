@@ -6,6 +6,8 @@
 // Sau `--` là đối số của `cargo build`, build qua tools/cargo-prune.mjs (dọn bản build cũ). Build lỗi lần đầu ⇒ thoát;
 // build lỗi khi đang chạy ⇒ giữ app cũ, in lỗi, chờ lần lưu sau. Exe không đổi (sửa tệp không ảnh hưởng mã) ⇒ không mở lại.
 // Đóng cửa sổ app (app tự thoát) ⇒ lệnh này thoát theo; Ctrl+C ⇒ đóng app rồi thoát.
+// `--scope <desktop id>` (Linux có systemd): app chạy trong scope riêng `app-xdesktop-<id>-<số>.scope` như GNOME mở app, để
+// trình theo dõi tài nguyên (Mission Center…) hiện app thành dòng riêng thay vì gộp vào terminal đã gọi lệnh.
 // Không có hot reload thật: mở lại là tiến trình mới, mất trạng thái đang mở (trang, hộp thoại); vị trí cửa sổ app tự nhớ.
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -20,11 +22,13 @@ const buildArgs = split < 0 ? [] : argv.slice(split + 1);
 const watchDirs = [];
 const appArgs = [];
 let exe;
+let scope;
 for (let i = 0; i < own.length; i += 2) {
   const [flag, value] = [own[i], own[i + 1]];
   if (flag === '--watch') watchDirs.push(value);
   else if (flag === '--exe') exe = value;
   else if (flag === '--arg') appArgs.push(value);
+  else if (flag === '--scope') scope = value;
   else fail(`đối số lạ: ${flag}`);
 }
 if (!exe || !watchDirs.length) fail('cần --exe và ít nhất một --watch');
@@ -54,8 +58,18 @@ function mtime() {
   return fs.statSync(exe, { throwIfNoEntry: false })?.mtimeMs ?? 0;
 }
 
+// `systemd-run --scope` tạo scope rồi exec đúng exe ⇒ pid con vẫn là app, kill như thường.
+const useScope = scope && process.platform === 'linux' && hasSystemdRun();
+function hasSystemdRun() {
+  return (process.env.PATH ?? '').split(path.delimiter).some((d) => fs.existsSync(path.join(d, 'systemd-run')));
+}
+
+let launches = 0;
 function launch() {
-  const child = spawn(exe, appArgs, { stdio: 'inherit' });
+  const [cmd, args] = useScope
+    ? ['systemd-run', ['--user', '--scope', '--quiet', `--unit=app-xdesktop-${scope}-${process.pid}${launches++}`, '--', exe, ...appArgs]]
+    : [exe, appArgs];
+  const child = spawn(cmd, args, { stdio: 'inherit' });
   app = child;
   child.on('exit', (code, signal) => {
     if (app !== child) return; // bị thay bằng bản mới

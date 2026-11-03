@@ -65,20 +65,27 @@ done
 set -- "${args[@]+"${args[@]}"}"
 
 # Build rồi chạy: watch ⇒ tools/watch-run.mjs (build qua cargo-prune, theo dõi các thư mục --watch); không ⇒ build một lần rồi exec.
-#   run_app <exe> <thư mục theo dõi, cách nhau ":"> <đối số app…> -- <đối số cargo build…>
+#   run_app [--scope <desktop id>] <exe> <thư mục theo dõi, cách nhau ":"> <đối số app…> -- <đối số cargo build…>
+# --scope: Linux chạy app trong scope systemd riêng (xem tools/watch-run.mjs) ⇒ Mission Center hiện app thành dòng riêng.
 run_app() {
+  local scope=""
+  if [ "$1" = --scope ]; then scope="$2"; shift 2; fi
   local exe="$1" dirs="$2"; shift 2
   local app_args=()
   while [ "$1" != -- ]; do app_args+=("$1"); shift; done
   shift
   if [ "$watch" = 1 ]; then
     local opts=(--exe "$exe") d a
+    [ -n "$scope" ] && opts+=(--scope "$scope")
     IFS=: read -ra ds <<< "$dirs"
     for d in "${ds[@]}"; do opts+=(--watch "$d"); done
     for a in "${app_args[@]+"${app_args[@]}"}"; do opts+=(--arg "$a"); done
     exec node "$root/tools/watch-run.mjs" "${opts[@]}" -- "$@"
   fi
   node "$prune" build "$@"
+  if [ -n "$scope" ] && [ "$(uname -s)" = Linux ] && command -v systemd-run >/dev/null 2>&1; then
+    exec systemd-run --user --scope --quiet "--unit=app-xdesktop-$scope-$" -- "$exe" "${app_args[@]+"${app_args[@]}"}"
+  fi
   exec "$exe" "${app_args[@]+"${app_args[@]}"}"
 }
 
@@ -125,7 +132,7 @@ case "$app" in
     export CARGO_TARGET_DIR="$root/groove/target/start"
     [ "$(uname -s)" = Linux ] && groove_dev_desktop_entry
     m="$root/materiant"
-    run_app "$CARGO_TARGET_DIR/debug/groove" \
+    run_app --scope groove "$CARGO_TARGET_DIR/debug/groove" \
       "$root/groove/crates:$root/groove/i18n:$root/groove/Cargo.toml:$m/src:$m/assets:$m/vendor:$m/Cargo.toml" \
       -- --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;

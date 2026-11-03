@@ -9,3 +9,4 @@
 - [Cách ly khỏi kit máy](feedback-isolate-from-machine-config.md) — chỉ máy công ty Linux: không theo hook, skill, xưng hô của kit; worktree mới chép settings.local.json (D-15); Windows / Mac không áp dụng
 - [Test fastcast trong màn ảo](feedback-fastcast-tests-headless.md) — Linux: cargo test fastcast-ui mở cửa sổ thật, luôn chạy qua tools/headless-test.sh
 - [Không có Python](feedback-no-python-use-node.md) — script phụ viết bằng Node.js hoặc pwsh / bash, mọi máy đều có Node
+- [Chỉ trong workspace](feedback-workspace-only-files.md) — không đọc / ghi ngoài xdesktop (notes folder, /tmp); bằng chứng vào .ignores/ (gitignore)

@@ -28,6 +28,32 @@ show_worktrees() {
   [ "$found" = 1 ] || echo "Không có worktree materiant nào đang mở."
 }
 
+# Wayland không cho app tự gửi icon: GNOME ghép cửa sổ (`app_id = groove`) với `groove.desktop` để lấy icon cho dock.
+# Bản dev không cài `.deb` ⇒ ghi một mục ẩn (NoDisplay, không MimeType) ở thư mục người dùng, icon trỏ thẳng ảnh trong
+# repo. Đã cài `.deb` thì mục của bản cài đủ dùng: gỡ mục dev (nó đè mục hệ thống) thay vì ghi.
+groove_dev_desktop_entry() {
+  local dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+  local file="$dir/groove.desktop" marker="X-Xdesktop-Dev=true"
+  if [ -f /usr/share/applications/groove.desktop ]; then
+    if [ -f "$file" ] && grep -qx "$marker" "$file"; then rm -f "$file"; fi
+    return 0
+  fi
+  if [ -f "$file" ] && ! grep -qx "$marker" "$file"; then return 0; fi
+  mkdir -p "$dir"
+  cat > "$file.tmp" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Groove X (dev)
+Exec=$CARGO_TARGET_DIR/debug/groove
+Icon=$root/groove/packaging/linux/icons/256x256.png
+Terminal=false
+NoDisplay=true
+StartupWMClass=groove
+$marker
+EOF
+  mv "$file.tmp" "$file"
+}
+
 app="${1:-help}" page="${2:-}" worktree="${3:-}"
 case "$app" in
   docs)
@@ -71,6 +97,7 @@ case "$app" in
   groove)
     # Dữ liệu thật của máy, cửa sổ ở nơi OS hoặc vị trí đã lưu chọn: lệnh này để chủ dự án xem tay.
     export CARGO_TARGET_DIR="$root/groove/target/start"
+    [ "$(uname -s)" = Linux ] && groove_dev_desktop_entry
     node "$prune" build --manifest-path "$root/groove/Cargo.toml" -p groove-app
     exec cargo run --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;

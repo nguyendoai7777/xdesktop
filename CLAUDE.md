@@ -89,7 +89,7 @@ dùng trong 7 ngày, sổ ở `<profile>/.prune-ledger.json`) và `incremental/`
 - Rust stable (≥ 1.99; `init.sh` tự cài / nâng), MSVC Build Tools + Windows SDK trên Windows; Linux: `init.sh` tự cài mọi gói hệ thống (apt). Repo con: `git -C <repo> …`.
 - Repo gốc commit theo đường dẫn: `git commit -- <paths>` (tránh kéo tệp người khác đã stage).
 - Chủ dự án xem tay: `pwsh start.ps1 docs [trang] [worktree]` (`bash start.sh …`) — gallery materiant từ master hoặc
-  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master; `start.ps1 fastcast [settings|launcher|overlay|ruler|picker]` mở fastcast bản debug với daemon giả + cấu hình dev riêng `fastcast/target/start/dev-config.json`, overlay trên màn giả. Bản debug (cả ba lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` mở, `Ctrl+Shift+C` chọn phần tử (D-19, `materiant/CLAUDE.md` mục Lệnh). App mới ⇒ thêm nhánh vào
+  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master (Linux: `start.sh` ghi mục ẩn `~/.local/share/applications/groove.desktop` để dock GNOME có icon, bỏ qua khi đã cài `.deb`); `start.ps1 fastcast [settings|launcher|overlay|ruler|picker]` mở fastcast bản debug với daemon giả + cấu hình dev riêng `fastcast/target/start/dev-config.json`, overlay trên màn giả. Bản debug (cả ba lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` mở, `Ctrl+Shift+C` chọn phần tử (D-19, `materiant/CLAUDE.md` mục Lệnh). App mới ⇒ thêm nhánh vào
   cả hai script.
 
 ## Xong task thì gộp về `master` và dọn nhánh

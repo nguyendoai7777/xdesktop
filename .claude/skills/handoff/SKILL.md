@@ -5,7 +5,7 @@ argument-hint: "<mã task vừa xong, vd gd1_03 · materiant-gd1_04> hoặc 'phi
 ---
 
 Bản xdesktop của skill cùng tên ở xbds. Hai chế độ, chọn theo ngữ cảnh, không hỏi: có mã task / task vừa ✅ trong
-`plan/` ⇒ **A**; còn lại ⇒ **B**. Luật gốc: `docs/tasking-convention.md` mục 0 (tên tệp), mục 6 (khuôn bàn giao).
+`plan/` ⇒ **A**; còn lại ⇒ **B**. Luật gốc: `.claude/rules/tasking-convention.md` mục 0 (tên tệp), mục 6 (khuôn bàn giao).
 
 ## A. Chế độ plan — một task vừa ✅
 

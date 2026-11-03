@@ -6,7 +6,7 @@ description: Đóng task đã xong của một repo trong workspace xdesktop —
 # Đóng giai đoạn trong `<repo>/plan/`
 
 Bản xdesktop của skill cùng tên ở xbds. Mỗi app một `plan/` trong repo của nó (D-7) ⇒ mọi `git` ở bước này chạy trong repo
-đó. Khung đặt tên: `docs/tasking-convention.md` mục 0.
+đó. Khung đặt tên: `.claude/rules/tasking-convention.md` mục 0.
 
 ## 1. Soát trước (đọc, không đổi gì)
 

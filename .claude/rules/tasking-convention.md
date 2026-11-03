@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/plan/**"
+  - "**/ROADMAP.md"
+---
+
 # Khung tệp task và cách ước lượng — workspace xdesktop
 
 > Bản Rust / desktop của `xbds/plan/_tasking-convention.md` (D-5), soạn 29/10/2026. Skill dùng khung này:
@@ -6,12 +12,12 @@
 
 ## 0. Bố cục + đặt tên — tên PHẢI nói lên thứ tự
 
-Mỗi app một thư mục plan trong repo của nó (D-7, đổi 02/11/2026). Tệp này dùng chung, nằm ở `docs/` của repo gốc.
+Mỗi app một thư mục plan trong repo của nó (D-7, đổi 02/11/2026). Tệp này dùng chung, nằm ở `.claude/rules/` của repo gốc (tự nạp khi chạm `plan/`, `ROADMAP.md`).
 
 ```
 <repo>/plan/
-  _backlog.md                   # việc treo KHÔNG làm được trong lượt (kèm lý do) — D-8; việc chung: docs/backlog.md
-  confirm.md                    # việc đã tự chọn, chờ chủ dự án soát — D-9; việc chung: docs/confirm.md
+  _backlog.md                   # việc treo KHÔNG làm được trong lượt (kèm lý do) — D-8
+  confirm.md                    # việc đã tự chọn, chờ chủ dự án soát — D-9
   gd<N>_<NN>_<slug>.md          # task của fastcast
   <repo>-gd<N>_<NN>_<slug>.md   # task của repo khác; giữ tiền tố để mã task không trùng giữa các repo (materiant-gd1_03_button-kbd.md…)
   <repo>-gd<N>.md               # plan giai đoạn chưa tách task (tạm, tách ngay khi bắt đầu giai đoạn)

@@ -5,7 +5,7 @@ argument-hint: "<tệp task hoặc mã, vd fastcast/plan/gd1_03_selection-edit.m
 ---
 
 Skill giữ **quy trình**; luật riêng của repo (lệnh soát, bẫy, quy ước code) lấy từ `CLAUDE.md` của repo đó, không chép
-vào đây. Khung tệp task, trần ước lượng, nhãn phân vai, khuôn bàn giao: `docs/tasking-convention.md` — đọc mỗi lần.
+vào đây. Khung tệp task, trần ước lượng, nhãn phân vai, khuôn bàn giao: `.claude/rules/tasking-convention.md` — đọc mỗi lần.
 
 Phiên chính là **Opus**. Trả lời chủ dự án **gọn**, tiếng Việt, không tường thuật từng bước.
 
@@ -33,7 +33,7 @@ phí / luật cấm ⇒ ghi `<repo>/plan/_backlog.md` rồi đi tiếp phần c�
 1. `CLAUDE.md` gốc (luật chung, bảng định tuyến) + `docs/decisions.md` (D-*, F-*, Q-*).
 2. Dòng `Repo` của task ⇒ `<repo>/CLAUDE.md` TRƯỚC khi đọc code; lộ trình của repo (`fastcast/ROADMAP.md`) — chỉ phần
    task trỏ tới. Task chạm repo khác ⇒ nạp cả `CLAUDE.md` của repo đó.
-3. `docs/tasking-convention.md`; mở tệp task: bảng thuộc tính, khối `## 0. Bàn giao từ …`, mục 1–8.
+3. `.claude/rules/tasking-convention.md`; mở tệp task: bảng thuộc tính, khối `## 0. Bàn giao từ …`, mục 1–8.
 4. Hồ sơ repo cho các bước sau: lệnh soát xanh (mặc định `cargo build`, `cargo clippy --all-targets -- -D warnings`,
    `cargo test`, `cargo deny check licenses`), cách đo (RAM: `tools/measure-ram.ps1`), bẫy môi trường ghi trong
    `CLAUDE.md` của repo (vd AppData ảo hoá khi chạy exe từ app Claude, PowerShell không chờ exe GUI).
@@ -48,9 +48,9 @@ chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật,
 
 ## 3. Phân vai + Case test (thiếu thì Opus viết, không chờ duyệt)
 
-Dòng `Model` của task (D-14, `docs/tasking-convention.md` mục 8): task `sonnet` chạy trọn bằng Sonnet, không giao tiếp subagent; gặp chỗ phải quyết định nghiệp vụ thì ghi lại cho Opus, không đoán.
+Dòng `Model` của task (D-14, `.claude/rules/tasking-convention.md` mục 8): task `sonnet` chạy trọn bằng Sonnet, không giao tiếp subagent; gặp chỗ phải quyết định nghiệp vụ thì ghi lại cho Opus, không đoán.
 
-- `## 2b. Phân vai`: bảng phần việc → `[opus]` / `[sonnet]` / `[owner-qa]` theo `docs/tasking-convention.md` mục 8.
+- `## 2b. Phân vai`: bảng phần việc → `[opus]` / `[sonnet]` / `[owner-qa]` theo `.claude/rules/tasking-convention.md` mục 8.
   Mặc định `[opus]`: toạ độ / hình học đa màn, đa luồng + vòng sự kiện, IPC + giao thức, `unsafe` / FFI theo OS, interface
   giữa crate. `[sonnet]`: ghép UI từ component `materiant`, catalog i18n, đọc / ghi cấu hình đơn giản, test theo case.
 - `## 6.` đổi gạch nghiệm thu thành case `C1…Cn` (Cho / Khi / Thì, giữ đúng con số của task) + ai phủ: `[opus-unit]`,
@@ -119,7 +119,7 @@ quyết định D-* / F-* đã chốt.
 1. Điền mục 9 (bàn giao thực tế: số đo, lệnh soát, quyết định đã chốt, việc chờ kiểm tay) → `Trạng thái` ✅ (ngày).
 2. Bàn giao: gọi skill **`handoff`** (chế độ A, tham số = mã task) — nó tìm task nhận (số kế tiếp, hoặc các task ghi
    task này ở dòng "Phụ thuộc" khi lộ trình có làn song song), chèn khối `## 0. Bàn giao từ <task>` + dấu
-   `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `docs/tasking-convention.md` mục 6.
+   `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `.claude/rules/tasking-convention.md` mục 6.
 3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
    trả worktree về rảnh `git -C .claude/worktrees/<repo>-w<N> switch --detach master` → `git -C <repo> branch -d
    claude/<task>`. Gộp `master` vào nhánh trước khi merge; xung đột ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau),

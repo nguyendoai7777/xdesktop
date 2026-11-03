@@ -28,7 +28,7 @@ lại bằng Rust + GPUI + materiant. Hệ quả:
 | Cần gì | Đọc |
 | --- | --- |
 | Component đang làm cho groove | `materiant/plan/completed/gd5/` (slider, progress, textarea, virtual grid) |
-| Task của groove | `groove/plan/groove-gd<N>_*.md` nếu có, khung tệp ở `docs/tasking-convention.md` |
+| Task của groove | `groove/plan/groove-gd<N>_*.md` nếu có, khung tệp ở `.claude/rules/tasking-convention.md` |
 | Component UI | `materiant/src/<component>`, xem mục dưới |
 
 ## materiant

@@ -16,7 +16,7 @@ Session này chỉ làm **fastcast**. groove không liên quan: hai app chỉ d�
 | Cần gì | Đọc |
 | --- | --- |
 | Đang ở giai đoạn nào, làn nào sở hữu tệp nào | `fastcast/ROADMAP.md`, chỉ phần liên quan |
-| Task | `fastcast/plan/gd<N>_*.md`, khung tệp ở `docs/tasking-convention.md` |
+| Task | `fastcast/plan/gd<N>_*.md`, khung tệp ở `.claude/rules/tasking-convention.md` |
 | Số đo, kiểm tay của giai đoạn trước | `fastcast/CLAUDE.md` mục "Chạy lại số đo", `fastcast/plan/completed/gd<N>/`; báo cáo cũ: `git -C fastcast show b573bfd:docs/gd<N>-report.md` |
 | Component UI | `materiant/src/<component>`, xem mục dưới |
 

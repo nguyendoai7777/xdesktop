@@ -13,7 +13,7 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
 
 **Plan: mỗi app một thư mục `<repo>/plan/`** (D-7) — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
-`docs/tasking-convention.md`; việc treo: `<repo>/plan/_backlog.md`, việc chung `docs/backlog.md`; giai đoạn đã đóng: `<repo>/plan/completed/gd<N>/`. Lộ trình
+`.claude/rules/tasking-convention.md`; việc treo: `<repo>/plan/_backlog.md`; giai đoạn đã đóng: `<repo>/plan/completed/gd<N>/`. Lộ trình
 của app nằm ở repo app (`<repo>/ROADMAP.md`). Spike sống trong repo nó phục vụ: `<repo>/spikes/<tên>/`, báo cáo
 ở `<repo>/spikes/<tên>/README.md` hoặc mục 9 của task spike. Repo con không có `docs/`: luật, bẫy, lệnh vào `CLAUDE.md`,
 quyết định vào `docs/decisions.md`; báo cáo giai đoạn, đặc tả đã làm xong chỉ còn trong lịch sử git.
@@ -40,7 +40,7 @@ vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `doc
   `.codex/`, `AGENTS.md`.
 - Quy trình Opus điều phối + subagent Sonnet (D-5, bê từ `xbds`): skill **`run-task`** (làm một task trong `<repo>/plan/`),
   **`handoff`** (bàn giao khi task ✅ — run-task gọi; hoặc tài liệu bàn giao cho session khác) và **`close-phase`** (đóng
-  giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style `terse`, agent riêng, hook nhắc bàn giao — `docs/backlog.md`.
+  giai đoạn) ở `.claude/skills/`. Chưa chuyển: output style `terse`, agent riêng, hook nhắc bàn giao.
 
 ## Memory của Claude dùng chung giữa các máy
 

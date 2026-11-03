@@ -31,18 +31,24 @@ show_worktrees() {
 }
 
 # Wayland không cho app tự gửi icon: GNOME ghép cửa sổ (`app_id = groove`) với `groove.desktop` để lấy icon cho dock.
-# Bản dev không cài `.deb` ⇒ ghi một mục ẩn (NoDisplay, không MimeType) ở thư mục người dùng, icon trỏ thẳng ảnh trong
+# Bản dev không cài `.deb` ⇒ ghi một mục ẩn (không MimeType) ở thư mục người dùng, icon trỏ thẳng ảnh trong
 # repo. Đã cài `.deb` thì mục của bản cài đủ dùng: gỡ mục dev (nó đè mục hệ thống) thay vì ghi.
-# Mission Center bản snap chỉ đọc /usr/share và home riêng của snap (XDG_DATA_HOME = ~/snap/mission-center/current/.local/share),
-# không đọc ~/.local/share thật ⇒ ghi thêm một bản vào đó để nó ghép scope `app-xdesktop-groove-*` với "Groove X (dev)".
+# Mission Center bản snap ghép scope `app-xdesktop-groove-*` với mục `groove.desktop`, đọc home riêng của snap trước
+# (XDG_DATA_HOME = ~/snap/mission-center/current/.local/share). Snap không có plug `home` ⇒ không đọc được ảnh trong repo:
+# ghi thêm một bản vào home snap, icon trỏ tới ảnh chép sang đó.
+# Ẩn khỏi lưới app bằng `OnlyShowIn=X-Xdesktop;`, không dùng `NoDisplay=true`: app-rummage (magpie của Mission Center) bỏ
+# hẳn mục NoDisplay / Hidden nên không bao giờ hiện dòng app; nó không đọc OnlyShowIn, còn GNOME vẫn ghép icon theo StartupWMClass.
 groove_dev_desktop_entry() {
-  local dirs=("${XDG_DATA_HOME:-$HOME/.local/share}/applications") dir
-  [ -d "$HOME/snap/mission-center/current" ] && dirs+=("$HOME/snap/mission-center/current/.local/share/applications")
-  for dir in "${dirs[@]}"; do groove_dev_desktop_entry_in "$dir"; done
+  local icon="$root/groove/packaging/linux/icons/256x256.png" mc="$HOME/snap/mission-center/current/.local/share"
+  groove_dev_desktop_entry_in "${XDG_DATA_HOME:-$HOME/.local/share}/applications" "$icon"
+  if [ -d "$HOME/snap/mission-center/current" ]; then
+    mkdir -p "$mc/icons" && cp -u "$icon" "$mc/icons/groove-dev.png"
+    groove_dev_desktop_entry_in "$mc/applications" "$mc/icons/groove-dev.png"
+  fi
 }
 
 groove_dev_desktop_entry_in() {
-  local dir="$1"
+  local dir="$1" icon="$2"
   local file="$dir/groove.desktop" marker="X-Xdesktop-Dev=true"
   if [ -f /usr/share/applications/groove.desktop ]; then
     if [ -f "$file" ] && grep -qx "$marker" "$file"; then rm -f "$file"; fi
@@ -55,9 +61,9 @@ groove_dev_desktop_entry_in() {
 Type=Application
 Name=Groove X (dev)
 Exec=$CARGO_TARGET_DIR/debug/groove
-Icon=$root/groove/packaging/linux/icons/256x256.png
+Icon=$icon
 Terminal=false
-NoDisplay=true
+OnlyShowIn=X-Xdesktop;
 StartupWMClass=groove
 $marker
 EOF

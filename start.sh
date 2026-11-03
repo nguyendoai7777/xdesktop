@@ -66,6 +66,12 @@ Terminal=false
 OnlyShowIn=X-Xdesktop;
 StartupWMClass=groove
 $marker
+Actions=pip;
+
+[Desktop Action pip]
+Name=Picture in picture
+Name[vi]=Trình phát thu nhỏ
+Exec=$CARGO_TARGET_DIR/debug/groove --pip
 EOF
   mv "$file.tmp" "$file"
 }

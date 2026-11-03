@@ -33,8 +33,16 @@ show_worktrees() {
 # Wayland không cho app tự gửi icon: GNOME ghép cửa sổ (`app_id = groove`) với `groove.desktop` để lấy icon cho dock.
 # Bản dev không cài `.deb` ⇒ ghi một mục ẩn (NoDisplay, không MimeType) ở thư mục người dùng, icon trỏ thẳng ảnh trong
 # repo. Đã cài `.deb` thì mục của bản cài đủ dùng: gỡ mục dev (nó đè mục hệ thống) thay vì ghi.
+# Mission Center bản snap chỉ đọc /usr/share và home riêng của snap (XDG_DATA_HOME = ~/snap/mission-center/current/.local/share),
+# không đọc ~/.local/share thật ⇒ ghi thêm một bản vào đó để nó ghép scope `app-xdesktop-groove-*` với "Groove X (dev)".
 groove_dev_desktop_entry() {
-  local dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+  local dirs=("${XDG_DATA_HOME:-$HOME/.local/share}/applications") dir
+  [ -d "$HOME/snap/mission-center/current" ] && dirs+=("$HOME/snap/mission-center/current/.local/share/applications")
+  for dir in "${dirs[@]}"; do groove_dev_desktop_entry_in "$dir"; done
+}
+
+groove_dev_desktop_entry_in() {
+  local dir="$1"
   local file="$dir/groove.desktop" marker="X-Xdesktop-Dev=true"
   if [ -f /usr/share/applications/groove.desktop ]; then
     if [ -f "$file" ] && grep -qx "$marker" "$file"; then rm -f "$file"; fi

@@ -134,7 +134,7 @@ case "$project" in
     manifest="$root/materiant/Cargo.toml"
     [ -f "$manifest" ] || { echo "Thiếu materiant: chạy bash init.sh." >&2; exit 1; }
     [ -z "$force" ] || cargo clean --release --manifest-path "$manifest" -p materiant
-    cargo build --release --locked --manifest-path "$manifest" -p materiant --example gallery
+    node "$root/tools/cargo-prune.mjs" build --release --locked --manifest-path "$manifest" -p materiant --example gallery
     mkdir -p "$root/release/materiant"
     cp "${CARGO_TARGET_DIR:-$root/materiant/target}/release/examples/gallery" "$root/release/materiant/materiant-docs"
     printf '\nXong: %s\n' "$root/release/materiant/materiant-docs"
@@ -212,7 +212,8 @@ if [ -n "$force" ]; then
   (cd "$repo" && cargo clean --release --target "$triple" -p fastcast-core -p fastcast-capture -p fastcast-daemon \
     -p fastcast-ui -p fastcast-ocr -p fastcast-video -p materiant)
 fi
-(cd "$repo" && cargo build --release --locked --target "$triple" \
+# Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ (cùng crate, hash khác) trong thư mục build vừa dùng.
+(cd "$repo" && node "$root/tools/cargo-prune.mjs" build --release --locked --target "$triple" \
   -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins)
 target_dir="${CARGO_TARGET_DIR:-$repo/target}"
 release="$target_dir/$triple/release"

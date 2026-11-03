@@ -15,6 +15,8 @@
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 worktrees="$root/.claude/worktrees"
+# Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ trong target/start (target/w<N> chỉ build, không dọn).
+prune="$root/tools/cargo-prune.mjs"
 
 show_worktrees() {
   local found=0
@@ -42,6 +44,7 @@ case "$app" in
     name="${worktree#materiant-}"; name="${name:-start}"
     export CARGO_TARGET_DIR="$root/materiant/target/$name"
     echo "gallery từ $dir"
+    node "$prune" build --manifest-path "$dir/Cargo.toml" -p materiant --example gallery
     if [ -n "$page" ]; then
       exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example gallery -- --page "$page"
     else
@@ -62,11 +65,13 @@ case "$app" in
     fi
     export CARGO_TARGET_DIR="$root/materiant/target/${wt:-start}"
     echo "launcher từ $dir"
+    node "$prune" build --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
     exec cargo run --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
     ;;
   groove)
     # Dữ liệu thật của máy, cửa sổ ở nơi OS hoặc vị trí đã lưu chọn: lệnh này để chủ dự án xem tay.
     export CARGO_TARGET_DIR="$root/groove/target/start"
+    node "$prune" build --manifest-path "$root/groove/Cargo.toml" -p groove-app
     exec cargo run --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;
   fastcast)
@@ -104,7 +109,7 @@ case "$app" in
       fi
       rm -f "$sock"
     fi
-    cargo build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-ui --bin fastcast-ui --example fake_daemon
+    node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-ui --bin fastcast-ui --example fake_daemon
 
     # Cấu hình dev: lần đầu chép từ cấu hình thật (fastcast_core::paths::config_dir).
     dev_config="$target/dev-config.json"

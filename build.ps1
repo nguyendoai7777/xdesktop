@@ -94,7 +94,7 @@ if ($Project -eq 'materiant') {
         cargo clean --release --manifest-path $manifest -p materiant
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }
-    cargo build --release --locked --manifest-path $manifest -p materiant --example gallery
+    node (Join-Path $root 'tools/cargo-prune.mjs') build --release --locked --manifest-path $manifest -p materiant --example gallery
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     $targetDir = (cargo metadata --format-version 1 --no-deps --manifest-path $manifest | ConvertFrom-Json).target_directory
     $suffix = if ($IsWindows) { '.exe' } else { '' }
@@ -167,7 +167,8 @@ try {
         cargo clean --release --target $triple -p fastcast-core -p fastcast-capture -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video -p materiant
         if ($LASTEXITCODE -ne 0) { throw "cargo clean failed (exit $LASTEXITCODE)" }
     }
-    cargo build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins
+    # Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ (cùng crate, hash khác) trong thư mục build vừa dùng.
+    node (Join-Path $root 'tools/cargo-prune.mjs') build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 } finally {
     Pop-Location

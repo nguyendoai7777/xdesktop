@@ -20,6 +20,8 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
 $worktrees = Join-Path $root '.claude\worktrees'
+# Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ trong target/start (target/w<N> chỉ build, không dọn).
+$prune = Join-Path $root 'tools\cargo-prune.mjs'
 
 function Show-Worktrees {
     $found = Get-ChildItem $worktrees -Directory -Filter 'materiant-*' -ErrorAction SilentlyContinue
@@ -44,10 +46,12 @@ switch ($App) {
         # Mỗi nguồn một thư mục build (cargo trộn worktree trong cùng target ⇒ dễ ra exe của nguồn khác).
         $name = if ($Worktree) { $Worktree -replace '^materiant-', '' } else { 'start' }
         $env:CARGO_TARGET_DIR = Join-Path $root "materiant\target\$name"
-        $cargoArgs = @('run', '--manifest-path', (Join-Path $dir 'Cargo.toml'), '-p', 'materiant', '--example', 'gallery')
-        if ($Page) { $cargoArgs += @('--', '--page', $Page) }
+        $cargoArgs = @('--manifest-path', (Join-Path $dir 'Cargo.toml'), '-p', 'materiant', '--example', 'gallery')
         Write-Host "gallery từ $dir"
-        & cargo @cargoArgs
+        & node $prune build @cargoArgs
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        if ($Page) { $cargoArgs += @('--', '--page', $Page) }
+        & cargo run @cargoArgs
         exit $LASTEXITCODE
     }
     'launcher' {
@@ -65,12 +69,16 @@ switch ($App) {
         $name = if ($wt) { $wt } else { 'start' }
         $env:CARGO_TARGET_DIR = Join-Path $root "materiant\target\$name"
         Write-Host "launcher từ $dir"
+        & node $prune build --manifest-path (Join-Path $dir 'Cargo.toml') -p materiant --example launcher
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         & cargo run --manifest-path (Join-Path $dir 'Cargo.toml') -p materiant --example launcher
         exit $LASTEXITCODE
     }
     'groove' {
         # Dữ liệu thật của máy, cửa sổ ở nơi OS hoặc vị trí đã lưu chọn: lệnh này để chủ dự án xem tay.
         $env:CARGO_TARGET_DIR = Join-Path $root 'groove\target\start'
+        & node $prune build --manifest-path (Join-Path $root 'groove\Cargo.toml') -p groove-app
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         & cargo run --manifest-path (Join-Path $root 'groove\Cargo.toml') -p groove-app
         exit $LASTEXITCODE
     }
@@ -90,7 +98,7 @@ switch ($App) {
         }
         $target = Join-Path $root 'fastcast\target\start'
         $env:CARGO_TARGET_DIR = $target
-        & cargo build --manifest-path (Join-Path $root 'fastcast\Cargo.toml') -p fastcast-ui --bin fastcast-ui --example fake_daemon
+        & node $prune build --manifest-path (Join-Path $root 'fastcast\Cargo.toml') -p fastcast-ui --bin fastcast-ui --example fake_daemon
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
         # Cấu hình dev: lần đầu chép từ cấu hình thật (fastcast_core::paths::config_dir = %APPDATA%\fastcast trên Windows).

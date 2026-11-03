@@ -75,6 +75,11 @@ Model OCR không nằm trong git. Chép sang máy khác: `pwsh ./export-ocr.ps1`
 
 `pwsh ./clean.ps1` / `bash clean.sh`: xoá phần build sinh ra, giữ model OCR ở `fastcast/target/release/models` và cache build release (`-All` / `--all` xoá luôn). Không chạy lúc có session đang build.
 
+`start.*` / `build.*` build qua `tools/cargo-prune.mjs` (Node): build xong, bản build cũ (cùng crate cùng loại, hash không còn
+dùng trong 7 ngày, sổ ở `<profile>/.prune-ledger.json`) và `incremental/` quá 7 ngày bị xoá; build lỗi thì không dọn. Không dọn
+`target/w<N>` (cache clippy / test của session) và build của Groove X (script trong repo groove). `XDESKTOP_NO_PRUNE=1` tắt,
+`XDESKTOP_PRUNE_DAYS` đổi số ngày.
+
 ## Đánh tag
 
 `bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. Nâng materiant thì fastcast có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.

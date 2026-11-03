@@ -23,3 +23,6 @@ spikes/**/out/
 Thumbs.db
 .idea/
 .vscode/
+
+# Bằng chứng / tệp tạm của session (ảnh chụp, log, diff), không vào git
+/.ignores/

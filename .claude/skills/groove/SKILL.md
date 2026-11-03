@@ -29,11 +29,11 @@ lại bằng Rust + GPUI + materiant. Hệ quả:
 | --- | --- |
 | Component đang làm cho groove | `materiant/plan/completed/gd5/` (slider, progress, textarea, virtual grid) |
 | Task của groove | `groove/plan/groove-gd<N>_*.md` nếu có, khung tệp ở `.claude/rules/tasking-convention.md` |
-| Component UI | `materiant/src/<component>`, xem mục dưới |
+| Component UI | `materiant/API.md` rồi `materiant/api/<module>.md`, xem mục dưới |
 
 ## materiant
 
-Bản viết lại dùng materiant làm UI. Chỉ mở đúng tệp của component đang dùng; đọc thêm `materiant/CLAUDE.md` khi sắp sửa
+Bản viết lại dùng materiant làm UI. Dùng component: `materiant/API.md` (mục lục) rồi đúng `materiant/api/<module>.md`, không quét `materiant/src`; đọc thêm `materiant/CLAUDE.md` khi sắp sửa
 materiant. Sửa materiant là đụng cả app khác ⇒ giữ API chung, không nhét logic riêng của groove, và soát bằng lệnh của
 materiant.
 

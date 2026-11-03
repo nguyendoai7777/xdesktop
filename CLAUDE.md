@@ -7,7 +7,7 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 | Dự án | Thư mục | Nạp ngữ cảnh |
 | --- | --- | --- |
 | **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — lộ trình `fastcast/ROADMAP.md`, task `fastcast/plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
-| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — mới có spike UI; nền GPUI (D-6); lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` |
+| **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — nền GPUI (D-6); dùng component: `materiant/API.md` → `materiant/api/<module>.md`; lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` (sửa materiant) |
 | **groove** (trình phát nhạc Groove X, viết lại từ Tauri + Vue sang Rust + GPUI, G-1) | `groove/` — lộ trình `groove/ROADMAP.md`, task `groove/plan/groove-gd1_*.md`; bản Tauri còn tới khi gộp nhánh `claude/remove-tauri` (tag `tauri-final`) | `groove/CLAUDE.md`, skill `/groove` |
 
 Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.

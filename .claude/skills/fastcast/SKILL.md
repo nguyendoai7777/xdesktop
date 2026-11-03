@@ -18,11 +18,11 @@ Session này chỉ làm **fastcast**. groove không liên quan: hai app chỉ d�
 | Đang ở giai đoạn nào, làn nào sở hữu tệp nào | `fastcast/ROADMAP.md`, chỉ phần liên quan |
 | Task | `fastcast/plan/gd<N>_*.md`, khung tệp ở `.claude/rules/tasking-convention.md` |
 | Số đo, kiểm tay của giai đoạn trước | `fastcast/CLAUDE.md` mục "Chạy lại số đo", `fastcast/plan/completed/gd<N>/`; báo cáo cũ: `git -C fastcast show b573bfd:docs/gd<N>-report.md` |
-| Component UI | `materiant/src/<component>`, xem mục dưới |
+| Component UI | `materiant/API.md` rồi `materiant/api/<module>.md`, xem mục dưới |
 
 ## materiant
 
-`fastcast-ui` dùng materiant qua đường dẫn `../materiant`. Chỉ mở đúng tệp của component đang dùng; đọc thêm
+`fastcast-ui` dùng materiant qua đường dẫn `../materiant`. Dùng component: `materiant/API.md` (mục lục) rồi đúng `materiant/api/<module>.md`, không quét `materiant/src`; đọc thêm
 `materiant/CLAUDE.md` khi sắp sửa materiant. Sửa materiant là đụng cả app khác ⇒ giữ API chung, không nhét logic riêng
 của fastcast, và soát bằng lệnh của materiant.
 

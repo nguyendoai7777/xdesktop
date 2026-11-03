@@ -82,7 +82,7 @@ dùng trong 7 ngày, sổ ở `<profile>/.prune-ledger.json`) và `incremental/`
 
 `start.sh docs | launcher | groove` mặc định theo dõi mã (`tools/watch-run.mjs`, Node): lưu tệp hay gộp vào master ⇒ build lại
 (~2 s khi sửa một tệp view) ⇒ đóng app cũ, mở bản mới; build lỗi thì giữ app cũ; đóng cửa sổ app là lệnh thoát theo. Không phải
-hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` / `XDESKTOP_NO_WATCH=1` chỉ chạy một lần. Linux: groove chạy trong scope systemd riêng `app-xdesktop-groove-*.scope` để Mission Center hiện thành dòng riêng, không gộp vào terminal. Chưa áp cho
+hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` / `XDESKTOP_NO_WATCH=1` chỉ chạy một lần. Linux: groove chạy trong scope systemd riêng `app-xdesktop-groove.dev-*.scope` để Mission Center hiện thành dòng riêng, không gộp vào terminal. Chưa áp cho
 `start.sh fastcast` và `start.ps1`.
 
 ## Đánh tag
@@ -94,7 +94,7 @@ hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` 
 - Rust stable (≥ 1.99; `init.sh` tự cài / nâng), MSVC Build Tools + Windows SDK trên Windows; Linux: `init.sh` tự cài mọi gói hệ thống (apt). Repo con: `git -C <repo> …`.
 - Repo gốc commit theo đường dẫn: `git commit -- <paths>` (tránh kéo tệp người khác đã stage).
 - Chủ dự án xem tay: `pwsh start.ps1 docs [trang] [worktree]` (`bash start.sh …`) — gallery materiant từ master hoặc
-  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master (Linux: `start.sh` ghi mục ẩn `~/.local/share/applications/groove.desktop` để dock GNOME có icon, bỏ qua khi đã cài `.deb`); `start.ps1 fastcast [settings|launcher|overlay|ruler|picker]` mở fastcast bản debug với daemon giả + cấu hình dev riêng `fastcast/target/start/dev-config.json`, overlay trên màn giả. Bản debug (cả ba lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` mở, `Ctrl+Shift+C` chọn phần tử (D-19, `materiant/CLAUDE.md` mục Lệnh). App mới ⇒ thêm nhánh vào
+  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groove X bản master (bản debug mã riêng `groove.dev`, MPRIS `groovex.dev`, Windows AUMID `GrooveX.Player.Dev`: chạy cạnh bản đã cài không đè nhau; Linux: `start.sh` ghi `~/.local/share/applications/groove.dev.desktop` "Groove X (dev)" cho ô tìm + dock); `start.ps1 fastcast [settings|launcher|overlay|ruler|picker]` mở fastcast bản debug với daemon giả + cấu hình dev riêng `fastcast/target/start/dev-config.json`, overlay trên màn giả. Bản debug (cả ba lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` mở, `Ctrl+Shift+C` chọn phần tử (D-19, `materiant/CLAUDE.md` mục Lệnh). App mới ⇒ thêm nhánh vào
   cả hai script.
 
 ## Xong task thì gộp về `master` và dọn nhánh

@@ -30,14 +30,12 @@ show_worktrees() {
   [ "$found" = 1 ] || echo "Không có worktree materiant nào đang mở."
 }
 
-# Wayland không cho app tự gửi icon: GNOME ghép cửa sổ (`app_id = groove`) với `groove.desktop` để lấy icon cho dock.
-# Bản dev không cài `.deb` ⇒ ghi một mục ẩn (không MimeType) ở thư mục người dùng, icon trỏ thẳng ảnh trong
-# repo. Đã cài `.deb` thì mục của bản cài đủ dùng: gỡ mục dev (nó đè mục hệ thống) thay vì ghi.
-# Mission Center bản snap ghép scope `app-xdesktop-groove-*` với mục `groove.desktop`, đọc home riêng của snap trước
+# Wayland không cho app tự gửi icon: GNOME ghép cửa sổ theo `app_id` với `<app_id>.desktop` để lấy icon cho dock.
+# Bản debug có mã riêng `groove.dev` (groove `window_state::DEV_APP_ID`, MPRIS `groovex.dev`) ⇒ mục `groove.dev.desktop`
+# "Groove X (dev)" hiện trong ô tìm, cạnh "Groove X" của gói đã cài, không đè nhau. Không MimeType: không giành việc mở tệp nhạc.
+# Mission Center bản snap ghép scope `app-xdesktop-groove.dev-*` với mục đó, đọc home riêng của snap trước
 # (XDG_DATA_HOME = ~/snap/mission-center/current/.local/share). Snap không có plug `home` ⇒ không đọc được ảnh trong repo:
-# ghi thêm một bản vào home snap, icon trỏ tới ảnh chép sang đó.
-# Ẩn khỏi lưới app bằng `OnlyShowIn=X-Xdesktop;`, không dùng `NoDisplay=true`: app-rummage (magpie của Mission Center) bỏ
-# hẳn mục NoDisplay / Hidden nên không bao giờ hiện dòng app; nó không đọc OnlyShowIn, còn GNOME vẫn ghép icon theo StartupWMClass.
+# ghi thêm một bản vào home snap, icon trỏ tới ảnh chép sang đó. Không `NoDisplay` / `Hidden`: app-rummage bỏ hẳn các mục đó.
 groove_dev_desktop_entry() {
   local icon="$root/groove/packaging/linux/icons/256x256.png" mc="$HOME/snap/mission-center/current/.local/share"
   groove_dev_desktop_entry_in "${XDG_DATA_HOME:-$HOME/.local/share}/applications" "$icon"
@@ -49,11 +47,9 @@ groove_dev_desktop_entry() {
 
 groove_dev_desktop_entry_in() {
   local dir="$1" icon="$2"
-  local file="$dir/groove.desktop" marker="X-Xdesktop-Dev=true"
-  if [ -f /usr/share/applications/groove.desktop ]; then
-    if [ -f "$file" ] && grep -qx "$marker" "$file"; then rm -f "$file"; fi
-    return 0
-  fi
+  local file="$dir/groove.dev.desktop" old="$dir/groove.desktop" marker="X-Xdesktop-Dev=true"
+  # Bản cũ ghi mục dev trùng tên `groove.desktop` của gói (che mục của gói): gỡ nếu đúng là của script.
+  if [ -f "$old" ] && grep -qx "$marker" "$old"; then rm -f "$old"; fi
   if [ -f "$file" ] && ! grep -qx "$marker" "$file"; then return 0; fi
   mkdir -p "$dir"
   cat > "$file.tmp" <<EOF
@@ -63,8 +59,8 @@ Name=Groove X (dev)
 Exec=$CARGO_TARGET_DIR/debug/groove
 Icon=$icon
 Terminal=false
-OnlyShowIn=X-Xdesktop;
-StartupWMClass=groove
+Categories=AudioVideo;Audio;Player;
+StartupWMClass=groove.dev
 $marker
 Actions=pip;
 
@@ -152,7 +148,7 @@ case "$app" in
     export CARGO_TARGET_DIR="$root/groove/target/start"
     [ "$(uname -s)" = Linux ] && groove_dev_desktop_entry
     m="$root/materiant"
-    run_app --scope groove "$CARGO_TARGET_DIR/debug/groove" \
+    run_app --scope groove.dev "$CARGO_TARGET_DIR/debug/groove" \
       "$root/groove/crates:$root/groove/i18n:$root/groove/Cargo.toml:$m/src:$m/assets:$m/vendor:$m/Cargo.toml" \
       -- --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;

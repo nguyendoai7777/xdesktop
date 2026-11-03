@@ -98,7 +98,7 @@ run_app() {
   fi
   node "$prune" build "$@"
   if [ -n "$scope" ] && [ "$(uname -s)" = Linux ] && command -v systemd-run >/dev/null 2>&1; then
-    exec systemd-run --user --scope --quiet "--unit=app-xdesktop-$scope-$" -- "$exe" "${app_args[@]+"${app_args[@]}"}"
+    exec systemd-run --user --scope --quiet "--unit=app-xdesktop-$scope-$$" -- "$exe" "${app_args[@]+"${app_args[@]}"}"
   fi
   exec "$exe" "${app_args[@]+"${app_args[@]}"}"
 }

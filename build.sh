@@ -5,13 +5,14 @@
 #   bash build.sh
 #   bash build.sh --project fastcast --os linux --arch x64 --chip intel-amd      # không hỏi
 #   bash build.sh -f                                          # --force: biên dịch lại mã của ta, giữ thư viện đã build
+#   bash build.sh --pro                                       # fastcast mở sẵn Pro để nghiệm thu (D-23), tên tệp có `_pro`
 # Ra release/<app>/<app>_<version>_<os>_<arch>[_avx2][_draft].<đuôi> (vd. fastcast_0.1.4_linux_amd64.deb; macOS kèm Fastcast.app). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo="$root/fastcast"
 
-os="" arch="" chip="" force="" project=""
+os="" arch="" chip="" force="" project="" pro=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --project) project="$2"; shift 2 ;;
@@ -19,6 +20,7 @@ while [ $# -gt 0 ]; do
     --arch) arch="$2"; shift 2 ;;
     --chip) chip="$2"; shift 2 ;;
     -f|--force) force=1; shift ;;
+    --pro) pro=1; shift ;;
     *) echo "Không hiểu tham số: $1" >&2; exit 1 ;;
   esac
 done
@@ -32,6 +34,7 @@ case "$(uname -s)" in
     [ -n "$arch" ] && forward+=(-Arch "$arch")
     [ -n "$chip" ] && forward+=(-Chip "$chip")
     [ -n "$force" ] && forward+=(-Force)
+    [ -n "$pro" ] && forward+=(-Pro)
     exec pwsh -NoProfile -File "$(cygpath -w "$root/build.ps1")" ${forward[@]+"${forward[@]}"} ;;
   Darwin) host_os=macos ;;
   *) host_os=linux ;;
@@ -206,6 +209,12 @@ if [ "$chip" = avx2 ]; then
   export RUSTFLAGS="${RUSTFLAGS:-} -C target-cpu=x86-64-v3"
   variant=avx2
 fi
+# Bản nghiệm thu Pro (D-23): feature `pro-unlock`, hậu tố `_pro` để không lẫn với bản phát hành.
+features=()
+if [ -n "$pro" ]; then
+  features=(--features fastcast-core/pro-unlock)
+  variant="${variant:+${variant}_}pro"
+fi
 
 # Luôn --target: RUSTFLAGS không lan sang build script, mỗi target một thư mục. Không feature `dev-env` (bản phát hành).
 if [ -n "$force" ]; then
@@ -214,7 +223,7 @@ if [ -n "$force" ]; then
 fi
 # Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ (cùng crate, hash khác) trong thư mục build vừa dùng.
 (cd "$repo" && node "$root/tools/cargo-prune.mjs" build --release --locked --target "$triple" \
-  -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins)
+  -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins ${features[@]+"${features[@]}"})
 target_dir="${CARGO_TARGET_DIR:-$repo/target}"
 release="$target_dir/$triple/release"
 
@@ -235,7 +244,7 @@ out="$root/release/fastcast"
 
 # macOS phát hành bằng `.app` + `.dmg`, không để exe rời. Có đủ model thì ra bản đủ, thiếu thì bản `-draft` kèm cảnh báo.
 if [ "$os" = macos ]; then
-  package=(--skip-build --arch "$arch" --out "$out")
+  package=(--skip-build --arch "$arch" --out "$out" ${variant:+--variant "$variant"})
   models=""
   for dir in "$target_dir/release/models" "$target_dir/ocr-models"; do
     if [ -d "$dir/onnx" ] && [ "$arch" = "$host_arch" ]; then models="$dir"; break; fi

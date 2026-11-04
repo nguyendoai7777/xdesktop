@@ -11,6 +11,7 @@ param(
     [ValidateSet('x64', 'arm64')] [string] $Arch,
     [ValidateSet('intel-amd', 'avx2', 'intel', 'apple', 'snapdragon', 'arm')] [string] $Chip,
     [Alias('f')] [switch] $Force,
+    [switch] $Pro,
     [ValidateSet('fastcast', 'groove', 'materiant')] [string] $Project
 )
 $ErrorActionPreference = 'Stop'
@@ -167,7 +168,7 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "cargo clean failed (exit $LASTEXITCODE)" }
     }
     # Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ (cùng crate, hash khác) trong thư mục build vừa dùng.
-    node (Join-Path $root 'tools/cargo-prune.mjs') build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins
+    node (Join-Path $root 'tools/cargo-prune.mjs') build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins @(if ($Pro) { '--features', 'fastcast-core/pro-unlock' })
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 } finally {
     Pop-Location
@@ -178,7 +179,8 @@ $version = ((cargo metadata --format-version 1 --no-deps --manifest-path (Join-P
 # Tên tệp: {app}_{version}_{os}_{arch}[_avx2]; Linux theo tên kiến trúc Debian.
 $osName = @{ windows = 'win'; macos = 'macos'; linux = 'linux' }[$Os]
 $archName = if ($Os -eq 'linux') { @{ x64 = 'amd64'; arm64 = 'arm64' }[$Arch] } else { $Arch }
-$outName = "fastcast_${version}_${osName}_$archName$(if ($Chip -eq 'avx2') { '_avx2' })"
+# Bản nghiệm thu Pro (D-23): feature `pro-unlock`, hậu tố `_pro` để không lẫn với bản phát hành.
+$outName = "fastcast_${version}_${osName}_$archName$(if ($Chip -eq 'avx2') { '_avx2' })$(if ($Pro) { '_pro' })"
 $suffix = if ($Os -eq 'windows') { '.exe' } else { '' }
 
 $devVars = 'FASTCAST_OCR_EXE', 'FASTCAST_REC_EXE', 'FASTCAST_REC_WINDOW', 'FASTCAST_OCR_MODELS'
@@ -217,7 +219,8 @@ if ($hasModels) {
 }
 
 $setup = $null
-if ("$Os-$Arch-$Chip" -eq 'windows-x64-intel-amd' -and $hasModels) {
+# Bản cài tự build lại không `pro-unlock`: bản `-Pro` chỉ ra thư mục exe rời.
+if ("$Os-$Arch-$Chip" -eq 'windows-x64-intel-amd' -and $hasModels -and -not $Pro) {
     $nsis = (Get-Command makensis -ErrorAction Ignore).Source
     foreach ($path in (Join-Path $root '../tools/nsis/makensis.exe'), (Join-Path ${env:ProgramFiles(x86)} 'NSIS/makensis.exe')) {
         if (-not $nsis -and (Test-Path -LiteralPath $path)) { $nsis = (Resolve-Path $path).Path }

@@ -5,7 +5,7 @@
 #   bash build.sh
 #   bash build.sh --project fastcast --os linux --arch x64 --chip intel-amd      # không hỏi
 #   bash build.sh -f                                          # --force: biên dịch lại mã của ta, giữ thư viện đã build
-# Ra release/fastcast/<target>[-avx2]/ (macOS: Fastcast.app + .dmg để cài; OS khác: bốn exe, models, licenses — chạy `fst`). Chỉ build được cho OS đang chạy: thiếu SDK
+# Ra release/<app>/<app>_<version>_<os>_<arch>[_avx2][_draft].<đuôi> (vd. fastcast_0.1.4_linux_amd64.deb; macOS kèm Fastcast.app). Chỉ build được cho OS đang chạy: thiếu SDK
 # để link chéo OS. Git Bash trên Windows ⇒ đá sang build.ps1.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -122,7 +122,7 @@ case "$project" in
         -p groove-app -p groove -p groove-audio -p groove-core -p groove-library -p materiant
     fi
     case "$host_os" in
-      macos) exec bash "$root/groove/packaging/macos/build-macos.sh" --out "$root/release/groove/macos-$(uname -m)" ;;
+      macos) exec bash "$root/groove/packaging/macos/build-macos.sh" --out "$root/release/groove" ;;
       *) exec bash "$root/groove/packaging/linux/build-deb.sh" --out "$root/release/groove" ;;
     esac ;;
   # materiant chỉ có gallery docs (assets nhúng sẵn trong exe).
@@ -201,10 +201,10 @@ fi
 
 printf '\n==> %s, chip %s\n' "$triple" "$chip"
 rustup target list --installed | grep -qx "$triple" || rustup target add "$triple"
-out_name="$triple"
+variant=""
 if [ "$chip" = avx2 ]; then
   export RUSTFLAGS="${RUSTFLAGS:-} -C target-cpu=x86-64-v3"
-  out_name="$triple-avx2"
+  variant=avx2
 fi
 
 # Luôn --target: RUSTFLAGS không lan sang build script, mỗi target một thư mục. Không feature `dev-env` (bản phát hành).
@@ -231,7 +231,7 @@ if grep -a -q -e 'inspector-pick' -e 'Hover to highlight' "$release/fastcast-ui"
   exit 1
 fi
 
-out="$root/release/fastcast/$out_name"
+out="$root/release/fastcast"
 
 # macOS phát hành bằng `.app` + `.dmg`, không để exe rời. Có đủ model thì ra bản đủ, thiếu thì bản `-draft` kèm cảnh báo.
 if [ "$os" = macos ]; then
@@ -252,7 +252,7 @@ fi
 
 # Linux phát hành bằng `.deb` (Ubuntu), cùng cách với macOS: đủ model + giấy phép thì bản đủ, thiếu thì `-draft` kèm cảnh báo.
 if [ "$os" = linux ]; then
-  package=(--skip-build --arch "$arch" --out "$out" --release-dir "$release")
+  package=(--skip-build --arch "$arch" --out "$out" --release-dir "$release" ${variant:+--variant "$variant"})
   models=""
   if [ -d "$target_dir/release/models/onnx" ] && [ "$arch" = "$host_arch" ]; then models="$target_dir/release/models"; fi
   # Tự dựng nốt phần OCR: model đã giải nén (export-ocr) thì soát sổ + tải ONNX Runtime chính thức nếu thiếu (sha256 ghim
@@ -273,25 +273,3 @@ if [ "$os" = linux ]; then
   bash "$repo/tools/build-deb.sh" "${package[@]}"
   exit 0
 fi
-
-rm -rf "$out"
-mkdir -p "$out"
-for exe in $exes; do cp "$release/$exe" "$out/"; done
-
-warnings=""
-if command -v pwsh >/dev/null 2>&1 && command -v cargo-about >/dev/null 2>&1; then
-  pwsh -NoProfile -File "$repo/tools/gen-licenses.ps1" -Out "$out/licenses"
-else
-  warnings="${warnings}⚠ Không có trang giấy phép (cần pwsh + cargo-about).
-"
-fi
-
-# Model + thư viện ONNX Runtime đã dựng ở target/release/models. Thư viện theo kiến trúc: chỉ dùng đúng máy dựng ra nó.
-if [ -d "$target_dir/release/models" ] && [ "$arch" = "$host_arch" ]; then
-  cp -R "$target_dir/release/models" "$out/models"
-else
-  warnings="${warnings}⚠ Không kèm model: OCR chưa chạy được (dựng bằng fastcast/tools/fetch-ocr-models.ps1 vào target/release/models).
-"
-fi
-
-printf '\nXong: %s\n%s' "$out" "$warnings"

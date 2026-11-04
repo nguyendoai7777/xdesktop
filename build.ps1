@@ -4,8 +4,8 @@
 #   pwsh ./build.ps1 -Project fastcast -Os windows -Arch x64 -Chip intel-amd   # không hỏi
 #   pwsh ./build.ps1 -f                                         # -Force: biên dịch lại mã của ta, giữ thư viện đã build
 # Groovex: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra release/materiant/materiant-docs.exe.
-# Ra release/fastcast/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst.exe`). Windows x64 phổ thông có đủ NSIS + model
-# thì thêm bản cài release/fastcast/fastcast-<version>-setup.exe. Chỉ build được cho OS đang chạy: thiếu SDK để link chéo OS.
+# Tên đầu ra: <app>_<version>_<os>_<arch>[_avx2].<đuôi>. Ra release/fastcast/fastcast_<version>_win_<arch>[_avx2]/ (bốn exe, models,
+# licenses — chạy `fst.exe`). Windows x64 phổ thông có đủ NSIS + model thì thêm bản cài release/fastcast/fastcast_<version>_win_x64.exe. Chỉ build được cho OS đang chạy: thiếu SDK để link chéo OS.
 param(
     [ValidateSet('windows', 'macos', 'linux')] [string] $Os,
     [ValidateSet('x64', 'arm64')] [string] $Arch,
@@ -146,7 +146,6 @@ $triple = @{
     'linux-x64'     = 'x86_64-unknown-linux-gnu'
     'linux-arm64'   = 'aarch64-unknown-linux-gnu'
 }["$Os-$Arch"]
-$outName = if ($Chip -eq 'avx2') { "$triple-avx2" } else { $triple }
 
 if (-not (Test-Path (Join-Path $repo 'Cargo.toml')) -or -not (Test-Path (Join-Path $root 'materiant/Cargo.toml'))) {
     Write-Error 'Thiếu fastcast hoặc materiant: chạy pwsh init.ps1 rồi chọn fastcast.' -ErrorAction Continue
@@ -175,6 +174,11 @@ try {
 }
 $targetDir = (cargo metadata --format-version 1 --no-deps --manifest-path (Join-Path $repo 'Cargo.toml') | ConvertFrom-Json).target_directory
 $release = Join-Path $targetDir "$triple/release"
+$version = ((cargo metadata --format-version 1 --no-deps --manifest-path (Join-Path $repo 'Cargo.toml') | ConvertFrom-Json).packages | Where-Object name -EQ 'fastcast-daemon').version
+# Tên tệp: {app}_{version}_{os}_{arch}[_avx2]; Linux theo tên kiến trúc Debian.
+$osName = @{ windows = 'win'; macos = 'macos'; linux = 'linux' }[$Os]
+$archName = if ($Os -eq 'linux') { @{ x64 = 'amd64'; arm64 = 'arm64' }[$Arch] } else { $Arch }
+$outName = "fastcast_${version}_${osName}_$archName$(if ($Chip -eq 'avx2') { '_avx2' })"
 $suffix = if ($Os -eq 'windows') { '.exe' } else { '' }
 
 $devVars = 'FASTCAST_OCR_EXE', 'FASTCAST_REC_EXE', 'FASTCAST_REC_WINDOW', 'FASTCAST_OCR_MODELS'
@@ -220,9 +224,8 @@ if ("$Os-$Arch-$Chip" -eq 'windows-x64-intel-amd' -and $hasModels) {
     }
     if ($nsis) {
         & (Join-Path $repo 'tools/build-installer.ps1') -Target $triple -ModelsSource $models -Makensis $nsis
-        $version = ((cargo metadata --format-version 1 --no-deps --manifest-path (Join-Path $repo 'Cargo.toml') | ConvertFrom-Json).packages | Where-Object name -EQ 'fastcast-daemon').version
-        $setup = Join-Path $releaseRoot "fastcast-$version-setup.exe"
-        foreach ($file in "fastcast-$version-setup.exe", "fastcast-$version-setup.exe.sha256") {
+        $setup = Join-Path $releaseRoot "fastcast_${version}_win_x64.exe"
+        foreach ($file in "fastcast_${version}_win_x64.exe", "fastcast_${version}_win_x64.exe.sha256") {
             Move-Item -Force -LiteralPath (Join-Path $repo "dist/$file") -Destination $releaseRoot
         }
     } else {

@@ -6,8 +6,10 @@
 #                                       chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   bash start.sh launcher              launcher example của materiant (bản master; tham số 2 = worktree)
 #   bash start.sh groove                Groovex (bản master)
-#   bash start.sh fastcast [màn]        Fastcast bản debug (inspector: Ctrl+Shift+I, Ctrl+Shift+C) + daemon giả + cấu hình dev riêng;
-#                                       màn = settings (mặc định) | launcher | overlay | ruler | picker (Linux: overlay/ruler/picker dùng fastcast/tools/fake-screens.sh)
+#   bash start.sh fastcast [màn]        Fastcast bản debug (inspector: Ctrl+Shift+I, Ctrl+Shift+C) + cấu hình dev riêng;
+#                                       màn = app (mặc định: `fst` thật — khay + phím tắt toàn cục; phải thoát bản đã cài trước)
+#                                       | settings | launcher | overlay | ruler | picker (daemon giả, không khay, không phím;
+#                                       Linux: overlay/ruler/picker dùng fastcast/tools/fake-screens.sh)
 #   bash start.sh list                  liệt kê worktree đang mở
 # docs / launcher / groove mặc định theo dõi mã (tools/watch-run.mjs): lưu tệp ⇒ build lại, mở lại app (mất trạng thái đang mở).
 # Thêm --no-watch (ở vị trí bất kỳ) hoặc XDESKTOP_NO_WATCH=1 để chỉ build rồi chạy một lần.
@@ -153,19 +155,21 @@ case "$app" in
       -- --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;
   fastcast)
-    # Bản debug có inspector, daemon giả (không phím tắt toàn cục, không khay), cấu hình dev riêng: không đụng Fastcast đã cài.
+    # Bản debug có inspector, cấu hình dev riêng. `app`: daemon thật (khay + phím tắt toàn cục) — một instance nên bản đã cài
+    # phải thoát trước. Màn khác: daemon giả (không phím tắt toàn cục, không khay), không đụng Fastcast đã cài.
     # Git Bash trên Windows ⇒ đá sang start.ps1 (endpoint là named pipe).
     case "$(uname -s)" in
       MINGW*|MSYS*|CYGWIN*) exec pwsh -NoProfile -File "$(cygpath -w "$root/start.ps1")" fastcast "${@:2}" ;;
     esac
-    screen="${page:-settings}"
+    screen="${page:-app}"
     case "$screen" in
+      app) command="" ;;
       settings) command=open_settings ;;
       launcher) command=open_launcher ;;
       overlay) command=capture_region ;;
       ruler) command=ruler ;;
       picker) command=color_picker ;;
-      *) echo "Màn '$screen' không hợp lệ. Hợp lệ: settings, launcher, overlay, ruler, picker"; exit 1 ;;
+      *) echo "Màn '$screen' không hợp lệ. Hợp lệ: app, settings, launcher, overlay, ruler, picker"; exit 1 ;;
     esac
     os="$(uname -s)"
     fake=0
@@ -177,6 +181,33 @@ case "$app" in
     fi
     target="$root/fastcast/target/start"
     export CARGO_TARGET_DIR="$target"
+    mkdir -p "$target"
+    # Cấu hình dev: lần đầu chép từ cấu hình thật (fastcast_core::paths::config_dir).
+    dev_config="$target/dev-config.json"
+    if [ "$os" = Darwin ]; then real_config="$HOME/Library/Application Support/fastcast/config.json"
+    else real_config="${XDG_CONFIG_HOME:-$HOME/.config}/fastcast/config.json"; fi
+    if [ ! -f "$dev_config" ] && [ -f "$real_config" ]; then cp "$real_config" "$dev_config"; fi
+    export FASTCAST_CONFIG_FILE="$dev_config"
+    echo "cấu hình dev: $dev_config"
+
+    if [ "$screen" = app ]; then
+      # Một instance: `fst` thứ hai chỉ báo bản đang chạy mở launcher rồi thoát ⇒ soát trước, nói rõ bản nào đang giữ.
+      own="$target/debug/fst"
+      for pid in $(pgrep -x fst 2>/dev/null || true); do
+        exe="$(readlink "/proc/$pid/exe" 2>/dev/null || ps -p "$pid" -o comm= 2>/dev/null || true)"
+        if [ "${exe% (deleted)}" = "$own" ]; then
+          echo "fst bản debug đã chạy (pid $pid, session khác?)"
+        else
+          echo "Fastcast đang chạy (pid $pid: ${exe:-fst}). Thoát nó trước: fst quit (hoặc Thoát ở menu khay), rồi chạy lại."
+        fi
+        exit 1
+      done
+      node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-daemon --bin fst -p fastcast-ui --bin fastcast-ui \
+        -p fastcast-video --bin fastcast-rec -p fastcast-ocr --bin fastcast-ocr
+      echo "fst thật (bản debug): khay + phím tắt theo cấu hình dev. Lệnh từ terminal khác: $own run <lệnh>, $own quit. Ctrl+C để thoát."
+      [ "$os" = Linux ] && echo "GNOME: phím tắt ghi vào dconf, trỏ tới exe debug; mở lại Fastcast đã cài thì nó ghi lại đường dẫn của nó."
+      exec "$own"
+    fi
     # Socket của endpoint `dev` (fastcast_core::ipc::Endpoint::custom): temp_dir() = $TMPDIR hoặc /tmp.
     sock="${TMPDIR:-/tmp}"; sock="${sock%/}/fastcast-dev.sock"
     if [ -S "$sock" ]; then
@@ -189,13 +220,6 @@ case "$app" in
     fi
     node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-ui --bin fastcast-ui --example fake_daemon
 
-    # Cấu hình dev: lần đầu chép từ cấu hình thật (fastcast_core::paths::config_dir).
-    dev_config="$target/dev-config.json"
-    if [ "$os" = Darwin ]; then real_config="$HOME/Library/Application Support/fastcast/config.json"
-    else real_config="${XDG_CONFIG_HOME:-$HOME/.config}/fastcast/config.json"; fi
-    if [ ! -f "$dev_config" ] && [ -f "$real_config" ]; then cp "$real_config" "$dev_config"; fi
-    export FASTCAST_CONFIG_FILE="$dev_config"
-    echo "cấu hình dev: $dev_config"
     if [ "$fake" = 1 ]; then export FASTCAST_OVERLAY_FAKE=1; else unset FASTCAST_OVERLAY_FAKE; fi
 
     echo "Gõ vào đây: open_launcher, capture_region, ruler, color_picker, open_settings…; quit hoặc Ctrl+C để thoát. Trong cửa sổ: Ctrl+Shift+I mở inspector, Ctrl+Shift+C chọn phần tử."

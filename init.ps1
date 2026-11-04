@@ -56,14 +56,16 @@ $repos = [ordered]@{
     'fastcast'  = 'https://github.com/nguyendoai7777/fastcast.git'
     'materiant' = 'https://github.com/nguyendoai7777/materiant-rust.git'
     'groove'    = 'https://github.com/nguyendoai7777/groove.git'
+    # Server chung (D-24): chưa có remote — có URL thì điền vào đây, trống thì bỏ qua êm.
+    'cloud'     = ''
 }
 # Project → các repo cần có.
 $projects = [ordered]@{
-    'fastcast'  = @('fastcast', 'materiant')
+    'fastcast'  = @('fastcast', 'materiant', 'cloud')
     'materiant' = @('materiant')
     'groove'    = @('groove', 'materiant')
 }
-$labels = @('fastcast   (kéo fastcast + materiant)', 'materiant  (chỉ thư viện UI)', 'groove     (kéo groove + materiant)')
+$labels = @('fastcast   (kéo fastcast + materiant + cloud)', 'materiant  (chỉ thư viện UI)', 'groove     (kéo groove + materiant)')
 
 # ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.
 function Select-Checklist([string] $Title, [string[]] $Ids, [string[]] $Labels) {
@@ -109,7 +111,7 @@ if (-not $Project -and -not [Console]::IsInputRedirected) {
 if (-not $Project) {
     # Stdin là pipe (mintty của Git Bash, script): không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
     Write-Host 'Bạn muốn init project nào:'
-    Write-Host '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
+    Write-Host '  [1] fastcast   (kéo fastcast + materiant + cloud)  (Enter)'
     Write-Host '  [2] materiant  (chỉ thư viện UI)'
     Write-Host '  [3] groove     (kéo groove + materiant)'
     while (-not $Project) {
@@ -126,6 +128,7 @@ foreach ($name in $wanted) {
     $dir = Join-Path $root $name
     if (Test-Path (Join-Path $dir '.git')) { Write-Host "✓ $name có sẵn, không kéo lại"; continue }
     if ((Test-Path $dir) -and (Get-ChildItem $dir -Force)) { Write-Warning "$dir có tệp nhưng không phải repo git — dọn tay rồi chạy lại"; continue }
+    if (-not $repos[$name]) { Write-Host "· $name chưa có remote, bỏ qua"; continue }
     git clone $repos[$name] $dir
     if ($LASTEXITCODE -ne 0) { throw "clone $name thất bại" }
     Write-Host "✓ $name đã clone"

@@ -59,6 +59,8 @@ repo_url() {
     fastcast) echo https://github.com/nguyendoai7777/fastcast.git ;;
     materiant) echo https://github.com/nguyendoai7777/materiant-rust.git ;;
     groove) echo https://github.com/nguyendoai7777/groove.git ;;
+    # Server chung (D-24): chưa có remote — có URL thì điền vào đây, trống thì bỏ qua êm.
+    cloud) echo '' ;;
   esac
 }
 
@@ -113,13 +115,13 @@ select_checklist() {
 selected="$*"
 if [ -z "$selected" ] && [ -t 0 ]; then
   select_checklist 'Bạn muốn init project nào:' \
-    'fastcast|fastcast   (kéo fastcast + materiant)' 'materiant|materiant  (chỉ thư viện UI)' \
+    'fastcast|fastcast   (kéo fastcast + materiant + cloud)' 'materiant|materiant  (chỉ thư viện UI)' \
     'groove|groove     (kéo groove + materiant)'
 fi
 if [ -z "$selected" ]; then
   # Stdin là pipe: không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
   echo 'Bạn muốn init project nào:'
-  echo '  [1] fastcast   (kéo fastcast + materiant)  (Enter)'
+  echo '  [1] fastcast   (kéo fastcast + materiant + cloud)  (Enter)'
   echo '  [2] materiant  (chỉ thư viện UI)'
   echo '  [3] groove     (kéo groove + materiant)'
   while [ -z "$selected" ]; do
@@ -140,7 +142,7 @@ fi
 wanted=""
 for project in $selected; do
   case "$project" in
-    fastcast) wanted="$wanted fastcast materiant" ;;
+    fastcast) wanted="$wanted fastcast materiant cloud" ;;
     materiant) wanted="$wanted materiant" ;;
     groove) wanted="$wanted groove materiant" ;;
     *) echo "✗ không có project $project" >&2; exit 1 ;;
@@ -150,7 +152,9 @@ for name in $(printf '%s\n' $wanted | awk '!seen[$0]++'); do
   dir="$root/$name"
   if [ -d "$dir/.git" ]; then echo "✓ $name có sẵn, không kéo lại"; continue; fi
   if [ -d "$dir" ] && [ -n "$(ls -A "$dir")" ]; then echo "⚠ $dir có tệp nhưng không phải repo git — dọn tay rồi chạy lại" >&2; continue; fi
-  git clone "$(repo_url "$name")" "$dir"
+  url="$(repo_url "$name")"
+  if [ -z "$url" ]; then echo "· $name chưa có remote, bỏ qua"; continue; fi
+  git clone "$url" "$dir"
   echo "✓ $name đã clone"
 done
 

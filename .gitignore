@@ -3,6 +3,7 @@
 /fastcast/
 /materiant/
 /groove/
+/cloud/
 
 # Bản build do build.ps1 / build.sh sinh
 /release/

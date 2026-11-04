@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build bản release. Hỏi project (fastcast / groove / materiant docs) rồi, với fastcast, OS → kiến trúc → chip (Enter = máy
-# đang chạy). Groove X: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra
+# đang chạy). Groovex: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra
 # release/materiant/materiant-docs. Đứng ở gốc workspace:
 #   bash build.sh
 #   bash build.sh --project fastcast --os linux --arch x64 --chip intel-amd      # không hỏi
@@ -103,11 +103,11 @@ select_option() {
 }
 
 # --os / --arch / --chip chỉ có ở fastcast: có cờ đó thì khỏi hỏi project.
-[ -n "$project$os$arch$chip" ] || { select_option 'Build project nào:' 1 'fastcast|Fastcast' 'groove|Groove X' 'materiant|materiant (docs only)'; project="$picked"; }
+[ -n "$project$os$arch$chip" ] || { select_option 'Build project nào:' 1 'fastcast|Fastcast' 'groove|Groovex' 'materiant|materiant (docs only)'; project="$picked"; }
 project="${project:-fastcast}"
 
 case "$project" in
-  # Groove X: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
+  # Groovex: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
   groove)
     if [ -n "$os$arch$chip" ]; then
       echo "groove chỉ build cho máy đang chạy, không nhận --os, --arch, --chip." >&2

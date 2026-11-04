@@ -3,7 +3,7 @@
 #   pwsh ./build.ps1
 #   pwsh ./build.ps1 -Project fastcast -Os windows -Arch x64 -Chip intel-amd   # không hỏi
 #   pwsh ./build.ps1 -f                                         # -Force: biên dịch lại mã của ta, giữ thư viện đã build
-# Groove X: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra release/materiant/materiant-docs.exe.
+# Groovex: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra release/materiant/materiant-docs.exe.
 # Ra release/fastcast/<target>[-avx2]/ (bốn exe, models, licenses — chạy `fst.exe`). Windows x64 phổ thông có đủ NSIS + model
 # thì thêm bản cài release/fastcast/fastcast-<version>-setup.exe. Chỉ build được cho OS đang chạy: thiếu SDK để link chéo OS.
 param(
@@ -70,10 +70,10 @@ function Option([string] $Id, [string] $Label) { [pscustomobject]@{ Id = $Id; La
 if (-not $Project -and ($Os -or $Arch -or $Chip)) { $Project = 'fastcast' }
 if (-not $Project) {
     $Project = Select-Option 'Build project nào:' @(
-        (Option 'fastcast' 'Fastcast'), (Option 'groove' 'Groove X'), (Option 'materiant' 'materiant (docs only)'))
+        (Option 'fastcast' 'Fastcast'), (Option 'groove' 'Groovex'), (Option 'materiant' 'materiant (docs only)'))
 }
 
-# Groove X: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
+# Groovex: bản cài cho đúng máy đang chạy, ra release/groove/. Dựng thật do script của repo groove.
 if ($Project -eq 'groove') {
     if ($Os -or $Arch -or $Chip) { throw 'groove chỉ build cho máy đang chạy, không nhận -Os, -Arch, -Chip.' }
     if (-not $IsWindows) { throw 'macOS, Linux: bash build.sh --project groove' }

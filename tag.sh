@@ -7,7 +7,9 @@
 #   bash tag.sh --current       # tag đúng version đang có, không nâng
 #   bash tag.sh -p --push       # đẩy luôn commit + tag lên origin
 #   bash tag.sh --project materiant --minor     # không hỏi project; nhiều project: --project fastcast,materiant
-# Nâng materiant thì `Cargo.lock` của fastcast đổi theo (build dùng `--locked`), nên fastcast có thêm một commit.
+# Nâng materiant thì `Cargo.lock` của fastcast / groove đổi theo (build dùng `--locked`), nên app có thêm một commit.
+# Release note (D-22, khuôn `docs/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
+# rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -79,7 +81,7 @@ done
 [ -n "$bump" ] || bump=patch
 
 if [ -z "$projects" ] && [ -t 0 ]; then
-  select_checklist 'Đánh tag cho project nào:' 'fastcast|fastcast' 'materiant|materiant'
+  select_checklist 'Đánh tag cho project nào:' 'fastcast|fastcast' 'groove|Groovex (groove)' 'materiant|materiant'
   projects="$selected"
 fi
 if [ -z "$projects" ]; then
@@ -87,6 +89,7 @@ if [ -z "$projects" ]; then
   echo 'Đánh tag cho project nào:'
   echo '  [1] fastcast  (Enter)'
   echo '  [2] materiant'
+  echo '  [3] groove'
   while [ -z "$projects" ]; do
     printf 'Chọn (nhiều project thì cách bằng dấu phẩy): '
     read -r answer || answer=""
@@ -95,20 +98,21 @@ if [ -z "$projects" ]; then
       case "$pick" in
         1) projects="$projects fastcast" ;;
         2) projects="$projects materiant" ;;
-        *) echo 'Nhập 1, 2 hoặc 1,2.'; projects=""; break ;;
+        3) projects="$projects groove" ;;
+        *) echo 'Nhập 1, 2, 3 hoặc vd 1,2.'; projects=""; break ;;
       esac
     done
   done
 fi
 
-# materiant trước: fastcast có commit cập nhật lock thì tag của fastcast chứa luôn commit đó.
+# materiant trước: app có commit cập nhật lock thì tag của app chứa luôn commit đó.
 order=""
-for name in materiant fastcast; do
+for name in materiant fastcast groove; do
   case " $projects " in *" $name "*) order="$order $name" ;; esac
 done
 for name in $projects; do
   case "$name" in
-    fastcast|materiant) ;;
+    fastcast|materiant|groove) ;;
     *) echo "Project không hợp lệ: $name" >&2; exit 2 ;;
   esac
 done
@@ -124,19 +128,59 @@ next_version() { # <version hiện tại> ⇒ in version mới
   echo "$major.$minor.$patch"
 }
 
+notes_marker='<!-- release-note: điền xong thì xoá dòng này -->'
+# notes_file <repo> <version> ⇒ đường dẫn tệp release note của tag đó.
+notes_file() { echo "$root/$1/release-notes/v$2.md"; }
+# write_notes_stub <name> <version>: khung theo `docs/release-notes.md`.
+write_notes_stub() {
+  local file
+  file="$(notes_file "$1" "$2")"
+  mkdir -p "$(dirname "$file")"
+  cat > "$file" <<NOTES
+# $1 v$2 ($(date +%Y-%m-%d))
+
+$notes_marker
+
+## Mới
+
+- 
+
+## Sửa lỗi
+
+- 
+
+## Thay đổi khác
+
+- 
+NOTES
+}
+
 read_version() { sed -n 's/^version = "\(.*\)"$/\1/p' "$root/$1/Cargo.toml" | head -1; }
 
 # Soát hết trước khi đụng gì: một project hỏng thì không project nào đổi.
+notes_missing=""
 for name in $order; do
   repo="$root/$name"
   [ -d "$repo/.git" ] || { echo "Chưa có $name: chạy bash init.sh." >&2; exit 1; }
-  [ -z "$(git -C "$repo" status --porcelain)" ] || { echo "$name còn thay đổi chưa commit, tag sẽ không khớp code." >&2; exit 1; }
-  branch="$(git -C "$repo" branch --show-current)"
-  [ "$branch" = master ] || { echo "$name đang ở nhánh '$branch', chỉ tag trên master." >&2; exit 1; }
   version="$(read_version "$name")"
   next="$(next_version "$version")" || { echo "Version lạ trong $name/Cargo.toml: '$version'" >&2; exit 1; }
+  # Tệp release note của tag này được phép đang sửa / chưa commit: nó đi cùng commit nâng version.
+  dirty="$(git -C "$repo" status --porcelain --untracked-files=all | grep -v " release-notes/v$next.md$" || true)"
+  [ -z "$dirty" ] || { echo "$name còn thay đổi chưa commit, tag sẽ không khớp code." >&2; exit 1; }
+  branch="$(git -C "$repo" branch --show-current)"
+  [ "$branch" = master ] || { echo "$name đang ở nhánh '$branch', chỉ tag trên master." >&2; exit 1; }
   [ -z "$(git -C "$repo" tag --list "v$next")" ] || { echo "Tag v$next của $name đã có." >&2; exit 1; }
+  notes="$(notes_file "$name" "$next")"
+  if [ ! -f "$notes" ]; then
+    write_notes_stub "$name" "$next"
+    echo "Chưa có release note: đã tạo khung $name/release-notes/v$next.md — điền rồi chạy lại." >&2
+    notes_missing=1
+  elif grep -qF "$notes_marker" "$notes"; then
+    echo "$name/release-notes/v$next.md còn dòng mẫu: điền xong thì xoá dòng '$notes_marker'." >&2
+    notes_missing=1
+  fi
 done
+[ -z "$notes_missing" ] || exit 1
 
 lock_synced=""
 pushes=""
@@ -153,23 +197,33 @@ for name in $order; do
     cat "$tmp" > "$repo/Cargo.toml"
     rm -f "$tmp"
     (cd "$repo" && cargo update --workspace --offline --quiet)
-    git -C "$repo" commit --quiet -m "release: $tag" -- Cargo.toml Cargo.lock
-    # fastcast build bằng `--locked`, ghi cả version của materiant trong lock.
-    if [ "$name" = materiant ] && [ -d "$root/fastcast/.git" ]; then
-      git -C "$root/fastcast" diff --quiet -- Cargo.lock || { echo "fastcast/Cargo.lock đang có sửa dở, chưa cập nhật materiant." >&2; exit 1; }
-      (cd "$root/fastcast" && cargo update -p materiant --offline --quiet)
-      if ! git -C "$root/fastcast" diff --quiet -- Cargo.lock; then
-        git -C "$root/fastcast" commit --quiet -m "deps: materiant $tag" -- Cargo.lock
-        lock_synced=1
-      fi
+    git -C "$repo" add -- "release-notes/$tag.md"
+    git -C "$repo" commit --quiet -m "release: $tag" -- Cargo.toml Cargo.lock "release-notes/$tag.md"
+    # App build bằng `--locked`, ghi cả version của materiant trong lock.
+    if [ "$name" = materiant ]; then
+      for app in fastcast groove; do
+        [ -d "$root/$app/.git" ] || continue
+        git -C "$root/$app" diff --quiet -- Cargo.lock || { echo "$app/Cargo.lock đang có sửa dở, chưa cập nhật materiant." >&2; exit 1; }
+        (cd "$root/$app" && cargo update -p materiant --offline --quiet)
+        if ! git -C "$root/$app" diff --quiet -- Cargo.lock; then
+          git -C "$root/$app" commit --quiet -m "deps: materiant $tag" -- Cargo.lock
+          lock_synced="$lock_synced $app"
+        fi
+      done
     fi
+  elif [ -n "$(git -C "$repo" status --porcelain -- "release-notes/$tag.md")" ]; then
+    git -C "$repo" add -- "release-notes/$tag.md"
+    git -C "$repo" commit --quiet -m "release notes: $tag" -- "release-notes/$tag.md"
   fi
-  git -C "$repo" tag -a "$tag" -m "$tag"
+  # Nội dung tag = release note (changelog); `verbatim` giữ dòng `#` của markdown.
+  git -C "$repo" tag -a "$tag" --cleanup=verbatim -F "$(notes_file "$name" "$next")"
   echo "$name: $version → $next, tag $tag ở $(git -C "$repo" rev-parse --short HEAD)"
   pushes="$pushes$name $tag"$'\n'
 done
-# fastcast chỉ có commit cập nhật lock, không có tag mới.
-case " $order " in *" fastcast "*) ;; *) [ -z "$lock_synced" ] || pushes="${pushes}fastcast"$'\n' ;; esac
+# App chỉ có commit cập nhật lock, không có tag mới.
+for app in $lock_synced; do
+  case " $order " in *" $app "*) ;; *) pushes="${pushes}$app"$'\n' ;; esac
+done
 
 while read -r name tag; do
   [ -n "$name" ] || continue

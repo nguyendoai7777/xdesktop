@@ -1,6 +1,6 @@
 ---
 name: groove
-description: Khoanh session vào app groove trong workspace xdesktop (trình phát nhạc Groove X, đang viết lại từ Tauri + Vue sang Rust + GPUI + materiant) — nạp đúng ngữ cảnh của groove, không quét fastcast. Dùng khi chủ dự án gõ "/groove", "/groove <việc>", hoặc nói sẽ làm việc với groove.
+description: Khoanh session vào app groove trong workspace xdesktop (trình phát nhạc Groovex, đang viết lại từ Tauri + Vue sang Rust + GPUI + materiant) — nạp đúng ngữ cảnh của groove, không quét fastcast. Dùng khi chủ dự án gõ "/groove", "/groove <việc>", hoặc nói sẽ làm việc với groove.
 argument-hint: "<việc cần làm, bỏ trống nếu chỉ nạp ngữ cảnh>"
 ---
 

@@ -4,7 +4,7 @@
 #   pwsh start.ps1 docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                        chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   pwsh start.ps1 launcher              launcher example của materiant (bản master; tham số 2 = worktree)
-#   pwsh start.ps1 groove                Groove X (bản master)
+#   pwsh start.ps1 groove                Groovex (bản master)
 #   pwsh start.ps1 fastcast [màn]        Fastcast bản debug (inspector: Ctrl+Shift+I, Ctrl+Shift+C) + daemon giả + cấu hình dev riêng;
 #                                        màn = settings (mặc định) | launcher | overlay | ruler | picker (overlay trên màn giả)
 #   pwsh start.ps1 list                  liệt kê worktree đang mở

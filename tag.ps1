@@ -6,9 +6,11 @@
 #   pwsh ./tag.ps1 --current       # tag đúng version đang có, không nâng
 #   pwsh ./tag.ps1 -p --push       # đẩy luôn commit + tag lên origin
 #   pwsh ./tag.ps1 -Project materiant --minor     # không hỏi project; nhiều project: -Project fastcast,materiant
-# Nâng materiant thì `Cargo.lock` của fastcast đổi theo (build dùng `--locked`), nên fastcast có thêm một commit.
+# Nâng materiant thì `Cargo.lock` của fastcast / groove đổi theo (build dùng `--locked`), nên app có thêm một commit.
+# Release note (D-22, khuôn `docs/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
+# rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
 param(
-    [ValidateSet('fastcast', 'materiant')] [string[]] $Project,
+    [ValidateSet('fastcast', 'materiant', 'groove')] [string[]] $Project,
     [Alias('p')] [switch] $Patch,
     [switch] $Minor,
     [switch] $Major,
@@ -61,28 +63,38 @@ function Select-Checklist([string] $Title, [string[]] $Ids, [string[]] $Labels) 
 if (@($Patch, $Minor, $Major, $Current).Where({ $_ }).Count -gt 1) { throw 'Chỉ chọn một trong -p, --minor, --major, --current.' }
 if (-not ($Patch -or $Minor -or $Major -or $Current)) { $Patch = $true }
 
-$ids = 'fastcast', 'materiant'
+$ids = 'fastcast', 'materiant', 'groove'
 if (-not $Project -and -not [Console]::IsInputRedirected) {
-    $Project = Select-Checklist 'Đánh tag cho project nào:' $ids $ids
+    $Project = Select-Checklist 'Đánh tag cho project nào:' $ids @('fastcast', 'materiant', 'Groovex (groove)')
 }
 if (-not $Project) {
     # Stdin là pipe (mintty của Git Bash, script): không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
     Write-Host 'Đánh tag cho project nào:'
     Write-Host '  [1] fastcast  (Enter)'
     Write-Host '  [2] materiant'
+    Write-Host '  [3] groove'
     while (-not $Project) {
         Write-Host -NoNewline 'Chọn (nhiều project thì cách bằng dấu phẩy): '
         $answer = [Console]::In.ReadLine()
         if ([string]::IsNullOrWhiteSpace($answer)) { $answer = '1' }
         $picks = @($answer -split '[,\s]+' | Where-Object { $_ })
-        if ($picks | Where-Object { $_ -notin '1', '2' }) { Write-Host 'Nhập 1, 2 hoặc 1,2.'; continue }
+        if ($picks | Where-Object { $_ -notin '1', '2', '3' }) { Write-Host 'Nhập 1, 2, 3 hoặc vd 1,2.'; continue }
         $Project = @($picks | ForEach-Object { $ids[[int]$_ - 1] })
     }
 }
-# materiant trước: fastcast có commit cập nhật lock thì tag của fastcast chứa luôn commit đó.
-$order = @('materiant', 'fastcast' | Where-Object { $_ -in $Project })
+# materiant trước: app có commit cập nhật lock thì tag của app chứa luôn commit đó.
+$order = @('materiant', 'fastcast', 'groove' | Where-Object { $_ -in $Project })
 
-$fastcast = Join-Path $PSScriptRoot 'fastcast'
+$notesMarker = '<!-- release-note: điền xong thì xoá dòng này -->'
+function Get-NotesFile([string] $Name, [string] $Version) { Join-Path $PSScriptRoot "$Name/release-notes/v$Version.md" }
+# Khung theo `docs/release-notes.md`.
+function New-NotesStub([string] $Name, [string] $Version) {
+    $file = Get-NotesFile $Name $Version
+    New-Item -ItemType Directory -Force (Split-Path $file) | Out-Null
+    $date = Get-Date -Format 'yyyy-MM-dd'
+    $text = "# $Name v$Version ($date)`n`n$notesMarker`n`n## Mới`n`n- `n`n## Sửa lỗi`n`n- `n`n## Thay đổi khác`n`n- `n"
+    [IO.File]::WriteAllText($file, $text, [Text.UTF8Encoding]::new($false))
+}
 # Chỉ dòng version đầu tiên: của gói / [workspace.package], không đụng dòng version của phụ thuộc.
 $pattern = [regex] '(?m)^version = "(\d+)\.(\d+)\.(\d+)"(\r?)$'
 
@@ -102,18 +114,31 @@ function Get-Plan([string] $Name) {
 }
 
 # Soát hết trước khi đụng gì: một project hỏng thì không project nào đổi.
+$notesMissing = $false
 foreach ($name in $order) {
     $repo = Join-Path $PSScriptRoot $name
     if (-not (Test-Path -LiteralPath (Join-Path $repo '.git'))) { throw "Chưa có ${name}: chạy init.ps1." }
-    if (Invoke-Git $repo status --porcelain) { throw "$name còn thay đổi chưa commit, tag sẽ không khớp code." }
+    $plan = Get-Plan $name
+    # Tệp release note của tag này được phép đang sửa / chưa commit: nó đi cùng commit nâng version.
+    $dirty = @(Invoke-Git $repo status --porcelain --untracked-files=all | Where-Object { $_ -notmatch " release-notes/$([regex]::Escape($plan.Tag)).md$" })
+    if ($dirty) { throw "$name còn thay đổi chưa commit, tag sẽ không khớp code." }
     $branch = Invoke-Git $repo branch --show-current
     if ($branch -ne 'master') { throw "$name đang ở nhánh '$branch', chỉ tag trên master." }
-    $plan = Get-Plan $name
     if (Invoke-Git $repo tag --list $plan.Tag) { throw "Tag $($plan.Tag) của $name đã có." }
+    $notes = Get-NotesFile $name $plan.Next
+    if (-not (Test-Path -LiteralPath $notes)) {
+        New-NotesStub $name $plan.Next
+        Write-Host "Chưa có release note: đã tạo khung $name/release-notes/$($plan.Tag).md — điền rồi chạy lại."
+        $notesMissing = $true
+    } elseif ([IO.File]::ReadAllText($notes).Contains($notesMarker)) {
+        Write-Host "$name/release-notes/$($plan.Tag).md còn dòng mẫu: điền xong thì xoá dòng '$notesMarker'."
+        $notesMissing = $true
+    }
 }
+if ($notesMissing) { exit 1 }
 
 $pushes = @()
-$lockSynced = $false
+$lockSynced = @()
 foreach ($name in $order) {
     $repo = Join-Path $PSScriptRoot $name
     $plan = Get-Plan $name
@@ -130,31 +155,40 @@ foreach ($name in $order) {
         } finally {
             Pop-Location
         }
-        Invoke-Git $repo commit --quiet -m "release: $tag" -- Cargo.toml Cargo.lock
-        # fastcast build bằng `--locked`, ghi cả version của materiant trong lock.
-        if ($name -eq 'materiant' -and (Test-Path -LiteralPath (Join-Path $fastcast '.git'))) {
-            git -C $fastcast diff --quiet -- Cargo.lock
-            if ($LASTEXITCODE -ne 0) { throw 'fastcast/Cargo.lock đang có sửa dở, chưa cập nhật materiant.' }
-            Push-Location $fastcast
-            try {
-                cargo update -p materiant --offline --quiet
-                if ($LASTEXITCODE -ne 0) { throw "cargo update failed (exit $LASTEXITCODE)" }
-            } finally {
-                Pop-Location
-            }
-            git -C $fastcast diff --quiet -- Cargo.lock
-            if ($LASTEXITCODE -ne 0) {
-                Invoke-Git $fastcast commit --quiet -m "deps: materiant $tag" -- Cargo.lock
-                $lockSynced = $true
+        Invoke-Git $repo add -- "release-notes/$tag.md"
+        Invoke-Git $repo commit --quiet -m "release: $tag" -- Cargo.toml Cargo.lock "release-notes/$tag.md"
+        # App build bằng `--locked`, ghi cả version của materiant trong lock.
+        if ($name -eq 'materiant') {
+            foreach ($app in 'fastcast', 'groove') {
+                $appRepo = Join-Path $PSScriptRoot $app
+                if (-not (Test-Path -LiteralPath (Join-Path $appRepo '.git'))) { continue }
+                git -C $appRepo diff --quiet -- Cargo.lock
+                if ($LASTEXITCODE -ne 0) { throw "$app/Cargo.lock đang có sửa dở, chưa cập nhật materiant." }
+                Push-Location $appRepo
+                try {
+                    cargo update -p materiant --offline --quiet
+                    if ($LASTEXITCODE -ne 0) { throw "cargo update failed (exit $LASTEXITCODE)" }
+                } finally {
+                    Pop-Location
+                }
+                git -C $appRepo diff --quiet -- Cargo.lock
+                if ($LASTEXITCODE -ne 0) {
+                    Invoke-Git $appRepo commit --quiet -m "deps: materiant $tag" -- Cargo.lock
+                    $lockSynced += $app
+                }
             }
         }
+    } elseif (Invoke-Git $repo status --porcelain -- "release-notes/$tag.md") {
+        Invoke-Git $repo add -- "release-notes/$tag.md"
+        Invoke-Git $repo commit --quiet -m "release notes: $tag" -- "release-notes/$tag.md"
     }
-    Invoke-Git $repo tag -a $tag -m $tag
+    # Nội dung tag = release note (changelog); `verbatim` giữ dòng `#` của markdown.
+    Invoke-Git $repo tag -a $tag --cleanup=verbatim -F (Get-NotesFile $name $plan.Next)
     Write-Host "${name}: $($plan.Version) → $($plan.Next), tag $tag ở $(Invoke-Git $repo rev-parse --short HEAD)"
     $pushes += , @($name, $tag)
 }
-# fastcast chỉ có commit cập nhật lock, không có tag mới.
-if ($lockSynced -and 'fastcast' -notin $order) { $pushes += , @('fastcast') }
+# App chỉ có commit cập nhật lock, không có tag mới.
+foreach ($app in $lockSynced) { if ($app -notin $order) { $pushes += , @($app) } }
 
 foreach ($entry in $pushes) {
     $name = $entry[0]

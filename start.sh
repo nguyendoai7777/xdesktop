@@ -5,7 +5,7 @@
 #   bash start.sh docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
 #                                       chưa commit) — tên worktree bỏ tiền tố `materiant-`
 #   bash start.sh launcher              launcher example của materiant (bản master; tham số 2 = worktree)
-#   bash start.sh groove                Groove X (bản master)
+#   bash start.sh groove                Groovex (bản master)
 #   bash start.sh fastcast [màn]        Fastcast bản debug (inspector: Ctrl+Shift+I, Ctrl+Shift+C) + daemon giả + cấu hình dev riêng;
 #                                       màn = settings (mặc định) | launcher | overlay | ruler | picker (Linux: overlay/ruler/picker dùng fastcast/tools/fake-screens.sh)
 #   bash start.sh list                  liệt kê worktree đang mở
@@ -32,7 +32,7 @@ show_worktrees() {
 
 # Wayland không cho app tự gửi icon: GNOME ghép cửa sổ theo `app_id` với `<app_id>.desktop` để lấy icon cho dock.
 # Bản debug có mã riêng `groove.dev` (groove `window_state::DEV_APP_ID`, MPRIS `groovex.dev`) ⇒ mục `groove.dev.desktop`
-# "Groove X (dev)" hiện trong ô tìm, cạnh "Groove X" của gói đã cài, không đè nhau. Không MimeType: không giành việc mở tệp nhạc.
+# "Groovex (dev)" hiện trong ô tìm, cạnh "Groovex" của gói đã cài, không đè nhau. Không MimeType: không giành việc mở tệp nhạc.
 # Mission Center bản snap ghép scope `app-xdesktop-groove.dev-*` với mục đó, đọc home riêng của snap trước
 # (XDG_DATA_HOME = ~/snap/mission-center/current/.local/share). Snap không có plug `home` ⇒ không đọc được ảnh trong repo:
 # ghi thêm một bản vào home snap, icon trỏ tới ảnh chép sang đó. Không `NoDisplay` / `Hidden`: app-rummage bỏ hẳn các mục đó.
@@ -55,7 +55,7 @@ groove_dev_desktop_entry_in() {
   cat > "$file.tmp" <<EOF
 [Desktop Entry]
 Type=Application
-Name=Groove X (dev)
+Name=Groovex (dev)
 Exec=$CARGO_TARGET_DIR/debug/groove
 Icon=$icon
 Terminal=false

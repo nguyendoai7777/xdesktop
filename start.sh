@@ -156,14 +156,14 @@ case "$app" in
     ;;
   fastcast)
     # macOS: bản dev là exe rời, không phải Fastcast.app ⇒ quyền ghi màn hình tính cho app terminal đang chạy lệnh này (app gần
-    # nhất trên cây tiến trình cha), không phải Fastcast đã cài. Thiếu ⇒ đưa terminal vào danh sách, mở đúng trang, nói tên app.
+    # nhất trên cây tiến trình cha; app con trong app khác như Claude Helper ⇒ app ngoài cùng), không phải Fastcast đã cài. Thiếu ⇒ đưa terminal vào danh sách, mở đúng trang, nói tên app.
     mac_screen_access() {
       local cg='ObjC.import("CoreGraphics"); ObjC.bindFunction("CGPreflightScreenCaptureAccess", ["bool", []]); $.CGPreflightScreenCaptureAccess()'
       [ "$(osascript -l JavaScript -e "$cg" 2>/dev/null)" = true ] && return 0
       local pid=$$ path app=""
       while [ "${pid:-0}" -gt 1 ]; do
         path="$(ps -p "$pid" -o comm= 2>/dev/null || true)"
-        case "$path" in */*.app/Contents/MacOS/*) app="${path%%.app/Contents/MacOS/*}"; app="${app##*/}"; break ;; esac
+        case "$path" in */*.app/Contents/*) app="${path%%.app/*}"; app="${app##*/}"; break ;; esac
         pid="$(ps -p "$pid" -o ppid= 2>/dev/null | tr -d ' ' || true)"
       done
       osascript -l JavaScript -e "${cg//Preflight/Request}" >/dev/null 2>&1 || true

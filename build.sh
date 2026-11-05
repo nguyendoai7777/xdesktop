@@ -249,7 +249,13 @@ if [ "$os" = macos ]; then
   for dir in "$target_dir/release/models" "$target_dir/ocr-models"; do
     if [ -d "$dir/onnx" ] && [ "$arch" = "$host_arch" ]; then models="$dir"; break; fi
   done
-  if [ -n "$models" ] && command -v pwsh >/dev/null 2>&1 && command -v cargo-about >/dev/null 2>&1; then
+  # Như Linux: model đã giải nén (export-ocr) ⇒ soát sổ + tải ONNX Runtime chính thức nếu thiếu (sha256 ghim); hỏng thì -draft.
+  if [ -n "$models" ] && [ "$arch" = arm64 ]; then
+    bash "$repo/tools/fetch-ocr-models.sh" --out "$models" || echo "⚠ Không dựng xong model OCR, gói sẽ là bản -draft." >&2
+  fi
+  # Trang giấy phép: cargo-about + (pwsh hoặc python3 của Command Line Tools, tools/gen-licenses.sh).
+  if [ -n "$models" ] && command -v cargo-about >/dev/null 2>&1 \
+    && { command -v pwsh >/dev/null 2>&1 || command -v python3 >/dev/null 2>&1; }; then
     package+=(--models "$models")
   else
     package+=(--draft)

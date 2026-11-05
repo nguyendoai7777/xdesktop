@@ -206,6 +206,13 @@ case "$app" in
     if [ ! -f "$dev_config" ] && [ -f "$real_config" ]; then cp "$real_config" "$dev_config"; fi
     export FASTCAST_CONFIG_FILE="$dev_config"
     echo "cấu hình dev: $dev_config"
+    # Model OCR: bản debug không có `models/` cạnh exe ⇒ macOS mượn bộ đã dựng cho bản release (giải nén export-ocr +
+    # tools/fetch-ocr-models.sh), qua biến dev FASTCAST_OCR_MODELS (bản debug mới đọc). Linux mượn /opt/fastcast/models trong mã.
+    ocr_models="$root/fastcast/target/release/models"
+    if [ "$os" = Darwin ] && [ -z "${FASTCAST_OCR_MODELS:-}" ] && [ -f "$ocr_models/manifest.toml" ]; then
+      export FASTCAST_OCR_MODELS="$ocr_models"
+      echo "model OCR: $ocr_models"
+    fi
 
     if [ "$screen" = app ]; then
       # Một instance: `fst` thứ hai chỉ báo bản đang chạy mở launcher rồi thoát ⇒ soát trước, nói rõ bản nào đang giữ.

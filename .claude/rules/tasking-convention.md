@@ -17,7 +17,6 @@ Mỗi app một thư mục plan trong repo của nó (D-7, đổi 02/11/2026). T
 ```
 <repo>/plan/
   _backlog.md                   # việc treo KHÔNG làm được trong lượt (kèm lý do) — D-8
-  confirm.md                    # việc đã tự chọn, chờ chủ dự án soát — D-9
   gd<N>_<NN>_<slug>.md          # task của fastcast
   <repo>-gd<N>_<NN>_<slug>.md   # task của repo khác; giữ tiền tố để mã task không trùng giữa các repo (materiant-gd1_03_button-kbd.md…)
   <repo>-gd<N>.md               # plan giai đoạn chưa tách task (tạm, tách ngay khi bắt đầu giai đoạn)

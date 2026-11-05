@@ -12,9 +12,8 @@ Phiên chính là **Opus**. Trả lời chủ dự án **gọn**, tiếng Việt
 **Lỗi phát sinh sửa ngay (D-11).** Gặp lỗi lúc làm ⇒ sửa trong lượt, không ghi backlog; backlog chỉ cho việc thiếu máy / dịch vụ trả phí / chờ kiểm tay.
 
 **Không hỏi, không dừng chờ (D-9).** Chủ dự án thường vắng máy ⇒ KHÔNG dùng `AskUserQuestion` ở bất kỳ bước nào. Chỗ
-nào dưới đây ghi "chọn" ⇒ tự chọn phương án tốt nhất, làm luôn, ghi lý do ở mục 9 của task + một gạch vào
-`<repo>/plan/confirm.md` (`- [<task>] <việc> — <phương án khác> — <vì sao>`) để chủ dự án soát sau. Thiếu máy / dịch vụ trả
-phí / luật cấm ⇒ ghi `<repo>/plan/_backlog.md` rồi đi tiếp phần còn lại.
+nào dưới đây ghi "chọn" ⇒ tự chọn phương án tốt nhất, làm luôn, ghi lý do ở mục 9 của task (không có tệp
+`confirm.md` — bỏ 05/11/2026). Thiếu máy / dịch vụ trả phí / luật cấm ⇒ ghi `<repo>/plan/_backlog.md` rồi đi tiếp phần còn lại.
 
 ## 0. Xác định task — theo lời chủ dự án
 
@@ -44,8 +43,7 @@ phí / luật cấm ⇒ ghi `<repo>/plan/_backlog.md` rồi đi tiếp phần c�
 ## 2. Chốt câu hỏi mở — TRƯỚC khi code
 
 Task ghi "Quyết định trong task", "xác nhận với chủ dự án", Q-… chưa chốt, hoặc mâu thuẫn với code thật ⇒ gom lại, tự
-chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật, bản web), ghi mục 9 ("Opus chọn <ngày>: … — vì …")
-+ `<repo>/plan/confirm.md`. Không ghi `docs/decisions.md` — chỉ chủ dự án chốt mới vào đó.
+chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật, bản web), ghi mục 9 ("Opus chọn <ngày>: … — vì …"). Không ghi `docs/decisions.md` — chỉ chủ dự án chốt mới vào đó.
 
 ## 3. Phân vai + Case test (thiếu thì Opus viết, không chờ duyệt)
 

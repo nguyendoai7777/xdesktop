@@ -164,11 +164,11 @@ if ($Chip -eq 'avx2') { $env:RUSTFLAGS = "$env:RUSTFLAGS -C target-cpu=x86-64-v3
 Push-Location $repo
 try {
     if ($Force) {
-        cargo clean --release --target $triple -p fastcast-core -p fastcast-capture -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video -p materiant
+        cargo clean --release --target $triple -p fastcast-core -p fastcast-capture -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video -p fastcast-sync -p materiant
         if ($LASTEXITCODE -ne 0) { throw "cargo clean failed (exit $LASTEXITCODE)" }
     }
     # Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ (cùng crate, hash khác) trong thư mục build vừa dùng.
-    node (Join-Path $root 'tools/cargo-prune.mjs') build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins @(if ($Pro) { '--features', 'fastcast-core/pro-unlock' })
+    node (Join-Path $root 'tools/cargo-prune.mjs') build --release --locked --target $triple -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video -p fastcast-sync --bins @(if ($Pro) { '--features', 'fastcast-core/pro-unlock' })
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 } finally {
     Pop-Location
@@ -184,7 +184,7 @@ $outName = "fastcast_${version}_${osName}_$archName$(if ($Chip -eq 'avx2') { '_a
 $suffix = if ($Os -eq 'windows') { '.exe' } else { '' }
 
 $devVars = 'FASTCAST_OCR_EXE', 'FASTCAST_REC_EXE', 'FASTCAST_REC_WINDOW', 'FASTCAST_OCR_MODELS'
-$exes = 'fst', 'fastcast-ui', 'fastcast-ocr', 'fastcast-rec'
+$exes = 'fst', 'fastcast-ui', 'fastcast-ocr', 'fastcast-rec', 'fastcast-sync'
 foreach ($exe in $exes) {
     $text = [Text.Encoding]::Latin1.GetString([IO.File]::ReadAllBytes((Join-Path $release "$exe$suffix")))
     $found = $devVars | Where-Object { $text.Contains($_) }

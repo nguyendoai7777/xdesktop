@@ -219,15 +219,15 @@ fi
 # Luôn --target: RUSTFLAGS không lan sang build script, mỗi target một thư mục. Không feature `dev-env` (bản phát hành).
 if [ -n "$force" ]; then
   (cd "$repo" && cargo clean --release --target "$triple" -p fastcast-core -p fastcast-capture -p fastcast-daemon \
-    -p fastcast-ui -p fastcast-ocr -p fastcast-video -p materiant)
+    -p fastcast-ui -p fastcast-ocr -p fastcast-video -p fastcast-sync -p materiant)
 fi
 # Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ (cùng crate, hash khác) trong thư mục build vừa dùng.
 (cd "$repo" && node "$root/tools/cargo-prune.mjs" build --release --locked --target "$triple" \
-  -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video --bins ${features[@]+"${features[@]}"})
+  -p fastcast-daemon -p fastcast-ui -p fastcast-ocr -p fastcast-video -p fastcast-sync --bins ${features[@]+"${features[@]}"})
 target_dir="${CARGO_TARGET_DIR:-$repo/target}"
 release="$target_dir/$triple/release"
 
-exes="fst fastcast-ui fastcast-ocr fastcast-rec"
+exes="fst fastcast-ui fastcast-ocr fastcast-rec fastcast-sync"
 for exe in $exes; do
   if grep -aqE 'FASTCAST_(OCR_EXE|REC_EXE|REC_WINDOW|OCR_MODELS)' "$release/$exe"; then
     echo "$exe còn biến chạy thử" >&2

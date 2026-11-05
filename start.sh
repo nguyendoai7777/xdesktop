@@ -199,7 +199,8 @@ case "$app" in
       own="$target/debug/fst$ext"
       # "<pid> <đường dẫn exe>" của mọi `fst` đang chạy. Windows: ps của Git Bash không thấy tiến trình Windows ⇒ hỏi PowerShell.
       if [ "$win" = 1 ]; then
-        running="$(powershell.exe -NoProfile -Command 'Get-Process fst -ErrorAction SilentlyContinue | ForEach-Object { "$($_.Id) $($_.Path)" }' | tr -d '\r' | tr '\\' /)"
+        # Không có `fst` ⇒ Get-Process trả mã 1 dù SilentlyContinue ⇒ `exit 0` (không thì set -e + pipefail thoát im lặng).
+        running="$(powershell.exe -NoProfile -Command 'Get-Process fst -ErrorAction SilentlyContinue | ForEach-Object { "$($_.Id) $($_.Path)" }; exit 0' | tr -d '\r' | tr '\\' /)"
       else
         running="$(for pid in $(pgrep -x fst 2>/dev/null || true); do
           exe="$(readlink "/proc/$pid/exe" 2>/dev/null || ps -p "$pid" -o comm= 2>/dev/null || true)"

@@ -88,7 +88,7 @@ dùng trong 7 ngày, sổ ở `<profile>/.prune-ledger.json`) và `incremental/`
 `start.sh docs | launcher | groove` mặc định theo dõi mã (`tools/watch-run.mjs`, Node): lưu tệp hay gộp vào master ⇒ build lại
 (~2 s khi sửa một tệp view) ⇒ đóng app cũ, mở bản mới; build lỗi thì giữ app cũ; đóng cửa sổ app là lệnh thoát theo. Không phải
 hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` / `XDESKTOP_NO_WATCH=1` chỉ chạy một lần. Linux: groove chạy trong scope systemd riêng `app-xdesktop-groove.dev-*.scope` để Mission Center hiện thành dòng riêng, không gộp vào terminal. Chưa áp cho
-`start.sh fastcast` và `start.ps1`.
+`start.sh fastcast`.
 
 ## Đánh tag
 
@@ -98,9 +98,10 @@ hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` 
 
 - Rust stable (≥ 1.99; `init.sh` tự cài / nâng), MSVC Build Tools + Windows SDK trên Windows; Linux: `init.sh` tự cài mọi gói hệ thống (apt). Repo con: `git -C <repo> …`.
 - Repo gốc commit theo đường dẫn: `git commit -- <paths>` (tránh kéo tệp người khác đã stage).
-- Chủ dự án xem tay: `pwsh start.ps1 docs [trang] [worktree]` (`bash start.sh …`) — gallery materiant từ master hoặc
-  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groovex bản master (bản debug mã riêng `groove.dev`, MPRIS `groovex.dev`, Windows AUMID `GrooveX.Player.Dev`: chạy cạnh bản đã cài không đè nhau; Linux: `start.sh` ghi `~/.local/share/applications/groove.dev.desktop` "Groovex (dev)" cho ô tìm + dock); `start.ps1 fastcast [settings|launcher|overlay|ruler|picker]` mở fastcast bản debug với daemon giả + cấu hình dev riêng `fastcast/target/start/dev-config.json`, overlay trên màn giả; `start.sh fastcast` (macOS / Linux) mặc định màn `app`: `fst` thật bản debug (khay + phím tắt toàn cục, cùng cấu hình dev; bản đã cài đang chạy thì script dừng, bảo `fst quit` trước; GNOME: phím trong dconf trỏ tới exe debug tới khi bản cài chạy lại), các màn khác như `start.ps1`. Bản debug (cả ba lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` mở, `Ctrl+Shift+C` chọn phần tử (D-19, D-25, `materiant/devtool/README.md`). App mới ⇒ thêm nhánh vào
-  cả hai script.
+- Chủ dự án xem tay — **một mã: `start.sh`** (macOS / Linux / Git Bash); `pwsh start.ps1 …` chỉ là lớp bọc tìm Git Bash rồi
+  chuyển nguyên đối số sang `start.sh` (không gọi `bash` trần: trên Windows là WSL). `pwsh start.ps1 docs [trang] [worktree]` — gallery materiant từ master hoặc
+  từ worktree `.claude/worktrees/materiant-<worktree>`; `start.ps1 list` liệt kê worktree; `start.ps1 groove` mở Groovex bản master (bản debug mã riêng `groove.dev`, MPRIS `groovex.dev`, Windows AUMID `GrooveX.Player.Dev`: chạy cạnh bản đã cài không đè nhau; Linux: `start.sh` ghi `~/.local/share/applications/groove.dev.desktop` "Groovex (dev)" cho ô tìm + dock); `start.ps1 fastcast [màn]` mặc định màn `app`: `fst` thật bản debug (khay + phím tắt toàn cục, cấu hình dev riêng `fastcast/target/start/dev-config.json`; bản đã cài đang chạy thì script dừng, bảo `fst quit` trước; GNOME: phím trong dconf trỏ tới exe debug tới khi bản cài chạy lại); màn `settings|launcher|overlay|ruler|picker` dùng daemon giả + cùng cấu hình dev, overlay trên màn giả (Linux: `fastcast/tools/fake-screens.sh`). Bản debug (cả ba lệnh này) có inspector kiểu devtool: `Ctrl+Shift+I` mở, `Ctrl+Shift+C` chọn phần tử (D-19, D-25, `materiant/devtool/README.md`). App mới ⇒ thêm nhánh vào
+  `start.sh` (không sửa `start.ps1`).
 
 ## Xong task thì gộp về `master` và dọn nhánh
 

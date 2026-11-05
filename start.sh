@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Mở nhanh app của workspace để xem tay (macOS / Linux / Git Bash). Đứng ở gốc workspace:
+# Mở nhanh app của workspace để xem tay — MỘT mã cho mọi OS (macOS / Linux; Windows chạy qua Git Bash, `pwsh start.ps1 …`
+# chỉ là lớp bọc gọi sang đây). Đứng ở gốc workspace:
 #   bash start.sh docs                  gallery materiant (bản master), trang đầu
 #   bash start.sh docs button           mở thẳng trang `button` (theme, style, button, input, toggles, scroll…)
 #   bash start.sh docs button gd1_03    bản đang làm dở ở worktree .claude/worktrees/materiant-gd1_03 (kể cả code
@@ -9,7 +10,8 @@
 #   bash start.sh fastcast [màn]        Fastcast bản debug (inspector: Ctrl+Shift+I, Ctrl+Shift+C) + cấu hình dev riêng;
 #                                       màn = app (mặc định: `fst` thật — khay + phím tắt toàn cục; phải thoát bản đã cài trước)
 #                                       | settings | launcher | overlay | ruler | picker (daemon giả, không khay, không phím;
-#                                       Linux: overlay/ruler/picker dùng fastcast/tools/fake-screens.sh)
+#                                       Linux: overlay/ruler/picker dùng fastcast/tools/fake-screens.sh; Windows: overlay trên
+#                                       màn giả ở màn phụ)
 #   bash start.sh list                  liệt kê worktree đang mở
 # docs / launcher / groove mặc định theo dõi mã (tools/watch-run.mjs): lưu tệp ⇒ build lại, mở lại app (mất trạng thái đang mở).
 # Thêm --no-watch (ở vị trí bất kỳ) hoặc XDESKTOP_NO_WATCH=1 để chỉ build rồi chạy một lần.
@@ -17,7 +19,11 @@
 # không build nguội lại, nhưng có thể chờ khoá khi session đang build). Không trộn: cargo dễ đưa ra exe của nguồn khác.
 # Trong gallery: ↑ / ↓ đổi trang, Ctrl+T xoay Light / Dark / System.
 set -euo pipefail
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Windows (Git Bash): đường dẫn dạng `E:/codex/…` (`pwd -W`) — bash, cargo lẫn Node đều hiểu; exe có đuôi `.exe`.
+win=0 ext=""
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) win=1 ext=".exe" ;; esac
+if [ "$win" = 1 ]; then root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -W)"
+else root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; fi
 worktrees="$root/.claude/worktrees"
 # Build qua tools/cargo-prune.mjs: build xong dọn bản build cũ trong target/start (target/w<N> chỉ build, không dọn).
 prune="$root/tools/cargo-prune.mjs"
@@ -83,19 +89,20 @@ done
 set -- "${args[@]+"${args[@]}"}"
 
 # Build rồi chạy: watch ⇒ tools/watch-run.mjs (build qua cargo-prune, theo dõi các thư mục --watch); không ⇒ build một lần rồi exec.
-#   run_app [--scope <desktop id>] <exe> <thư mục theo dõi, cách nhau ":"> <đối số app…> -- <đối số cargo build…>
+#   run_app [--scope <desktop id>] <exe> <thư mục theo dõi, cách nhau "|"> <đối số app…> -- <đối số cargo build…>
+# Ngăn bằng "|" chứ không ":" vì đường dẫn Windows có ổ đĩa (`E:/…`).
 # --scope: Linux chạy app trong scope systemd riêng (xem tools/watch-run.mjs) ⇒ Mission Center hiện app thành dòng riêng.
 run_app() {
   local scope=""
   if [ "$1" = --scope ]; then scope="$2"; shift 2; fi
-  local exe="$1" dirs="$2"; shift 2
+  local exe="$1$ext" dirs="$2"; shift 2
   local app_args=()
   while [ "$1" != -- ]; do app_args+=("$1"); shift; done
   shift
   if [ "$watch" = 1 ]; then
     local opts=(--exe "$exe") d a
     [ -n "$scope" ] && opts+=(--scope "$scope")
-    IFS=: read -ra ds <<< "$dirs"
+    IFS='|' read -ra ds <<< "$dirs"
     for d in "${ds[@]}"; do opts+=(--watch "$d"); done
     for a in "${app_args[@]+"${app_args[@]}"}"; do opts+=(--arg "$a"); done
     exec node "$root/tools/watch-run.mjs" "${opts[@]}" -- "$@"
@@ -125,7 +132,7 @@ case "$app" in
     echo "gallery từ $dir"
     page_args=()
     [ -n "$page" ] && page_args=(--page "$page")
-    run_app "$CARGO_TARGET_DIR/debug/examples/gallery" "$dir/src:$dir/examples:$dir/assets:$dir/vendor:$dir/Cargo.toml" \
+    run_app "$CARGO_TARGET_DIR/debug/examples/gallery" "$dir/src|$dir/examples|$dir/assets|$dir/vendor|$dir/Cargo.toml" \
       "${page_args[@]+"${page_args[@]}"}" -- --manifest-path "$dir/Cargo.toml" -p materiant --example gallery
     ;;
   launcher)
@@ -142,7 +149,7 @@ case "$app" in
     fi
     export CARGO_TARGET_DIR="$root/materiant/target/${wt:-start}"
     echo "launcher từ $dir"
-    run_app "$CARGO_TARGET_DIR/debug/examples/launcher" "$dir/src:$dir/examples:$dir/assets:$dir/vendor:$dir/Cargo.toml" \
+    run_app "$CARGO_TARGET_DIR/debug/examples/launcher" "$dir/src|$dir/examples|$dir/assets|$dir/vendor|$dir/Cargo.toml" \
       -- --manifest-path "$dir/Cargo.toml" -p materiant --example launcher
     ;;
   groove)
@@ -151,16 +158,12 @@ case "$app" in
     [ "$(uname -s)" = Linux ] && groove_dev_desktop_entry
     m="$root/materiant"
     run_app --scope groove.dev "$CARGO_TARGET_DIR/debug/groove" \
-      "$root/groove/crates:$root/groove/i18n:$root/groove/Cargo.toml:$m/src:$m/assets:$m/vendor:$m/Cargo.toml" \
+      "$root/groove/crates|$root/groove/i18n|$root/groove/Cargo.toml|$m/src|$m/assets|$m/vendor|$m/Cargo.toml" \
       -- --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;
   fastcast)
     # Bản debug có inspector, cấu hình dev riêng. `app`: daemon thật (khay + phím tắt toàn cục) — một instance nên bản đã cài
     # phải thoát trước. Màn khác: daemon giả (không phím tắt toàn cục, không khay), không đụng Fastcast đã cài.
-    # Git Bash trên Windows ⇒ đá sang start.ps1 (endpoint là named pipe).
-    case "$(uname -s)" in
-      MINGW*|MSYS*|CYGWIN*) exec pwsh -NoProfile -File "$(cygpath -w "$root/start.ps1")" fastcast "${@:2}" ;;
-    esac
     screen="${page:-app}"
     case "$screen" in
       app) command="" ;;
@@ -184,7 +187,8 @@ case "$app" in
     mkdir -p "$target"
     # Cấu hình dev: lần đầu chép từ cấu hình thật (fastcast_core::paths::config_dir).
     dev_config="$target/dev-config.json"
-    if [ "$os" = Darwin ]; then real_config="$HOME/Library/Application Support/fastcast/config.json"
+    if [ "$win" = 1 ]; then real_config="$(cygpath -m "$APPDATA")/fastcast/config.json"
+    elif [ "$os" = Darwin ]; then real_config="$HOME/Library/Application Support/fastcast/config.json"
     else real_config="${XDG_CONFIG_HOME:-$HOME/.config}/fastcast/config.json"; fi
     if [ ! -f "$dev_config" ] && [ -f "$real_config" ]; then cp "$real_config" "$dev_config"; fi
     export FASTCAST_CONFIG_FILE="$dev_config"
@@ -192,51 +196,73 @@ case "$app" in
 
     if [ "$screen" = app ]; then
       # Một instance: `fst` thứ hai chỉ báo bản đang chạy mở launcher rồi thoát ⇒ soát trước, nói rõ bản nào đang giữ.
-      own="$target/debug/fst"
-      for pid in $(pgrep -x fst 2>/dev/null || true); do
-        exe="$(readlink "/proc/$pid/exe" 2>/dev/null || ps -p "$pid" -o comm= 2>/dev/null || true)"
-        if [ "${exe% (deleted)}" = "$own" ]; then
+      own="$target/debug/fst$ext"
+      # "<pid> <đường dẫn exe>" của mọi `fst` đang chạy. Windows: ps của Git Bash không thấy tiến trình Windows ⇒ hỏi PowerShell.
+      if [ "$win" = 1 ]; then
+        running="$(powershell.exe -NoProfile -Command 'Get-Process fst -ErrorAction SilentlyContinue | ForEach-Object { "$($_.Id) $($_.Path)" }' | tr -d '\r' | tr '\\' /)"
+      else
+        running="$(for pid in $(pgrep -x fst 2>/dev/null || true); do
+          exe="$(readlink "/proc/$pid/exe" 2>/dev/null || ps -p "$pid" -o comm= 2>/dev/null || true)"
+          echo "$pid ${exe% (deleted)}"
+        done)"
+      fi
+      if [ -n "$running" ]; then
+        read -r pid exe <<< "$(head -1 <<< "$running")"
+        # So không phân biệt hoa thường (ổ đĩa Windows `E:` / `e:`); không `${x,,}` — bash 3.2 của macOS không có.
+        lower() { tr '[:upper:]' '[:lower:]' <<< "$1"; }
+        if [ "$(lower "$exe")" = "$(lower "$own")" ]; then
           echo "fst bản debug đã chạy (pid $pid, session khác?)"
         else
           echo "Fastcast đang chạy (pid $pid: ${exe:-fst}). Thoát nó trước: fst quit (hoặc Thoát ở menu khay), rồi chạy lại."
         fi
         exit 1
-      done
+      fi
       node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-daemon --bin fst -p fastcast-ui --bin fastcast-ui \
         -p fastcast-video --bin fastcast-rec -p fastcast-ocr --bin fastcast-ocr
       echo "fst thật (bản debug): khay + phím tắt theo cấu hình dev. Lệnh từ terminal khác: $own run <lệnh>, $own quit. Ctrl+C để thoát."
       [ "$os" = Linux ] && echo "GNOME: phím tắt ghi vào dconf, trỏ tới exe debug; mở lại Fastcast đã cài thì nó ghi lại đường dẫn của nó."
       exec "$own"
     fi
-    # Socket của endpoint `dev` (fastcast_core::ipc::Endpoint::custom): temp_dir() = $TMPDIR hoặc /tmp.
-    sock="${TMPDIR:-/tmp}"; sock="${sock%/}/fastcast-dev.sock"
-    if [ -S "$sock" ]; then
-      # `listen` xoá socket cũ còn sót, nên chỉ báo khi có tiến trình thật đang nghe (cần `nc -U`); không có `nc` thì coi là sót.
-      if command -v nc >/dev/null 2>&1 && nc -U -z "$sock" 2>/dev/null; then
+    # Endpoint `dev` (fastcast_core::ipc::Endpoint::custom): Windows named pipe `\\.\pipe\fastcast-dev`; Unix socket ở
+    # temp_dir() = $TMPDIR hoặc /tmp. Pipe: bash không thấy ⇒ Node LIỆT KÊ thư mục pipe (stat / existsSync mở pipe như một
+    # client: chiếm kết nối và báo sai khi daemon đang bận).
+    if [ "$win" = 1 ]; then
+      endpoint_up() { node -e 'process.exit(require("fs").readdirSync(process.argv[1]).includes("fastcast-dev") ? 0 : 1)' '\\.\pipe\'; }
+      if endpoint_up; then
         echo "đã có fake_daemon dev đang chạy (session khác?)"
         exit 1
       fi
-      rm -f "$sock"
+    else
+      sock="${TMPDIR:-/tmp}"; sock="${sock%/}/fastcast-dev.sock"
+      endpoint_up() { [ -S "$sock" ]; }
+      if [ -S "$sock" ]; then
+        # `listen` xoá socket cũ còn sót, nên chỉ báo khi có tiến trình thật đang nghe (cần `nc -U`); không có `nc` thì coi là sót.
+        if command -v nc >/dev/null 2>&1 && nc -U -z "$sock" 2>/dev/null; then
+          echo "đã có fake_daemon dev đang chạy (session khác?)"
+          exit 1
+        fi
+        rm -f "$sock"
+      fi
     fi
     node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-ui --bin fastcast-ui --example fake_daemon
 
     if [ "$fake" = 1 ]; then export FASTCAST_OVERLAY_FAKE=1; else unset FASTCAST_OVERLAY_FAKE; fi
 
     echo "Gõ vào đây: open_launcher, capture_region, ruler, color_picker, open_settings…; quit hoặc Ctrl+C để thoát. Trong cửa sổ: Ctrl+Shift+I mở inspector, Ctrl+Shift+C chọn phần tử."
-    # Job nền không đọc được tty ⇒ daemon giả chạy tiền cảnh, UI bật từ subshell nền khi socket đã có (trần 10 s).
+    # Job nền không đọc được tty ⇒ daemon giả chạy tiền cảnh, UI bật từ subshell nền khi endpoint đã có (trần 10 s).
     # exec trong subshell ⇒ pid của job = pid của UI. UI mất daemon mà còn cửa sổ thì chờ đóng cửa sổ cuối ⇒ phải giết.
     (
-      for _ in $(seq 200); do [ -S "$sock" ] && break; sleep 0.05; done
-      [ -S "$sock" ] || { echo "fake_daemon không mở socket sau 10 s" >&2; exit 1; }
-      exec "$target/debug/fastcast-ui" --endpoint dev --command "$command"
+      for _ in $(seq 100); do endpoint_up && break; sleep 0.1; done
+      endpoint_up || { echo "fake_daemon không mở endpoint sau 10 s" >&2; exit 1; }
+      exec "$target/debug/fastcast-ui$ext" --endpoint dev --command "$command"
     ) &
     ui_pid=$!
     trap 'kill "$ui_pid" 2>/dev/null || true' EXIT
     trap 'exit 130' INT TERM
     set +e
-    "$target/debug/examples/fake_daemon" dev
+    "$target/debug/examples/fake_daemon$ext" dev
     exit $?
     ;;
   list) show_worktrees ;;
-  *) sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) sed -n '2,/^set -euo/p' "$0" | grep '^#' | sed 's/^# \{0,1\}//' ;;
 esac

@@ -64,6 +64,13 @@ repo_url() {
   esac
 }
 
+# App dùng server chung `cloud` (D-24): init app ⇒ kéo cloud theo + tạo khung env của app trong cloud/env/. App mới lên
+# server: `node cloud/tools/new-app.mjs <app>` rồi thêm tên vào đây (và `$cloudApps` của init.ps1).
+cloud_apps="fastcast"
+uses_cloud() { case " $cloud_apps " in *" $1 "*) return 0 ;; esac; return 1; }
+# Nhãn trong bảng chọn: "(kéo <repo>…)".
+pulls() { local out="$1 + materiant"; uses_cloud "$1" && out="$out + cloud"; echo "$out"; }
+
 # select_checklist <tiêu đề> <id|nhãn>… ⇒ gán $selected. ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ
 # bằng mã ANSI, phải có ít nhất một mục được tích. `read -t` số nguyên: bash 3.2 của macOS không nhận số lẻ.
 select_checklist() {
@@ -112,18 +119,19 @@ select_checklist() {
   done
 }
 
-selected="$*"
+selected="$(printf '%s' "$*" | tr ',' ' ')"
 if [ -z "$selected" ] && [ -t 0 ]; then
   select_checklist 'Bạn muốn init project nào:' \
-    'fastcast|fastcast   (kéo fastcast + materiant + cloud)' 'materiant|materiant  (chỉ thư viện UI)' \
-    'groove|groove     (kéo groove + materiant)'
+    "fastcast|fastcast   (kéo $(pulls fastcast))" 'materiant|materiant  (chỉ thư viện UI)' \
+    "groove|groove     (kéo $(pulls groove))" 'cloud|cloud      (server chung mọi app: tài khoản, license, đồng bộ)'
 fi
 if [ -z "$selected" ]; then
   # Stdin là pipe: không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
   echo 'Bạn muốn init project nào:'
-  echo '  [1] fastcast   (kéo fastcast + materiant + cloud)  (Enter)'
+  echo "  [1] fastcast   (kéo $(pulls fastcast))  (Enter)"
   echo '  [2] materiant  (chỉ thư viện UI)'
-  echo '  [3] groove     (kéo groove + materiant)'
+  echo "  [3] groove     (kéo $(pulls groove))"
+  echo '  [4] cloud      (server chung mọi app: tài khoản, license, đồng bộ)'
   while [ -z "$selected" ]; do
     printf 'Chọn (nhiều project thì cách bằng dấu phẩy): '
     read -r answer || answer=""
@@ -133,7 +141,8 @@ if [ -z "$selected" ]; then
         1) selected="$selected fastcast" ;;
         2) selected="$selected materiant" ;;
         3) selected="$selected groove" ;;
-        *) echo 'Nhập 1, 2, 3 hoặc nhiều số như 1,3.'; selected=""; break ;;
+        4) selected="$selected cloud" ;;
+        *) echo 'Nhập 1–4 hoặc nhiều số như 1,4.'; selected=""; break ;;
       esac
     done
   done
@@ -142,9 +151,9 @@ fi
 wanted=""
 for project in $selected; do
   case "$project" in
-    fastcast) wanted="$wanted fastcast materiant cloud" ;;
+    fastcast | groove) wanted="$wanted $project materiant"; uses_cloud "$project" && wanted="$wanted cloud" ;;
     materiant) wanted="$wanted materiant" ;;
-    groove) wanted="$wanted groove materiant" ;;
+    cloud) wanted="$wanted cloud" ;;
     *) echo "✗ không có project $project" >&2; exit 1 ;;
   esac
 done
@@ -157,6 +166,22 @@ for name in $(printf '%s\n' $wanted | awk '!seen[$0]++'); do
   git clone "$url" "$dir"
   echo "✓ $name đã clone"
 done
+
+# Khung env của app dùng server (cloud/env/<app>-dev.env, <app>.env — không theo git): tạo tệp thiếu, thêm biến mới vào
+# tệp có sẵn, giá trị đã điền giữ nguyên. Giá trị bí mật vẫn phải điền / chép tay. Chọn `cloud` ⇒ mọi app dùng server.
+env_apps=""
+for project in $selected; do
+  if [ "$project" = cloud ]; then env_apps="$env_apps $cloud_apps"; elif uses_cloud "$project"; then env_apps="$env_apps $project"; fi
+done
+env_apps="$(printf '%s\n' $env_apps | awk 'NF && !seen[$0]++' | tr '\n' ' ')"
+if [ -n "$env_apps" ] && [ -f "$root/cloud/tools/new-app.mjs" ]; then
+  if command -v node >/dev/null 2>&1; then
+    # shellcheck disable=SC2086
+    node "$root/cloud/tools/new-app.mjs" --env-only $env_apps
+  else
+    echo "⚠ thiếu node: bỏ qua khung env của cloud ($env_apps) — cài Node rồi chạy lại" >&2
+  fi
+fi
 
 # --- 3. Gói hệ thống (Linux) --------------------------------------------------------------------------------------
 # Đủ mọi thư viện để build, chạy app của project đã chọn, kể cả gói -dev, để không phải cài tay. Thiếu thì cài, có rồi

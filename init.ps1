@@ -4,7 +4,7 @@
 # 1. Nối memory của Claude trên máy này vào .claude/memory (track trong git) bằng junction.
 # 2. Clone repo của project được chọn (bảng $repos, $projects); repo đã có thì giữ nguyên, không pull.
 # 3. Soát công cụ.
-param([ValidateSet('fastcast', 'materiant', 'groove')] [string[]] $Project)
+param([ValidateSet('fastcast', 'materiant', 'groove', 'cloud')] [string[]] $Project)
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
@@ -59,13 +59,23 @@ $repos = [ordered]@{
     # Server chung của các app desktop (D-24); thư mục `cloud`, remote tên desktop-server.
     'cloud'     = 'https://github.com/nguyendoai7777/desktop-server.git'
 }
+# App dùng server chung `cloud` (D-24): init app ⇒ kéo cloud theo + tạo khung env của app trong cloud/env/. App mới lên
+# server: `node cloud/tools/new-app.mjs <app>` rồi thêm tên vào đây (và `cloud_apps` của init.sh).
+$cloudApps = @('fastcast')
+function Get-Pulls([string] $App) { $r = @($App, 'materiant'); if ($App -in $cloudApps) { $r += 'cloud' }; $r }
 # Project → các repo cần có.
 $projects = [ordered]@{
-    'fastcast'  = @('fastcast', 'materiant', 'cloud')
+    'fastcast'  = Get-Pulls 'fastcast'
     'materiant' = @('materiant')
-    'groove'    = @('groove', 'materiant')
+    'groove'    = Get-Pulls 'groove'
+    'cloud'     = @('cloud')
 }
-$labels = @('fastcast   (kéo fastcast + materiant + cloud)', 'materiant  (chỉ thư viện UI)', 'groove     (kéo groove + materiant)')
+$labels = @(
+    "fastcast   (kéo $((Get-Pulls 'fastcast') -join ' + '))",
+    'materiant  (chỉ thư viện UI)',
+    "groove     (kéo $((Get-Pulls 'groove') -join ' + '))",
+    'cloud      (server chung mọi app: tài khoản, license, đồng bộ)'
+)
 
 # ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.
 function Select-Checklist([string] $Title, [string[]] $Ids, [string[]] $Labels) {
@@ -111,15 +121,16 @@ if (-not $Project -and -not [Console]::IsInputRedirected) {
 if (-not $Project) {
     # Stdin là pipe (mintty của Git Bash, script): không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
     Write-Host 'Bạn muốn init project nào:'
-    Write-Host '  [1] fastcast   (kéo fastcast + materiant + cloud)  (Enter)'
-    Write-Host '  [2] materiant  (chỉ thư viện UI)'
-    Write-Host '  [3] groove     (kéo groove + materiant)'
+    Write-Host "  [1] $($labels[0])  (Enter)"
+    Write-Host "  [2] $($labels[1])"
+    Write-Host "  [3] $($labels[2])"
+    Write-Host "  [4] $($labels[3])"
     while (-not $Project) {
         Write-Host -NoNewline 'Chọn (nhiều project thì cách bằng dấu phẩy): '
         $answer = [Console]::In.ReadLine()
         if ([string]::IsNullOrWhiteSpace($answer)) { $answer = '1' }
         $picks = @($answer -split '[,\s]+' | Where-Object { $_ })
-        if ($picks | Where-Object { $_ -notin '1', '2', '3' }) { Write-Host 'Nhập 1, 2, 3 hoặc nhiều số như 1,3.'; continue }
+        if ($picks | Where-Object { $_ -notin '1', '2', '3', '4' }) { Write-Host 'Nhập 1–4 hoặc nhiều số như 1,4.'; continue }
         $Project = @($picks | ForEach-Object { @($projects.Keys)[[int]$_ - 1] })
     }
 }
@@ -132,6 +143,19 @@ foreach ($name in $wanted) {
     git clone $repos[$name] $dir
     if ($LASTEXITCODE -ne 0) { throw "clone $name thất bại" }
     Write-Host "✓ $name đã clone"
+}
+
+# Khung env của app dùng server (cloud/env/<app>-dev.env, <app>.env — không theo git): tạo tệp thiếu, thêm biến mới vào
+# tệp có sẵn, giá trị đã điền giữ nguyên. Giá trị bí mật vẫn phải điền / chép tay. Chọn `cloud` ⇒ mọi app dùng server.
+# @(…) bọc ngoài: một app thì Select-Object trả chuỗi trần, splat chuỗi trần không ra đối số.
+$envApps = @(@(foreach ($p in $Project) { if ($p -eq 'cloud') { $cloudApps } elseif ($p -in $cloudApps) { $p } }) | Select-Object -Unique)
+$newApp = Join-Path $root 'cloud/tools/new-app.mjs'
+if ($envApps -and (Test-Path $newApp)) {
+    if (Get-Command node -ErrorAction SilentlyContinue) {
+        & node $newApp --env-only @envApps
+    } else {
+        Write-Warning "thiếu node: bỏ qua khung env của cloud ($($envApps -join ', ')) — cài Node rồi chạy lại"
+    }
 }
 
 # --- 3. Công cụ ------------------------------------------------------------------------------------------------

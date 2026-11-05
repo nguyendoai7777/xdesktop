@@ -103,6 +103,7 @@ hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` 
 Làm trên nhánh `claude/<task>` trong một **worktree cố định** (D-18: `.claude/worktrees/<repo>-w<N>` của repo gốc, build ở
 `<repo>/target/w<N>`, không xoá, task sau dùng lại cả mã lẫn cache build) là chuyện của Claude; chủ dự án chỉ nhìn `master`.
 Hết task: kiểm xanh (`cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
-`cargo deny check licenses`) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → trả
+`cargo deny check licenses`; fastcast thay `cargo test` bằng `node tools/test-affected.mjs` — chỉ test phần đổi + phần
+phụ thuộc, cả bộ để lúc đóng giai đoạn / trước tag / build bản phát hành, D-26) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → trả
 worktree về rảnh (`git -C <worktree> switch --detach master`), `branch -d`; giữ worktree và thư mục build. Có xung đột thì
 dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.

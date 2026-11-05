@@ -18,6 +18,13 @@ Bản xdesktop của skill cùng tên ở xbds. Mỗi app một `plan/` trong re
 5. Repo còn nhánh / worktree `claude/*` của giai đoạn (`git -C <repo> worktree list`, `branch --list 'claude/*'`) ⇒ báo,
    không tự xoá. Session khác đang ghi vào tệp sắp dời ⇒ chờ nó xong.
 
+## 1b. Cả bộ test (D-26)
+
+Task trong giai đoạn chỉ chạy test phần đổi (fastcast: `tools/test-affected.mjs`) ⇒ đóng giai đoạn chạy cả bộ trên
+`master` của repo: `cargo test` (fastcast: `node tools/test-affected.mjs --all`, Linux tự bọc `headless-test.sh`), cwd là
+một worktree rảnh của repo (D-18) để không đè build của session khác. Đỏ ⇒ sửa ngay (D-11) trước khi dời tệp; không sửa
+được trong lượt thì báo chủ dự án, không đóng giai đoạn.
+
 ## 2. Dời
 
 ```bash

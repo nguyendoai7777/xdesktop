@@ -35,7 +35,8 @@ phí / luật cấm ⇒ ghi `<repo>/plan/_backlog.md` rồi đi tiếp phần c�
    task trỏ tới. Task chạm repo khác ⇒ nạp cả `CLAUDE.md` của repo đó.
 3. `.claude/rules/tasking-convention.md`; mở tệp task: bảng thuộc tính, khối `## 0. Bàn giao từ …`, mục 1–8.
 4. Hồ sơ repo cho các bước sau: lệnh soát xanh (mặc định `cargo build`, `cargo clippy --all-targets -- -D warnings`,
-   `cargo test`, `cargo deny check licenses`), cách đo (RAM: `tools/measure-ram.ps1`), bẫy môi trường ghi trong
+   `cargo test`, `cargo deny check licenses`; **fastcast thay `cargo test` bằng `node tools/test-affected.mjs`** — D-26,
+   chỉ test phần đổi + phần phụ thuộc; task thêm tính năng / tệp `tests/*.rs` thì thêm dòng vào bảng đầu script), cách đo (RAM: `tools/measure-ram.ps1`), bẫy môi trường ghi trong
    `CLAUDE.md` của repo (vd AppData ảo hoá khi chạy exe từ app Claude, PowerShell không chờ exe GUI).
 5. Soát nền: phụ thuộc ✅ và có commit trên `master`; checkout chính của repo bị chạm đang bẩn, hay đã có worktree /
    nhánh `claude/<task>` ⇒ nói ra trước khi tạo nhánh.

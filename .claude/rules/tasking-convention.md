@@ -84,7 +84,10 @@ dọc** chạy được ngay (một tính năng từ phím tắt tới pixel), k
 | **Tay** `[owner-qa]` | Chủ dự án kiểm thứ máy không tự kiểm được: nhìn bằng mắt, nhiều màn khác DPI / Hz, bộ gõ tiếng Việt, khởi động lại máy, macOS / Ubuntu. Ghi rõ bước + kết quả mong đợi |
 
 Lệnh soát xanh mỗi repo: `cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
-`cargo deny check licenses` (chạy với cwd = worktree của task).
+`cargo deny check licenses` (chạy với cwd = worktree của task). **fastcast** (D-26): thay `cargo test` bằng
+`node tools/test-affected.mjs` (test phần đổi + phần phụ thuộc, `--dry-run` xem trước); cả bộ `cargo test` chỉ lúc đóng
+giai đoạn, trước tag / build bản phát hành, hoặc khi đổi materiant / GPUI vá (`--all`). Task thêm tính năng / tệp test
+mới ⇒ thêm dòng vào bảng đầu `fastcast/tools/test-affected.mjs`; case `[opus-run]` của task vẫn chạy như cũ.
 
 ## 4. Quy ước sẵn có — dùng lại, đừng phát minh
 

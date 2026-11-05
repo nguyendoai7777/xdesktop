@@ -56,8 +56,8 @@ $repos = [ordered]@{
     'fastcast'  = 'https://github.com/nguyendoai7777/fastcast.git'
     'materiant' = 'https://github.com/nguyendoai7777/materiant-rust.git'
     'groove'    = 'https://github.com/nguyendoai7777/groove.git'
-    # Server chung (D-24): chưa có remote — có URL thì điền vào đây, trống thì bỏ qua êm.
-    'cloud'     = ''
+    # Server chung của các app desktop (D-24); thư mục `cloud`, remote tên desktop-server.
+    'cloud'     = 'https://github.com/nguyendoai7777/desktop-server.git'
 }
 # Project → các repo cần có.
 $projects = [ordered]@{

@@ -59,8 +59,8 @@ repo_url() {
     fastcast) echo https://github.com/nguyendoai7777/fastcast.git ;;
     materiant) echo https://github.com/nguyendoai7777/materiant-rust.git ;;
     groove) echo https://github.com/nguyendoai7777/groove.git ;;
-    # Server chung (D-24): chưa có remote — có URL thì điền vào đây, trống thì bỏ qua êm.
-    cloud) echo '' ;;
+    # Server chung của các app desktop (D-24); thư mục `cloud`, remote tên desktop-server.
+    cloud) echo https://github.com/nguyendoai7777/desktop-server.git ;;
   esac
 }
 

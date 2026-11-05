@@ -8,7 +8,7 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 | --- | --- | --- |
 | **fastcast** (chụp vùng / thước / lấy màu / OCR / quay vùng) | `fastcast/` — lộ trình `fastcast/ROADMAP.md`, task `fastcast/plan/gd<N>_*.md` | `fastcast/CLAUDE.md` |
 | **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — nền GPUI (D-6); dùng component: `materiant/API.md` → `materiant/api/<module>.md`; inspector kiểu DevTools là crate `materiant/devtool` (D-25, app gọi `devtool::init`); lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` (sửa materiant) |
-| **cloud** (server chung mọi app: tài khoản, license, đồng bộ, lưu tệp — D-24) | `cloud/` — Rust axum + Postgres (sqlx); staging trên `ssh xbds-staging` (dùng chung với xbds, luật ở `cloud/CLAUDE.md`); task nằm ở `fastcast/plan/gd5_*`; chưa có remote | `cloud/CLAUDE.md` |
+| **cloud** (server chung mọi app: tài khoản, license, đồng bộ, lưu tệp — D-24) | `cloud/` — Rust axum + Postgres (sqlx); staging trên `ssh xbds-staging` (dùng chung với xbds, luật ở `cloud/CLAUDE.md`); task nằm ở `fastcast/plan/gd5_*`; remote `desktop-server` | `cloud/CLAUDE.md` |
 | **groove** (trình phát nhạc **Groovex** — G-9, viết lại từ Tauri + Vue sang Rust + GPUI, G-1) | `groove/` — lộ trình `groove/ROADMAP.md`, task `groove/plan/groove-gd1_*.md`; bản Tauri còn tới khi gộp nhánh `claude/remove-tauri` (tag `tauri-final`) | `groove/CLAUDE.md`, skill `/groove` |
 
 Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
@@ -58,7 +58,7 @@ bash init.sh       # macOS / Ubuntu (Git Bash trên Windows tự đá sang init.
 ```
 
 Idempotent, chạy lại lúc nào cũng được: nối memory, hỏi init project nào rồi clone repo còn thiếu (fastcast, groove kéo cả
-materiant; fastcast kéo thêm cloud khi `init.*` có URL remote của nó, chưa có thì bỏ qua; repo có rồi thì không đụng; remote của materiant tên `materiant-rust`), soát công cụ. Không hỏi: `-Project fastcast` / `bash init.sh fastcast`.
+materiant; fastcast kéo thêm cloud (remote `desktop-server`); repo có rồi thì không đụng; remote của materiant tên `materiant-rust`; tệp bí mật của cloud — `.env`, `env/`, `secrets/` — không theo git, chép tay), soát công cụ. Không hỏi: `-Project fastcast` / `bash init.sh fastcast`.
 
 ## Build bản release
 

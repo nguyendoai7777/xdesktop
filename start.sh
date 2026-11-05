@@ -206,10 +206,12 @@ case "$app" in
     if [ ! -f "$dev_config" ] && [ -f "$real_config" ]; then cp "$real_config" "$dev_config"; fi
     export FASTCAST_CONFIG_FILE="$dev_config"
     echo "cấu hình dev: $dev_config"
-    # Model OCR: bản debug không có `models/` cạnh exe ⇒ macOS mượn bộ đã dựng cho bản release (giải nén export-ocr +
-    # tools/fetch-ocr-models.sh), qua biến dev FASTCAST_OCR_MODELS (bản debug mới đọc). Linux mượn /opt/fastcast/models trong mã.
+    # Model OCR: bản debug không có `models/` cạnh exe ⇒ mượn bộ đã dựng cho bản release (fastcast/spikes/ocr/init-ocr.sh), qua
+    # biến dev FASTCAST_OCR_MODELS (bản debug mới đọc). Linux chưa có thư viện ONNX Runtime ở đó thì mã mượn /opt/fastcast/models.
+    # Hướng dẫn: docs/OCR-guldeline.md.
     ocr_models="$root/fastcast/target/release/models"
-    if [ "$os" = Darwin ] && [ -z "${FASTCAST_OCR_MODELS:-}" ] && [ -f "$ocr_models/manifest.toml" ]; then
+    if [ "$os" = Darwin ]; then ocr_lib=libonnxruntime.dylib; else ocr_lib=libonnxruntime.so; fi
+    if [ -z "${FASTCAST_OCR_MODELS:-}" ] && [ -f "$ocr_models/manifest.toml" ] && [ -f "$ocr_models/$ocr_lib" ]; then
       export FASTCAST_OCR_MODELS="$ocr_models"
       echo "model OCR: $ocr_models"
     fi

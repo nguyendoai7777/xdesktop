@@ -98,8 +98,15 @@ switch ($App) {
         }
         $target = Join-Path $root 'fastcast\target\start'
         $env:CARGO_TARGET_DIR = $target
-        & node $prune build --manifest-path (Join-Path $root 'fastcast\Cargo.toml') -p fastcast-ui --bin fastcast-ui --example fake_daemon
+        & node $prune build --manifest-path (Join-Path $root 'fastcast\Cargo.toml') -p fastcast-ui --bin fastcast-ui --example fake_daemon -p fastcast-ocr --bin fastcast-ocr
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        # Model OCR: bản debug không có `models\` cạnh exe ⇒ mượn bộ của bản release (fastcast\spikes\ocr\init-ocr.ps1 dựng), qua biến
+        # dev FASTCAST_OCR_MODELS (bản debug mới đọc). Hướng dẫn: docs\OCR-guldeline.md.
+        $ocrModels = Join-Path $root 'fastcast\target\release\models'
+        if (-not $env:FASTCAST_OCR_MODELS -and (Test-Path (Join-Path $ocrModels 'manifest.toml'))) {
+            $env:FASTCAST_OCR_MODELS = $ocrModels
+            Write-Host "model OCR: $ocrModels"
+        }
 
         # Cấu hình dev: lần đầu chép từ cấu hình thật (fastcast_core::paths::config_dir = %APPDATA%\fastcast trên Windows).
         $devConfig = Join-Path $target 'dev-config.json'

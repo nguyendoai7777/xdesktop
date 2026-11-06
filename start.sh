@@ -162,6 +162,23 @@ case "$app" in
       -- --manifest-path "$root/groove/Cargo.toml" -p groove-app
     ;;
   fastcast)
+    # macOS: bản dev là exe rời, không phải Fastcast.app ⇒ quyền ghi màn hình tính cho app terminal đang chạy lệnh này (app gần
+    # nhất trên cây tiến trình cha; app con trong app khác như Claude Helper ⇒ app ngoài cùng), không phải Fastcast đã cài. Thiếu ⇒ đưa terminal vào danh sách, mở đúng trang, nói tên app.
+    mac_screen_access() {
+      local cg='ObjC.import("CoreGraphics"); ObjC.bindFunction("CGPreflightScreenCaptureAccess", ["bool", []]); $.CGPreflightScreenCaptureAccess()'
+      [ "$(osascript -l JavaScript -e "$cg" 2>/dev/null)" = true ] && return 0
+      local pid=$$ path app=""
+      while [ "${pid:-0}" -gt 1 ]; do
+        path="$(ps -p "$pid" -o comm= 2>/dev/null || true)"
+        case "$path" in */*.app/Contents/*) app="${path%%.app/*}"; app="${app##*/}"; break ;; esac
+        pid="$(ps -p "$pid" -o ppid= 2>/dev/null | tr -d ' ' || true)"
+      done
+      osascript -l JavaScript -e "${cg//Preflight/Request}" >/dev/null 2>&1 || true
+      open "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture" 2>/dev/null || true
+      echo "Chưa có quyền ghi màn hình: bản dev dùng quyền của app terminal ${app:+($app) }chứ không phải Fastcast đã cài."
+      echo "Bật ${app:-app terminal này} trong System Settings > Privacy & Security > Screen & System Audio Recording, thoát hẳn rồi mở lại nó, chạy lại lệnh."
+      echo "Vẫn chạy tiếp: chụp / quay sẽ báo thiếu quyền tới khi bật."
+    }
     # Bản debug có inspector, cấu hình dev riêng. `app`: daemon thật (khay + phím tắt toàn cục) — một instance nên bản đã cài
     # phải thoát trước. Màn khác: daemon giả (không phím tắt toàn cục, không khay), không đụng Fastcast đã cài.
     screen="${page:-app}"
@@ -193,6 +210,15 @@ case "$app" in
     if [ ! -f "$dev_config" ] && [ -f "$real_config" ]; then cp "$real_config" "$dev_config"; fi
     export FASTCAST_CONFIG_FILE="$dev_config"
     echo "cấu hình dev: $dev_config"
+    # Model OCR: bản debug không có `models/` cạnh exe ⇒ mượn bộ đã dựng cho bản release (fastcast/spikes/ocr/init-ocr.sh), qua
+    # biến dev FASTCAST_OCR_MODELS (bản debug mới đọc). Linux chưa có thư viện ONNX Runtime ở đó thì mã mượn /opt/fastcast/models.
+    # Hướng dẫn: docs/OCR-guldeline.md.
+    ocr_models="$root/fastcast/target/release/models"
+    if [ "$os" = Darwin ]; then ocr_lib=libonnxruntime.dylib; else ocr_lib=libonnxruntime.so; fi
+    if [ -z "${FASTCAST_OCR_MODELS:-}" ] && [ -f "$ocr_models/manifest.toml" ] && [ -f "$ocr_models/$ocr_lib" ]; then
+      export FASTCAST_OCR_MODELS="$ocr_models"
+      echo "model OCR: $ocr_models"
+    fi
 
     if [ "$screen" = app ]; then
       # Một instance: `fst` thứ hai chỉ báo bản đang chạy mở launcher rồi thoát ⇒ soát trước, nói rõ bản nào đang giữ.
@@ -220,6 +246,7 @@ case "$app" in
       fi
       node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-daemon --bin fst -p fastcast-ui --bin fastcast-ui \
         -p fastcast-video --bin fastcast-rec -p fastcast-ocr --bin fastcast-ocr
+      [ "$os" = Darwin ] && mac_screen_access
       echo "fst thật (bản debug): khay + phím tắt theo cấu hình dev. Lệnh từ terminal khác: $own run <lệnh>, $own quit. Ctrl+C để thoát."
       [ "$os" = Linux ] && echo "GNOME: phím tắt ghi vào dconf, trỏ tới exe debug; mở lại Fastcast đã cài thì nó ghi lại đường dẫn của nó."
       exec "$own"

@@ -1,6 +1,6 @@
 # Lớp bọc cho Windows PowerShell: mọi logic nằm ở start.sh (một mã cho mọi OS) — script này chỉ tìm Git Bash rồi chuyển
-# nguyên đối số sang. Cách dùng, màn, cờ (--no-watch…): xem đầu start.sh hoặc `pwsh start.ps1 help`.
-#   pwsh start.ps1 docs [trang] [worktree] | launcher [worktree] | groove | fastcast [màn] | list
+# nguyên đối số sang; start.sh lại chỉ định tuyến sang `<repo>/start.sh`. Cách dùng: đầu start.sh hoặc `pwsh start.ps1 help`.
+#   pwsh start.ps1 [docs [trang] [worktree] | launcher [worktree] | groove | fastcast [màn] [--plan=<plan>] | list]
 # Không gọi `bash` trần: trên Windows nó thường là WSL (system32\bash.exe), không có Rust / Node / cấu hình của máy.
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8

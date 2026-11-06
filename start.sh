@@ -214,7 +214,8 @@ case "$app" in
     # biến dev FASTCAST_OCR_MODELS (bản debug mới đọc). Linux chưa có thư viện ONNX Runtime ở đó thì mã mượn /opt/fastcast/models.
     # Hướng dẫn: docs/OCR-guldeline.md.
     ocr_models="$root/fastcast/target/release/models"
-    if [ "$os" = Darwin ]; then ocr_lib=libonnxruntime.dylib; else ocr_lib=libonnxruntime.so; fi
+    if [ "$win" = 1 ]; then ocr_lib=onnxruntime.dll
+    elif [ "$os" = Darwin ]; then ocr_lib=libonnxruntime.dylib; else ocr_lib=libonnxruntime.so; fi
     if [ -z "${FASTCAST_OCR_MODELS:-}" ] && [ -f "$ocr_models/manifest.toml" ] && [ -f "$ocr_models/$ocr_lib" ]; then
       export FASTCAST_OCR_MODELS="$ocr_models"
       echo "model OCR: $ocr_models"
@@ -272,7 +273,8 @@ case "$app" in
         rm -f "$sock"
       fi
     fi
-    node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-ui --bin fastcast-ui --example fake_daemon
+    node "$prune" build --manifest-path "$root/fastcast/Cargo.toml" -p fastcast-ui --bin fastcast-ui --example fake_daemon \
+      -p fastcast-ocr --bin fastcast-ocr
 
     if [ "$fake" = 1 ]; then export FASTCAST_OVERLAY_FAKE=1; else unset FASTCAST_OVERLAY_FAKE; fi
 

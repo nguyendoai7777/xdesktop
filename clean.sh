@@ -23,6 +23,11 @@ for repo in fastcast materiant groove; do
     fi
   done
 done
+# Thư mục tạm của cargo (`.cargo/config.toml` đặt TMP / TEMP vào đây thay cho %TEMP%): xoá hết trừ `.gitignore`, cả trong
+# worktree cố định — tệp tạm không phải cache, không cần giữ.
+for tmp in "$root"/*/.cargo/tmp "$root"/.claude/worktrees/*/.cargo/tmp; do
+  [ -d "$tmp" ] && find "$tmp" -mindepth 1 -maxdepth 1 ! -name .gitignore -exec rm -rf {} + 2>/dev/null
+done
 # KHÔNG đụng `groove/src-tauri/target`: `x86_64-pc-windows-msvc/release/groovex.exe` là bản Tauri để đối soát.
 # Thư mục build tạm của worktree trên Windows (ổ ngoài repo).
 [ -d /c/xdesktop-target ] && find /c/xdesktop-target -mindepth 1 -maxdepth 1 -exec rm -rf {} +

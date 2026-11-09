@@ -73,7 +73,7 @@ Viết tài liệu bàn giao tóm cuộc trò chuyện hiện tại để một 
 - Nơi lưu: session có thư mục ghi chú chung (dòng "Shared notes folder" trong ngữ cảnh) ⇒ lưu ở đó; không thì thư mục
   tạm của OS (scratchpad của session nếu có). **Không** lưu vào workspace.
 - Mở đầu: mục tiêu, trạng thái (đã xong / đang dở / chưa làm), repo + nhánh / worktree đang mở, commit cuối từng repo.
-- Không chép lại thứ đã có ở tệp khác (task trong `<repo>/plan/`, `ROADMAP.md`, `docs/decisions.md`, commit, diff) — trỏ
+- Không chép lại thứ đã có ở tệp khác (task trong `<repo>/plan/`, `ROADMAP.md`, `.claude/rules/decisions/`, commit, diff) — trỏ
   đường dẫn. Câu hỏi đang chờ chủ dự án ghi nguyên văn.
 - Mục "Skill nên gọi": `run-task <mã>` cho task kế, `close-phase` nếu giai đoạn đã xong, `handoff` khi xong task.
 - Che thông tin nhạy cảm (khoá API, mật khẩu, dữ liệu cá nhân, đường dẫn ảnh chụp màn hình của chủ dự án).

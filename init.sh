@@ -183,6 +183,13 @@ if [ -n "$env_apps" ] && [ -f "$root/cloud/tools/new-app.mjs" ]; then
   fi
 fi
 
+# --- 2b. Lịch sử git thẳng (D-12): pull luôn rebase, mọi repo đang có ----------------------------------------------
+for repo in "$root" "$root"/*/; do
+  [ -e "$repo/.git" ] || continue
+  git -C "$repo" config pull.rebase true
+  git -C "$repo" config rebase.autoStash true
+done
+
 # --- 3. Gói hệ thống (Linux) --------------------------------------------------------------------------------------
 # Đủ mọi thư viện để build, chạy app của project đã chọn, kể cả gói -dev, để không phải cài tay. Thiếu thì cài, có rồi
 # thì bỏ qua. Danh sách lấy từ cây `cargo tree --target x86_64-unknown-linux-gnu` (các crate `-sys`) và đã thử build

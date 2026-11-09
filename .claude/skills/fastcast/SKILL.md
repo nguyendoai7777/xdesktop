@@ -9,7 +9,7 @@ Session này chỉ làm **fastcast**. groove không liên quan: hai app chỉ d�
 ## Nạp ngay
 
 1. `fastcast/CLAUDE.md`: bố cục crate, luật riêng, lệnh, bẫy khi chạy thử. Đọc trước khi sửa code.
-2. `docs/decisions.md`, mục `Chung cho workspace` và `fastcast` (D-*, F-*).
+2. `.claude/rules/decisions/workspace.md` (D-*) và `fastcast.md` (F-*, Q-*; tự nạp khi chạm `fastcast/`).
 
 ## Đọc khi việc cần
 
@@ -28,7 +28,7 @@ của fastcast, và soát bằng lệnh của materiant.
 
 ## Không đọc
 
-- `groove/`, mục `groove` của `docs/decisions.md`.
+- `groove/`, `.claude/rules/decisions/groove.md`.
 - `materiant/plan/` trừ khi task fastcast ghi phụ thuộc vào nó.
 - `target/`, `dist/`, `release/`, `plan/completed/` của repo khác, `materiant/spikes/` trừ khi `fastcast/CLAUDE.md` trỏ tới.
 

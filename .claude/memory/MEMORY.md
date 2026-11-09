@@ -1,4 +1,4 @@
-- [Chủ dự án](user-profile.md) — nói tiếng Việt, dev web chuyển sang Rust desktop, làm ở máy nhà Windows + công ty Ubuntu + Mac; quyết định ghi ở docs/decisions.md
+- [Chủ dự án](user-profile.md) — nói tiếng Việt, dev web chuyển sang Rust desktop, làm ở máy nhà Windows + công ty Ubuntu + Mac; quyết định ghi ở .claude/rules/decisions/
 - [AppData ảo hoá MSIX](msix-appdata-virtualization.md) — exe chạy từ app Claude ghi config/log vào LocalCache của gói, khác AppData thật
 - [Không dừng hỏi](feedback-no-blocking-questions.md) — session nào cũng tự chọn, lý do ở mục 9 task, không AskUserQuestion (D-9); confirm.md đã bỏ
 - [Chuỗi task tự chạy](feedback-chain-tasks.md) — task xong ⇒ kiểm nhanh rồi tự mở session mới cho task kế trong plan

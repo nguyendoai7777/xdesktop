@@ -1,3 +1,11 @@
+---
+paths:
+  - "*/release-notes/**"
+  - ".claude/worktrees/*/release-notes/**"
+  - "tag.sh"
+  - "tag.ps1"
+---
+
 # Release note (D-22)
 
 Mỗi tag `v<version>` của một repo (`fastcast`, `groove`, `materiant`) có đúng một tệp `<repo>/release-notes/v<version>.md`. Tệp
@@ -34,4 +42,4 @@ Có thể viết trước: tạo sẵn tệp đúng tên rồi mới chạy scri
 
 - Viết tiếng Việt, câu ngắn, theo góc nhìn người dùng ("Hàng đợi tự cuộn tới bài đang phát"), không mã commit / tên hàm.
 - Mục nào trống thì xoá mục đó. Không có gì người dùng thấy (bản chỉ sửa nội bộ) vẫn ghi một dòng ở "Thay đổi khác".
-- Lấy ý từ `git log v<bản trước>..HEAD --merges` của repo, gom theo ý chứ không chép từng commit.
+- Lấy ý từ `git log v<bản trước>..HEAD` của repo (lịch sử thẳng, D-12: commit mở đầu bằng mã task), gom theo ý chứ không chép từng commit.

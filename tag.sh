@@ -8,7 +8,7 @@
 #   bash tag.sh -p --push       # đẩy luôn commit + tag lên origin
 #   bash tag.sh --project materiant --minor     # không hỏi project; nhiều project: --project fastcast,materiant
 # Nâng materiant thì `Cargo.lock` của fastcast / groove đổi theo (build dùng `--locked`), nên app có thêm một commit.
-# Release note (D-22, khuôn `docs/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
+# Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
 # rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -131,7 +131,7 @@ next_version() { # <version hiện tại> ⇒ in version mới
 notes_marker='<!-- release-note: điền xong thì xoá dòng này -->'
 # notes_file <repo> <version> ⇒ đường dẫn tệp release note của tag đó.
 notes_file() { echo "$root/$1/release-notes/v$2.md"; }
-# write_notes_stub <name> <version>: khung theo `docs/release-notes.md`.
+# write_notes_stub <name> <version>: khung theo `.claude/rules/release-notes.md`.
 write_notes_stub() {
   local file
   file="$(notes_file "$1" "$2")"

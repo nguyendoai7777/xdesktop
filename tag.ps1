@@ -7,7 +7,7 @@
 #   pwsh ./tag.ps1 -p --push       # đẩy luôn commit + tag lên origin
 #   pwsh ./tag.ps1 -Project materiant --minor     # không hỏi project; nhiều project: -Project fastcast,materiant
 # Nâng materiant thì `Cargo.lock` của fastcast / groove đổi theo (build dùng `--locked`), nên app có thêm một commit.
-# Release note (D-22, khuôn `docs/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
+# Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
 # rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
 param(
     [ValidateSet('fastcast', 'materiant', 'groove')] [string[]] $Project,
@@ -87,7 +87,7 @@ $order = @('materiant', 'fastcast', 'groove' | Where-Object { $_ -in $Project })
 
 $notesMarker = '<!-- release-note: điền xong thì xoá dòng này -->'
 function Get-NotesFile([string] $Name, [string] $Version) { Join-Path $PSScriptRoot "$Name/release-notes/v$Version.md" }
-# Khung theo `docs/release-notes.md`.
+# Khung theo `.claude/rules/release-notes.md`.
 function New-NotesStub([string] $Name, [string] $Version) {
     $file = Get-NotesFile $Name $Version
     New-Item -ItemType Directory -Force (Split-Path $file) | Out-Null

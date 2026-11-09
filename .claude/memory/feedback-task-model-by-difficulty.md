@@ -8,7 +8,7 @@ metadata:
   modified: 2026-11-02T01:24:02.165Z
 ---
 
-Task dễ, code UI, không chứa nghiệp vụ, không cần tư duy cao về hiệu năng ⇒ Sonnet. Task cần nghiệp vụ và tư duy, phải làm kỹ, triệt để ⇒ Opus. Đã chốt thành D-14 trong `docs/decisions.md` (02/11/2026).
+Task dễ, code UI, không chứa nghiệp vụ, không cần tư duy cao về hiệu năng ⇒ Sonnet. Task cần nghiệp vụ và tư duy, phải làm kỹ, triệt để ⇒ Opus. Đã chốt thành D-14 trong `.claude/rules/decisions/workspace.md` (02/11/2026).
 
 **Why:** chủ dự án muốn tiết kiệm Opus cho chỗ cần suy nghĩ, không để việc khó rơi vào model yếu hơn.
 

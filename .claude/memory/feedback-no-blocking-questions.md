@@ -6,7 +6,7 @@ metadata:
 ---
 
 Chủ dự án không muốn bất kỳ session nào dừng chờ chọn đáp án (AskUserQuestion) — tự chọn phương án tốt nhất, làm luôn,
-ghi lý do vào mục 9 task. Đã chốt thành D-9 trong `docs/decisions.md` (30/10/2026).
+ghi lý do vào mục 9 task. Đã chốt thành D-9 trong `.claude/rules/decisions/workspace.md` (30/10/2026).
 
 05/11/2026: bỏ hẳn `<repo>/plan/confirm.md` — cải tiến / lựa chọn tự làm không cần log vào sổ soát riêng, không tạo lại
 tệp này, brief session con không dặn ghi nó.

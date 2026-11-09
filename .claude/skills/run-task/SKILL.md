@@ -29,7 +29,7 @@ nào dưới đây ghi "chọn" ⇒ tự chọn phương án tốt nhất, làm 
 
 ## 1. Nạp ngữ cảnh (không hỏi)
 
-1. `CLAUDE.md` gốc (luật chung, bảng định tuyến) + `docs/decisions.md` (D-*, F-*, Q-*).
+1. `CLAUDE.md` gốc (luật chung, bảng định tuyến) + `.claude/rules/decisions/` (D-* chung; F-* / G-* / Q-* tự nạp khi chạm repo app).
 2. Dòng `Repo` của task ⇒ `<repo>/CLAUDE.md` TRƯỚC khi đọc code; lộ trình của repo (`fastcast/ROADMAP.md`) — chỉ phần
    task trỏ tới. Task chạm repo khác ⇒ nạp cả `CLAUDE.md` của repo đó.
 3. `.claude/rules/tasking-convention.md`; mở tệp task: bảng thuộc tính, khối `## 0. Bàn giao từ …`, mục 1–8.
@@ -43,7 +43,7 @@ nào dưới đây ghi "chọn" ⇒ tự chọn phương án tốt nhất, làm 
 ## 2. Chốt câu hỏi mở — TRƯỚC khi code
 
 Task ghi "Quyết định trong task", "xác nhận với chủ dự án", Q-… chưa chốt, hoặc mâu thuẫn với code thật ⇒ gom lại, tự
-chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật, bản web), ghi mục 9 ("Opus chọn <ngày>: … — vì …"). Không ghi `docs/decisions.md` — chỉ chủ dự án chốt mới vào đó.
+chọn phương án khuyên dùng cho từng câu (dựa D-* / F-*, code thật, bản web), ghi mục 9 ("Opus chọn <ngày>: … — vì …"). Không ghi `.claude/rules/decisions/` — chỉ chủ dự án chốt mới vào đó.
 
 ## 3. Phân vai + Case test (thiếu thì Opus viết, không chờ duyệt)
 
@@ -119,13 +119,13 @@ quyết định D-* / F-* đã chốt.
 2. Bàn giao: gọi skill **`handoff`** (chế độ A, tham số = mã task) — nó tìm task nhận (số kế tiếp, hoặc các task ghi
    task này ở dòng "Phụ thuộc" khi lộ trình có làn song song), chèn khối `## 0. Bàn giao từ <task>` + dấu
    `<!-- handoff: <task> -->`, task cuối giai đoạn thì ghi vào lộ trình repo. Khuôn ở `.claude/rules/tasking-convention.md` mục 6.
-3. Gộp từng repo: soát xanh lần cuối trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` →
+3. Gộp từng repo, lịch sử thẳng (D-12): `git -C <worktree> rebase master` → soát xanh lần cuối trên nhánh đã rebase → `git -C <repo> merge --ff-only claude/<task>` vào `master` (từ chối ⇒ rebase lại, không merge thường) →
    trả worktree về rảnh `git -C .claude/worktrees/<repo>-w<N> switch --detach master` → `git -C <repo> branch -d
-   claude/<task>`. Gộp `master` vào nhánh trước khi merge; xung đột ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau),
-   soát xanh lại, ghi mục 9. KHÔNG gỡ worktree, KHÔNG xoá `<repo>/target/w<N>` (D-18). Còn tệp sinh ra chưa track trong
+   claude/<task>`. KHÔNG merge `master` vào nhánh. Xung đột lúc rebase ⇒ tự giải (giữ cả hai phía khi là hai mục cạnh nhau) →
+   `git add` → `rebase --continue`, soát xanh lại, ghi mục 9; không giải được ⇒ `rebase --abort`, dừng hỏi. KHÔNG gỡ worktree, KHÔNG xoá `<repo>/target/w<N>` (D-18). Còn tệp sinh ra chưa track trong
    worktree (ảnh chụp, tệp tạm) ⇒ xoá trước khi trả. Không push (hỏi trước).
 4. Commit plan ở repo chứa nó, theo đường dẫn: `git -C <repo> commit -m "plan: <task> ✅" -- plan/<tệp task> plan/<các task nhận>
-   plan/_backlog.md ROADMAP.md`; `docs/decisions.md` nếu có quyết định mới thì commit ở repo gốc.
+   plan/_backlog.md ROADMAP.md`; `.claude/rules/decisions/` nếu có quyết định mới thì commit ở repo gốc.
 
 Báo chủ dự án ≤ 10 dòng: kết quả + commit từng repo, case xanh / đỏ, số đo chính, việc chủ dự án phải làm (lệnh chạy
 được, bước kiểm tay), đề xuất mục 10 đã làm / lý do còn treo.

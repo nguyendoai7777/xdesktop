@@ -42,7 +42,7 @@ Mỗi app một thư mục plan trong repo của nó (D-7, đổi 02/11/2026). T
 | Repo | repo bị sửa (fastcast, materiant…) — run-task nạp `<repo>/CLAUDE.md` theo dòng này |
 | Cỡ | S / M — kèm ước lượng dòng code |
 | Phụ thuộc | task phải ✅ trước, kể cả task của repo khác (`materiant-gd1_03`) |
-| Quyết định áp dụng | D-… / F-… trong `docs/decisions.md` |
+| Quyết định áp dụng | D-… / F-… / G-… trong `.claude/rules/decisions/` |
 | Phụ thuộc mới | crate + giấy phép (soát D-2), hoặc "—" |
 | File đụng tới | đường dẫn thật tính từ repo, MỚI / SỬA |
 
@@ -104,7 +104,7 @@ mới ⇒ thêm dòng vào bảng đầu `fastcast/tools/test-affected.mjs`; cas
 
 ## 5. Khi nào dừng và hỏi
 
-- Task đụng quyết định chưa chốt (Q-… ở `docs/decisions.md`, câu hỏi mở trong lộ trình) → dừng, hỏi.
+- Task đụng quyết định chưa chốt (Q-… ở `.claude/rules/decisions/`, câu hỏi mở trong lộ trình) → dừng, hỏi.
 - Cần vượt trần mục 2 → tách tệp, cập nhật bảng lộ trình, rồi mới code.
 - Plan sai so với code thật → sửa task, ghi mục 9, **không sửa lén plan**.
 - Cần dịch vụ trả phí / thiết bị không có (Mac, máy Ubuntu, chứng chỉ ký) → dừng, ghi `[owner-qa]` hoặc backlog.
@@ -134,14 +134,15 @@ task trong làn song song — lộ trình có sơ đồ làn, vd `materiant/ROAD
 ## 7. Nhánh + gộp
 
 Theo `CLAUDE.md` gốc: mỗi repo bị sửa một nhánh `claude/<task>` trong worktree cố định `<gốc>/.claude/worktrees/<repo>-w<N>`
-(D-18; `.claude` chỉ ở repo gốc, thư mục này đã gitignore). Xong: soát xanh → `merge --no-ff` vào `master` → trả worktree
+(D-18; `.claude` chỉ ở repo gốc, thư mục này đã gitignore). Xong: `rebase master` → soát xanh → `merge --ff-only` vào `master` (D-12) → trả worktree
 về HEAD tách → `branch -d`; giữ worktree và `<repo>/target/w<N>`. Có xung đột thì dừng hỏi. Task chỉ sửa plan / tài liệu ⇒ làm thẳng `master` của repo chứa tệp đó, commit theo
 đường dẫn.
 
-**Kéo remote không sinh commit `Merge…` (D-12)**: `git pull --rebase` (repo con: `git -C <repo> pull --rebase`), không có
+**Lịch sử thẳng, không commit `Merge…` (D-12)**: commit trên nhánh mở đầu bằng mã task (`groove-gd2_04: …`); cập nhật nhánh
+theo `master` bằng `git rebase master`, không merge ngược. Kéo remote: `git pull --rebase` (repo con: `git -C <repo> pull --rebase`), không có
 commit mới thì `git pull --ff-only`. Chỉ rebase commit chưa push; commit đã push thì không rebase, không force push. Xung
 đột: sửa tệp → `git add` → `git rebase --continue`, không xong thì `git rebase --abort`. Không rebase repo đang có session
-khác ghi vào. Merge commit của `merge --no-ff claude/<task>` vẫn giữ: nó đánh dấu ranh giới task, không phải commit rác.
+khác ghi vào. Không `merge --no-ff` nữa (bỏ 09/11/2026): gộp task chỉ `--ff-only` sau khi rebase; commit `Merge…` cũ để nguyên.
 
 ## 8. Phân vai Opus ↔ Sonnet
 

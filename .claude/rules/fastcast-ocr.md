@@ -1,3 +1,12 @@
+---
+paths:
+  - "fastcast/crates/ocr/**"
+  - "fastcast/spikes/ocr/**"
+  - "fastcast/tools/fetch-ocr-models.*"
+  - ".claude/worktrees/fastcast-*/crates/ocr/**"
+  - "export-ocr.*"
+---
+
 # OCR của Fastcast — tích hợp trên máy mới
 
 Model OCR không nằm trong git (78 MB, D-2: chỉ phát hành bản cài). Máy mới, OS mới: lấy gói model từ máy đã có rồi chạy

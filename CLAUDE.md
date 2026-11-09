@@ -17,11 +17,13 @@ Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh c
 **Plan: mỗi app một thư mục `<repo>/plan/`** (D-7) — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
 `.claude/rules/tasking-convention.md`; việc treo: `<repo>/plan/_backlog.md`; giai đoạn đã đóng: `<repo>/plan/completed/gd<N>/`. Lộ trình
 của app nằm ở repo app (`<repo>/ROADMAP.md`). Spike sống trong repo nó phục vụ: `<repo>/spikes/<tên>/`, báo cáo
-ở `<repo>/spikes/<tên>/README.md` hoặc mục 9 của task spike. Repo con không có `docs/`: luật, bẫy, lệnh vào `CLAUDE.md`,
-quyết định vào `docs/decisions.md`; báo cáo giai đoạn, đặc tả đã làm xong chỉ còn trong lịch sử git.
+ở `<repo>/spikes/<tên>/README.md` hoặc mục 9 của task spike. Không repo nào có `docs/`: luật, bẫy, lệnh vào `CLAUDE.md`,
+quyết định vào `.claude/rules/decisions/`; báo cáo giai đoạn, đặc tả đã làm xong chỉ còn trong lịch sử git.
 
-**Quyết định đã chốt: `docs/decisions.md`** — đọc trước khi đề xuất thứ gì trái với nó. Chủ dự án chốt thêm ⇒ ghi
-vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `docs/decisions.md` đi theo git).
+**Quyết định đã chốt: `.claude/rules/decisions/`** — `workspace.md` (D-*, nạp mọi session), `fastcast.md` (F-*, Q-*),
+`groove.md` (G-*): tệp app có `paths:` nên chỉ nạp khi chạm repo / worktree của app đó. Không đề xuất thứ gì trái với nó.
+Chủ dự án chốt thêm ⇒ ghi vào tệp đúng phạm vi kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, rule đi theo git).
+Khuôn release note: `.claude/rules/release-notes.md`; OCR trên máy mới: `.claude/rules/fastcast-ocr.md`.
 
 ## Luật chung mọi dự án
 
@@ -48,7 +50,7 @@ vào đó kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, `doc
 
 Memory tự động của Claude nằm theo máy (`~/.claude/projects/<đường dẫn>/memory`). `init.ps1` / `init.sh` nối thư mục đó
 vào `.claude/memory/` của repo này (junction trên Windows, symlink trên macOS / Linux) nên mọi máy đọc ghi cùng một bộ,
-đồng bộ qua git. Memory chỉ ghi điều không suy ra được từ repo; quyết định đã chốt vẫn vào `docs/decisions.md`. Cách nối
+đồng bộ qua git. Memory chỉ ghi điều không suy ra được từ repo; quyết định đã chốt vẫn vào `.claude/rules/decisions/`. Cách nối
 dựa vào bố cục thư mục nội bộ của Claude Code — đổi bố cục thì sửa `init.*`.
 
 ## Máy mới
@@ -93,7 +95,7 @@ hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` 
 
 ## Đánh tag
 
-`bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (fastcast, materiant, groove; space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. **Release note bắt buộc** (D-22, khuôn `docs/release-notes.md`): `<repo>/release-notes/v<version>.md` đi kèm commit và làm nội dung tag; thiếu thì script tạo khung rồi dừng. Nâng materiant thì fastcast / groove có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
+`bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (fastcast, materiant, groove; space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. **Release note bắt buộc** (D-22, khuôn `.claude/rules/release-notes.md`): `<repo>/release-notes/v<version>.md` đi kèm commit và làm nội dung tag; thiếu thì script tạo khung rồi dừng. Nâng materiant thì fastcast / groove có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
 
 ## Lệnh chung
 
@@ -114,6 +116,8 @@ Làm trên nhánh `claude/<task>` trong một **worktree cố định** (D-18: `
 `<repo>/target/w<N>`, không xoá, task sau dùng lại cả mã lẫn cache build) là chuyện của Claude; chủ dự án chỉ nhìn `master`.
 Hết task: kiểm xanh (`cargo build`, `cargo clippy --all-targets -- -D warnings`, `cargo test`,
 `cargo deny check licenses`; fastcast thay `cargo test` bằng `node tools/test-affected.mjs` — chỉ test phần đổi + phần
-phụ thuộc, cả bộ để lúc đóng giai đoạn / trước tag / build bản phát hành, D-26) → commit hết trên nhánh → `git -C <repo> merge --no-ff claude/<task>` vào `master` → trả
-worktree về rảnh (`git -C <worktree> switch --detach master`), `branch -d`; giữ worktree và thư mục build. Có xung đột thì
-dừng lại hỏi. Chi tiết: skill `run-task` mục 4, 6.
+phụ thuộc, cả bộ để lúc đóng giai đoạn / trước tag / build bản phát hành, D-26) → commit hết trên nhánh (mở đầu bằng mã
+task) → **lịch sử thẳng (D-12)**: `git -C <worktree> rebase master` → kiểm xanh lại → `git -C <repo> merge --ff-only
+claude/<task>` (từ chối thì rebase lại, không merge thường; không merge `master` vào nhánh) → trả worktree về rảnh
+(`git -C <worktree> switch --detach master`), `branch -d`; giữ worktree và thư mục build. Pull: `git pull --rebase`. Xung
+đột rebase không tự giải được ⇒ `rebase --abort`, dừng hỏi. Chi tiết: skill `run-task` mục 4, 6.

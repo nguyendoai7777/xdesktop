@@ -5,7 +5,7 @@ metadata:
   type: feedback
 ---
 
-Lỗi phát sinh thì sửa ngay, không ghi vào `<repo>/plan/_backlog.md`. Đã chốt thành D-11 trong `docs/decisions.md` (31/10/2026).
+Lỗi phát sinh thì sửa ngay, không ghi vào `<repo>/plan/_backlog.md`. Đã chốt thành D-11 trong `.claude/rules/decisions/workspace.md` (31/10/2026).
 
 **Why:** chủ dự án nói thẳng sau khi gd4_11 để lại lỗi P1 và các mục lỗi trong backlog.
 

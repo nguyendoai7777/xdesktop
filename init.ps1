@@ -158,6 +158,13 @@ if ($envApps -and (Test-Path $newApp)) {
     }
 }
 
+# --- 2b. Lịch sử git thẳng (D-12): pull luôn rebase, mọi repo đang có --------------------------------------------
+foreach ($repo in @($root) + @(Get-ChildItem -Directory $root | ForEach-Object FullName)) {
+    if (-not (Test-Path (Join-Path $repo '.git'))) { continue }
+    git -C $repo config pull.rebase true
+    git -C $repo config rebase.autoStash true
+}
+
 # --- 3. Công cụ ------------------------------------------------------------------------------------------------
 foreach ($tool in 'git', 'cargo', 'rustc') {
     $cmd = Get-Command $tool -ErrorAction SilentlyContinue

@@ -20,7 +20,7 @@ lại bằng Rust + GPUI + materiant. Hệ quả:
 
 1. `groove/CLAUDE.md`, `groove/ROADMAP.md` nếu đã có (lúc viết skill này chưa có; `groove/README.md` chỉ là mẫu Tauri,
    không cần đọc).
-2. `docs/decisions.md`, mục `Chung cho workspace` và `groove` (G-*).
+2. `.claude/rules/decisions/workspace.md` (D-*) và `groove.md` (G-*; tự nạp khi chạm `groove/`).
 3. `groove/plan/_backlog.md`.
 
 ## Đọc khi việc cần
@@ -39,7 +39,7 @@ materiant.
 
 ## Không đọc
 
-- `fastcast/`, mục `fastcast` của `docs/decisions.md` (F-*), `fastcast/plan/`.
+- `fastcast/`, `.claude/rules/decisions/fastcast.md` (F-*), `fastcast/plan/`.
 - `groove/node_modules/`, `groove/dist/`, `groove/release/`, `groove/src-tauri/target/`, `groove/src-tauri/gen/`.
 - `materiant/spikes/` trừ khi tài liệu đang đọc trỏ tới.
 

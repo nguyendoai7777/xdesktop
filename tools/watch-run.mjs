@@ -34,7 +34,7 @@ for (let i = 0; i < own.length; i += 2) {
 if (!exe || !watchDirs.length) fail('cần --exe và ít nhất một --watch');
 
 // Thư mục sinh ra / không phải mã của ta: đổi trong đó không build lại (và không gắn inotify vào hàng nghìn thư mục build).
-const ignored = /(^|[\\/])(target|\.git|node_modules|dist|release|spikes|src-tauri)([\\/]|$)|(~|\.swp|\.swx|\.tmp|4913)$/;
+const ignored = /(^|[\\/])(target|\.git|node_modules|dist|release|spikes)([\\/]|$)|(~|\.swp|\.swx|\.tmp|4913)$/;
 
 let app = null;
 let quitting = false;

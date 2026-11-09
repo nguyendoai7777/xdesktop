@@ -1,6 +1,6 @@
 ---
 name: groove
-description: Khoanh session vào app groove trong workspace xdesktop (trình phát nhạc Groovex, đang viết lại từ Tauri + Vue sang Rust + GPUI + materiant) — nạp đúng ngữ cảnh của groove, không quét fastcast. Dùng khi chủ dự án gõ "/groove", "/groove <việc>", hoặc nói sẽ làm việc với groove.
+description: Khoanh session vào app groove trong workspace xdesktop (trình phát nhạc Groovex, Rust + GPUI + materiant) — nạp đúng ngữ cảnh của groove, không quét fastcast. Dùng khi chủ dự án gõ "/groove", "/groove <việc>", hoặc nói sẽ làm việc với groove.
 argument-hint: "<việc cần làm, bỏ trống nếu chỉ nạp ngữ cảnh>"
 ---
 
@@ -8,18 +8,13 @@ Session này chỉ làm **groove**. fastcast không liên quan: hai app chỉ d�
 
 ## Hiện trạng
 
-`groove/` là repo git riêng (remote `nguyendoai7777/groove`), hiện vẫn là bản **Tauri + Vue, sắp bỏ**. G-1 đã chốt viết
-lại bằng Rust + GPUI + materiant. Hệ quả:
-
-- Không sửa lỗi riêng của bản Tauri, không thêm tính năng vào đó.
-- Mã cũ chỉ dùng để tra hành vi cần giữ: `src/pages/` (`my-music`, `now-playing`, `playlists`), `src-tauri/src/`
-  (`db.rs` SQLite, `tags.rs` đọc thẻ nhạc, `watcher.rs` theo dõi thư mục).
-- Thư viện của bản cũ phải soát giấy phép lại nếu đem sang bản mới (D-2).
+`groove/` là repo git riêng (remote `nguyendoai7777/groove`): cargo workspace Rust + GPUI + materiant (G-1). Bản Tauri + Vue
+đã gỡ khỏi repo 09/11/2026; cần tra hành vi cũ thì `git -C groove show tauri-final:<đường dẫn>` (`src/pages/…`,
+`src-tauri/src/…`).
 
 ## Nạp ngay
 
-1. `groove/CLAUDE.md`, `groove/ROADMAP.md` nếu đã có (lúc viết skill này chưa có; `groove/README.md` chỉ là mẫu Tauri,
-   không cần đọc).
+1. `groove/CLAUDE.md`, `groove/ROADMAP.md`.
 2. `.claude/rules/decisions/workspace.md` (D-*) và `groove.md` (G-*; tự nạp khi chạm `groove/`).
 3. `groove/plan/_backlog.md`.
 
@@ -40,10 +35,10 @@ materiant.
 ## Không đọc
 
 - `fastcast/`, `.claude/rules/decisions/fastcast.md` (F-*), `fastcast/plan/`.
-- `groove/node_modules/`, `groove/dist/`, `groove/release/`, `groove/src-tauri/target/`, `groove/src-tauri/gen/`.
+- `groove/target/`, `groove/vendor/` trừ khi việc đụng tới.
 - `materiant/spikes/` trừ khi tài liệu đang đọc trỏ tới.
 
-Tìm kiếm luôn truyền `path` hẹp (`groove/src-tauri/src`, không phải gốc workspace): quét từ gốc đi qua thư mục build nên
+Tìm kiếm luôn truyền `path` hẹp (`groove/crates/groove-app/src`, không phải gốc workspace): quét từ gốc đi qua thư mục build nên
 dễ quá hạn.
 
 ## Sau khi nạp

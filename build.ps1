@@ -1,13 +1,15 @@
 # Build bản release — chỉ hỏi / định tuyến; việc thật nằm ở `<repo>/build.ps1` của từng project. Hỏi project (Fastcast / Groovex /
-# materiant docs) rồi gọi sang script của nó; fastcast hỏi tiếp OS → kiến trúc → chip (Enter = máy đang chạy) → plan (Free / Pro).
+# materiant docs) rồi gọi sang script của nó; fastcast hỏi tiếp OS → kiến trúc (ô tích, chọn được nhiều) → chip (Enter = máy đang
+# chạy) → plan (Free / Pro); Windows (fastcast, Groovex) hỏi thêm dạng đóng gói: bản cài `_setup.exe` / bản chạy thẳng `_portable.zip`.
 # Đứng ở gốc workspace:
 #   pwsh ./build.ps1
 #   pwsh ./build.ps1 -Project fastcast -Os windows -Arch x64 -Chip intel-amd   # không hỏi (có -Os / -Arch / -Chip ⇒ fastcast)
 #   pwsh ./build.ps1 -f                                         # -Force: biên dịch lại mã của ta, giữ thư viện đã build
 #   pwsh ./build.ps1 -Pro                                       # = -Plan pro: fastcast mở sẵn Pro để nghiệm thu (D-23), tên có `_pro`
-# Groovex: bản cài cho máy đang chạy ở release/groove/. materiant: chỉ gallery docs, ra release/materiant/materiant-docs.exe.
-# Fastcast: release/fastcast/fastcast_<version>_win_<arch>[_avx2][_pro]/ + bản cài NSIS (x64 phổ thông). Chỉ build được cho OS
-# đang chạy. macOS / Linux: script của project chuyển sang build.sh.
+#   pwsh ./build.ps1 -Project groove -Package setup,portable    # Windows: không hỏi dạng đóng gói
+# Groovex: release/groove/groovex_<version>_win_<arch>_{setup.exe,portable.zip}. materiant: chỉ gallery docs, ra
+# release/materiant/materiant-docs.exe. Fastcast: release/fastcast/fastcast_<version>_win_<arch>[_avx2][_pro]_portable.zip
+# + bản cài NSIS `_setup.exe` (x64 phổ thông). Mỗi tệp kèm `.sha256`. Chỉ build được cho OS đang chạy. macOS / Linux: script của project chuyển sang build.sh.
 param(
     [ValidateSet('windows', 'macos', 'linux')] [string] $Os,
     [ValidateSet('x64', 'arm64')] [string] $Arch,
@@ -15,7 +17,8 @@ param(
     [Alias('f')] [switch] $Force,
     [switch] $Pro,
     [ValidateSet('free', 'pro')] [string] $Plan,
-    [ValidateSet('fastcast', 'groove', 'materiant')] [string] $Project
+    [ValidateSet('fastcast', 'groove', 'materiant')] [string] $Project,
+    [string[]] $Package
 )
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -30,6 +33,10 @@ if (-not $Project) {
 }
 $forward = @{}
 if ($Force) { $forward.Force = $true }
+if ($Package) {
+    if ($Project -eq 'materiant') { throw 'materiant không nhận -Package.' }
+    $forward.Package = $Package -join ','
+}
 if ($Project -eq 'fastcast') {
     foreach ($name in 'Os', 'Arch', 'Chip', 'Plan') {
         $value = Get-Variable $name -ValueOnly

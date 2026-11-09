@@ -8,6 +8,8 @@
 // Đóng cửa sổ app (app tự thoát) ⇒ lệnh này thoát theo; Ctrl+C ⇒ đóng app rồi thoát.
 // `--scope <desktop id>` (Linux có systemd): app chạy trong scope riêng `app-xdesktop-<id>-<số>.scope` như GNOME mở app, để
 // trình theo dõi tài nguyên (Mission Center…) hiện app thành dòng riêng thay vì gộp vào terminal đã gọi lệnh.
+// Windows khoá tệp exe đang chạy (cargo báo "failed to remove file … Access is denied") nhưng cho đổi tên: trước khi build lại,
+// exe của app đang mở được đổi thành `<exe>.old-<số>`, xoá khi app cũ đã đóng; build lỗi thì đổi tên lại.
 // Không có hot reload thật: mở lại là tiến trình mới, mất trạng thái đang mở (trang, hộp thoại); vị trí cửa sổ app tự nhớ.
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -52,6 +54,34 @@ function build() {
     const child = spawn(process.execPath, [prune, 'build', ...buildArgs], { stdio: 'inherit' });
     child.on('close', (code) => resolve(code === 0));
   });
+}
+
+// Windows: dời exe đang chạy ra chỗ khác để cargo ghi được bản mới. Trả về tên mới (null nếu không dời).
+let parked = 0;
+function park() {
+  if (process.platform !== 'win32' || !app || !fs.existsSync(exe)) return null;
+  const to = `${exe}.old-${process.pid}-${parked++}`;
+  try {
+    fs.renameSync(exe, to);
+    return to;
+  } catch {
+    return null;
+  }
+}
+
+// Xoá exe cũ đã dời (cả lần chạy trước để sót); tệp còn bị khoá thì để lần sau.
+function sweep() {
+  const dir = path.dirname(exe);
+  const prefix = `${path.basename(exe)}.old-`;
+  for (const name of fs.readdirSync(dir, { withFileTypes: false })) {
+    if (String(name).startsWith(prefix)) {
+      try {
+        fs.rmSync(path.join(dir, String(name)), { force: true });
+      } catch {
+        // còn tiến trình giữ tệp
+      }
+    }
+  }
 }
 
 function mtime() {
@@ -104,13 +134,17 @@ async function rebuild() {
     again = false;
     const before = mtime();
     console.error('watch-run: mã đổi, build lại…');
+    const moved = park();
     const ok = await build();
+    // Build lỗi (hay không ra exe) mà đã dời exe: trả về chỗ cũ để lần sau / lần mở tay vẫn có exe.
+    if (moved && !fs.existsSync(exe)) fs.renameSync(moved, exe);
     if (!ok) console.error('watch-run: build lỗi, giữ app đang chạy; sửa rồi lưu lại.');
     else if (mtime() === before) console.error('watch-run: exe không đổi, không mở lại.');
     else {
       const old = app;
       app = null;
       await stop(old);
+      sweep();
       if (quitting) break;
       launch();
       console.error('watch-run: đã mở bản mới.');
@@ -134,6 +168,7 @@ async function quit() {
 process.on('SIGINT', quit);
 process.on('SIGTERM', quit);
 
+if (fs.existsSync(path.dirname(exe))) sweep();
 if (!(await build())) process.exit(1);
 launch();
 for (const dir of watchDirs) {

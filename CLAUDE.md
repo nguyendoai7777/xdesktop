@@ -10,6 +10,7 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 | **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — nền GPUI (D-6); dùng component: `materiant/API.md` → `materiant/api/<module>.md`; inspector kiểu DevTools là crate `materiant/devtool` (D-25, app gọi `devtool::init`); lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` (sửa materiant) |
 | **cloud** (server chung mọi app: tài khoản, license, đồng bộ, lưu tệp — D-24) | `cloud/` — Rust axum + Postgres (sqlx); staging trên `ssh xbds-staging` (dùng chung với xbds, luật ở `cloud/CLAUDE.md`); task nằm ở `fastcast/plan/gd5_*`; remote `desktop-server` | `cloud/CLAUDE.md` |
 | **groove** (trình phát nhạc **Groovex** — G-9, viết lại từ Tauri + Vue sang Rust + GPUI, G-1) | `groove/` — lộ trình `groove/ROADMAP.md`, task `groove/plan/groove-gd1_*.md`; bản Tauri còn tới khi gộp nhánh `claude/remove-tauri` (tag `tauri-final`) | `groove/CLAUDE.md`, skill `/groove` |
+| **trang giới thiệu từng app** (Astro tĩnh, `<app>.sandtechs.com`) | **workspace riêng, ngoài repo này**: `E:\codex\sandtechs/sites/<app>` (vd `sites/fastcast`, `sites/groovex`) — giao việc bằng session có cwd đó, không sửa từ session xdesktop | `E:\codex\sandtechs\CLAUDE.md` |
 
 Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
 

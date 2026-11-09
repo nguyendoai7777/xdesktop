@@ -122,6 +122,96 @@ xd_select() {
   done
 }
 
+# xd_checklist <tiêu đề> <id tích sẵn, cách bằng dấu cách> <id|nhãn>… ⇒ gán $selected (id cách bằng dấu cách, theo thứ tự danh
+# sách). Ô tích, chọn được nhiều: ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận (phải tích ít nhất một mục). Stdin là pipe ⇒
+# gõ số cách bằng dấu phẩy; Enter = các mục tích sẵn (không có thì mục đầu).
+xd_checklist() {
+  local title="$1" preset=" $2 " i key rest box answer pick ok labels defaults hint='↑ ↓ di chuyển · space tích / bỏ · enter xác nhận'
+  shift 2
+  local items=("$@") count=$# checked=() cursor=-1
+  selected=""
+  if [ "$count" -eq 1 ]; then echo "$title ${1#*|}"; selected="${1%%|*}"; return; fi
+  for ((i = 0; i < count; i++)); do
+    case "$preset" in
+      *" ${items[i]%%|*} "*) checked[i]=1; [ "$cursor" -ge 0 ] || cursor=$i ;;
+      *) checked[i]=0 ;;
+    esac
+  done
+  [ "$cursor" -ge 0 ] || cursor=0
+  if [ -t 0 ]; then
+    echo "$title"
+    printf '\033[?25l'
+    trap 'printf "\033[?25h"' EXIT
+    while :; do
+      for ((i = 0; i < count; i++)); do
+        if [ "${checked[i]}" = 1 ]; then box='[x]'; else box='[ ]'; fi
+        if [ "$i" = "$cursor" ]; then
+          printf '\r\033[2K\033[36m%s %s\033[0m\n' "$box" "${items[i]#*|}"
+        else
+          printf '\r\033[2K%s %s\n' "$box" "${items[i]#*|}"
+        fi
+      done
+      printf '\r\033[2K\033[2m%s\033[0m' "$hint"
+      IFS= read -rsn1 key || key=""
+      if [ "$key" = $'\033' ]; then
+        IFS= read -rsn2 -t 1 rest || rest=""
+        key="$key$rest"
+      fi
+      printf '\r\033[%dA' "$count"
+      case "$key" in
+        $'\033[A'|$'\033OA') cursor=$(((cursor + count - 1) % count)) ;;
+        $'\033[B'|$'\033OB') cursor=$(((cursor + 1) % count)) ;;
+        ' ') if [ "${checked[cursor]}" = 1 ]; then checked[cursor]=0; else checked[cursor]=1; fi ;;
+        '')
+          labels=""
+          for ((i = 0; i < count; i++)); do
+            [ "${checked[i]}" = 1 ] || continue
+            selected="${selected:+$selected }${items[i]%%|*}"
+            labels="${labels:+$labels, }${items[i]#*|}"
+          done
+          if [ -n "$selected" ]; then
+            # Xoá cả dòng tiêu đề rồi in lại kèm lựa chọn.
+            printf '\033[1A\r\033[J\033[?25h'
+            trap - EXIT
+            echo "$title $labels"
+            return
+          fi
+          hint='chưa tích mục nào, bấm space để tích' ;;
+      esac
+    done
+  fi
+  defaults=""
+  for ((i = 0; i < count; i++)); do [ "${checked[i]}" = 1 ] && defaults="$defaults $((i + 1))"; done
+  [ -n "$defaults" ] || defaults=" 1"
+  echo "$title"
+  for ((i = 0; i < count; i++)); do
+    case "$defaults " in
+      *" $((i + 1)) "*) echo "  [$((i + 1))] ${items[i]#*|}  (Enter)" ;;
+      *) echo "  [$((i + 1))] ${items[i]#*|}" ;;
+    esac
+  done
+  while :; do
+    printf 'Chọn (nhiều mục thì cách bằng dấu phẩy): '
+    read -r answer || answer=""
+    [ -n "$answer" ] || answer="$defaults"
+    answer=" $(printf '%s' "$answer" | tr ',' ' ') "
+    ok=1
+    for pick in $answer; do
+      case "$pick" in
+        *[!0-9]*) ok="" ;;
+        *) { [ "$pick" -ge 1 ] && [ "$pick" -le "$count" ]; } || ok="" ;;
+      esac
+    done
+    if [ -n "$ok" ]; then
+      for ((i = 0; i < count; i++)); do
+        case "$answer" in *" $((i + 1)) "*) selected="${selected:+$selected }${items[i]%%|*}" ;; esac
+      done
+      [ -n "$selected" ] && return
+    fi
+    echo "Nhập số từ 1 đến $count, vd 1,2."
+  done
+}
+
 # xd_pick_plan <script của app> ⇒ gán $plan. Hỏi plan theo danh sách `<script> --plans`: mỗi dòng `id|nhãn`, dòng mặc định có
 # `*` đứng đầu; rỗng = app không có plan ⇒ plan rỗng, không hỏi.
 xd_pick_plan() {

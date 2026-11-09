@@ -18,7 +18,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --project) project="${2:-}"; shift 2 || { echo "--project cần giá trị: fastcast, groove, materiant" >&2; exit 1; } ;;
     --project=*) project="${1#--project=}"; shift ;;
-    # --os / --arch / --chip / plan chỉ có ở fastcast: có cờ đó thì khỏi hỏi project.
+    # Không có --project mà có --os / --arch / --chip / plan ⇒ fastcast (groove trên macOS cũng nhận --arch / --chip: cần --project groove).
     --os|--arch|--chip|--plan) fastcast_only=1; forward+=("$1" "${2:-}"); shift 2 || shift ;;
     --pro|--free|--plan=*) fastcast_only=1; forward+=("$1"); shift ;;
     *) forward+=("$1"); shift ;;

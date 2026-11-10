@@ -1,7 +1,7 @@
 # Build bản release — chỉ hỏi / định tuyến; việc thật nằm ở `<repo>/build.ps1` của từng project. Hỏi project (Fastcast / Groovex /
 # materiant docs) rồi gọi sang script của nó; fastcast hỏi tiếp OS → kiến trúc (ô tích, chọn được nhiều) → chip (Enter = máy đang
 # chạy) → plan (Free / Pro); Windows (fastcast, Groovex) hỏi thêm dạng đóng gói: bản cài `_setup.exe` / bản chạy thẳng `_portable.zip`.
-# Đứng ở gốc workspace:
+# Windows / Linux chỉ build x64 (bỏ ARM, chủ dự án 10/11/2026); arm64 chỉ còn ở macOS. Đứng ở gốc workspace:
 #   pwsh ./build.ps1
 #   pwsh ./build.ps1 -Project fastcast -Os windows -Arch x64 -Chip intel-amd   # không hỏi (có -Os / -Arch / -Chip ⇒ fastcast)
 #   pwsh ./build.ps1 -f                                         # -Force: biên dịch lại mã của ta, giữ thư viện đã build
@@ -43,9 +43,6 @@ if ($Project -eq 'fastcast') {
         if ($value) { $forward[$name] = $value }
     }
     if ($Pro) { $forward.Pro = $true }
-} elseif ($Project -eq 'groove' -and -not ($Os -or $Chip -or $Pro -or $Plan)) {
-    # Groovex (Windows): chọn kiến trúc được, build chéo arm64 trên máy x64.
-    if ($Arch) { $forward.Arch = $Arch }
 } elseif ($Os -or $Arch -or $Chip -or $Pro -or $Plan) {
     throw "$Project chỉ build cho máy đang chạy, không nhận -Os, -Arch, -Chip, -Pro, -Plan."
 }

@@ -4,6 +4,7 @@
 /materiant/
 /groove/
 /cloud/
+/media-wireless-sync/
 
 # Bản build do build.ps1 / build.sh sinh
 /release/

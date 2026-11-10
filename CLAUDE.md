@@ -10,9 +10,10 @@ mục con (không submodule). File này chỉ giữ định tuyến + luật chu
 | **materiant** (bộ component UI dùng chung mọi app) | `materiant/` — nền GPUI (D-6); dùng component: `materiant/API.md` → `materiant/api/<module>.md`; inspector kiểu DevTools là crate `materiant/devtool` (D-25, app gọi `devtool::init`); lộ trình `materiant/ROADMAP.md`, task `materiant/plan/materiant-gd<N>_*` | `materiant/CLAUDE.md` (sửa materiant) |
 | **cloud** (server chung mọi app: tài khoản, license, đồng bộ, lưu tệp — D-24) | `cloud/` — Rust axum + Postgres (sqlx); staging trên `ssh xbds-staging` (dùng chung với xbds, luật ở `cloud/CLAUDE.md`); task nằm ở `fastcast/plan/gd5_*`; remote `desktop-server` | `cloud/CLAUDE.md` |
 | **groove** (trình phát nhạc **Groovex** — G-9, viết lại từ Tauri + Vue sang Rust + GPUI, G-1) | `groove/` — lộ trình `groove/ROADMAP.md`, task `groove/plan/groove-gd1_*.md`; bản Tauri đã gỡ 09/11/2026, mã cũ ở tag `tauri-final` | `groove/CLAUDE.md`, skill `/groove` |
+| **media-wireless-sync** (app khay PC gửi video sang app điện thoại `video-player` qua WiFi — W-1) | `media-wireless-sync/` — hợp đồng giao thức `PROTOCOL.md` (đổi thì sửa cả hai phía), lộ trình `ROADMAP.md`, task `plan/media-wireless-sync-gd1_*.md`; mới khởi tạo 11/11/2026, chưa có mã, chưa có remote | `media-wireless-sync/CLAUDE.md`, skill `/media-wireless-sync` |
 | **trang giới thiệu từng app** (Astro tĩnh, `<app>.sandtechs.com`) | **workspace riêng, ngoài repo này**: `E:\codex\sandtechs/sites/<app>` (vd `sites/fastcast`, `sites/groovex`) — giao việc bằng session có cwd đó, không sửa từ session xdesktop | `E:\codex\sandtechs\CLAUDE.md` |
 
-Mỗi session làm một app: `/fastcast`, `/groove` nạp đúng ngữ cảnh của app đó và không quét app kia.
+Mỗi session làm một app: `/fastcast`, `/groove`, `/media-wireless-sync` nạp đúng ngữ cảnh của app đó và không quét app kia.
 
 **Plan: mỗi app một thư mục `<repo>/plan/`** (D-7) — khung tệp task, đặt tên, trần ước lượng, phân vai, bàn giao:
 `.claude/rules/tasking-convention.md`; việc treo: `<repo>/plan/_backlog.md`; giai đoạn đã đóng: `<repo>/plan/completed/gd<N>/`. Lộ trình
@@ -21,7 +22,7 @@ của app nằm ở repo app (`<repo>/ROADMAP.md`). Spike sống trong repo nó 
 quyết định vào `.claude/rules/decisions/`; báo cáo giai đoạn, đặc tả đã làm xong chỉ còn trong lịch sử git.
 
 **Quyết định đã chốt: `.claude/rules/decisions/`** — `workspace.md` (D-*, nạp mọi session), `fastcast.md` (F-*, Q-*),
-`groove.md` (G-*): tệp app có `paths:` nên chỉ nạp khi chạm repo / worktree của app đó. Không đề xuất thứ gì trái với nó.
+`groove.md` (G-*), `media-wireless-sync.md` (W-*): tệp app có `paths:` nên chỉ nạp khi chạm repo / worktree của app đó. Không đề xuất thứ gì trái với nó.
 Chủ dự án chốt thêm ⇒ ghi vào tệp đúng phạm vi kèm ngày (không chỉ ghi vào memory: memory nằm theo máy, rule đi theo git).
 Khuôn release note: `.claude/rules/release-notes.md`; OCR trên máy mới: `.claude/rules/fastcast-ocr.md`.
 

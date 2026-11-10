@@ -43,6 +43,9 @@ if ($Project -eq 'fastcast') {
         if ($value) { $forward[$name] = $value }
     }
     if ($Pro) { $forward.Pro = $true }
+} elseif ($Project -eq 'groove' -and -not ($Os -or $Chip -or $Pro -or $Plan)) {
+    # Groovex (Windows): chọn kiến trúc được, build chéo arm64 trên máy x64.
+    if ($Arch) { $forward.Arch = $Arch }
 } elseif ($Os -or $Arch -or $Chip -or $Pro -or $Plan) {
     throw "$Project chỉ build cho máy đang chạy, không nhận -Os, -Arch, -Chip, -Pro, -Plan."
 }

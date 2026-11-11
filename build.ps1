@@ -1,5 +1,5 @@
 # Build bản release — chỉ hỏi / định tuyến; việc thật nằm ở `<repo>/build.ps1` của từng project. Hỏi project (Fastcast / Groovex /
-# materiant docs) rồi gọi sang script của nó; fastcast hỏi tiếp OS → kiến trúc (ô tích, chọn được nhiều) → chip (Enter = máy đang
+# Ferry / materiant docs) rồi gọi sang script của nó; fastcast hỏi tiếp OS → kiến trúc (ô tích, chọn được nhiều) → chip (Enter = máy đang
 # chạy) → plan (Free / Pro); Windows (fastcast, Groovex) hỏi thêm dạng đóng gói: bản cài `_setup.exe` / bản chạy thẳng `_portable.zip`.
 # Windows / Linux chỉ build x64 (bỏ ARM, chủ dự án 10/11/2026); arm64 chỉ còn ở macOS. Đứng ở gốc workspace:
 #   pwsh ./build.ps1
@@ -8,7 +8,7 @@
 #   pwsh ./build.ps1 -Pro                                       # = -Plan pro: fastcast mở sẵn Pro để nghiệm thu (D-23), tên có `_pro`
 #   pwsh ./build.ps1 -Project groove -Package setup,portable    # Windows: không hỏi dạng đóng gói
 # Groovex: release/groove/groovex_<version>_win_<arch>_{setup.exe,portable.zip}. materiant: chỉ gallery docs, ra
-# release/materiant/materiant-docs.exe. Fastcast: release/fastcast/fastcast_<version>_win_<arch>[_avx2][_pro]_portable.zip
+# release/materiant/materiant-docs.exe. Ferry: release/ferry/ferry_<version>_win_x64_{setup.exe,portable.zip}. Fastcast: release/fastcast/fastcast_<version>_win_<arch>[_avx2][_pro]_portable.zip
 # + bản cài NSIS `_setup.exe` (x64 phổ thông). Mỗi tệp kèm `.sha256`. Chỉ build được cho OS đang chạy. macOS / Linux: script của project chuyển sang build.sh.
 param(
     [ValidateSet('windows', 'macos', 'linux')] [string] $Os,
@@ -17,7 +17,7 @@ param(
     [Alias('f')] [switch] $Force,
     [switch] $Pro,
     [ValidateSet('free', 'pro')] [string] $Plan,
-    [ValidateSet('fastcast', 'groove', 'materiant')] [string] $Project,
+    [ValidateSet('fastcast', 'groove', 'ferry', 'materiant')] [string] $Project,
     [string[]] $Package
 )
 $ErrorActionPreference = 'Stop'
@@ -29,7 +29,7 @@ $root = $PSScriptRoot
 if (-not $Project -and ($Os -or $Arch -or $Chip -or $Pro -or $Plan)) { $Project = 'fastcast' }
 if (-not $Project) {
     $Project = Select-Option 'Build project nào:' @(
-        (Option 'fastcast' 'Fastcast'), (Option 'groove' 'Groovex'), (Option 'materiant' 'materiant (docs only)'))
+        (Option 'fastcast' 'Fastcast'), (Option 'groove' 'Groovex'), (Option 'ferry' 'Ferry'), (Option 'materiant' 'materiant (docs only)'))
 }
 $forward = @{}
 if ($Force) { $forward.Force = $true }

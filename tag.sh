@@ -7,7 +7,7 @@
 #   bash tag.sh --current       # tag đúng version đang có, không nâng
 #   bash tag.sh -p --push       # đẩy luôn commit + tag lên origin
 #   bash tag.sh --project materiant --minor     # không hỏi project; nhiều project: --project fastcast,materiant
-# Nâng materiant thì `Cargo.lock` của fastcast / groove đổi theo (build dùng `--locked`), nên app có thêm một commit.
+# Nâng materiant thì `Cargo.lock` của fastcast / groove / ferry đổi theo (build dùng `--locked`), nên app có thêm một commit.
 # Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
 # rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
 set -euo pipefail
@@ -81,7 +81,7 @@ done
 [ -n "$bump" ] || bump=patch
 
 if [ -z "$projects" ] && [ -t 0 ]; then
-  select_checklist 'Đánh tag cho project nào:' 'fastcast|fastcast' 'groove|Groovex (groove)' 'materiant|materiant'
+  select_checklist 'Đánh tag cho project nào:' 'fastcast|fastcast' 'groove|Groovex (groove)' 'ferry|Ferry (ferry)' 'materiant|materiant'
   projects="$selected"
 fi
 if [ -z "$projects" ]; then
@@ -90,6 +90,7 @@ if [ -z "$projects" ]; then
   echo '  [1] fastcast  (Enter)'
   echo '  [2] materiant'
   echo '  [3] groove'
+  echo '  [4] ferry'
   while [ -z "$projects" ]; do
     printf 'Chọn (nhiều project thì cách bằng dấu phẩy): '
     read -r answer || answer=""
@@ -99,7 +100,8 @@ if [ -z "$projects" ]; then
         1) projects="$projects fastcast" ;;
         2) projects="$projects materiant" ;;
         3) projects="$projects groove" ;;
-        *) echo 'Nhập 1, 2, 3 hoặc vd 1,2.'; projects=""; break ;;
+        4) projects="$projects ferry" ;;
+        *) echo 'Nhập 1, 2, 3, 4 hoặc vd 1,2.'; projects=""; break ;;
       esac
     done
   done
@@ -107,12 +109,12 @@ fi
 
 # materiant trước: app có commit cập nhật lock thì tag của app chứa luôn commit đó.
 order=""
-for name in materiant fastcast groove; do
+for name in materiant fastcast groove ferry; do
   case " $projects " in *" $name "*) order="$order $name" ;; esac
 done
 for name in $projects; do
   case "$name" in
-    fastcast|materiant|groove) ;;
+    fastcast|materiant|groove|ferry) ;;
     *) echo "Project không hợp lệ: $name" >&2; exit 2 ;;
   esac
 done
@@ -201,7 +203,7 @@ for name in $order; do
     git -C "$repo" commit --quiet -m "release: $tag" -- Cargo.toml Cargo.lock "release-notes/$tag.md"
     # App build bằng `--locked`, ghi cả version của materiant trong lock.
     if [ "$name" = materiant ]; then
-      for app in fastcast groove; do
+      for app in fastcast groove ferry; do
         [ -d "$root/$app/.git" ] || continue
         git -C "$root/$app" diff --quiet -- Cargo.lock || { echo "$app/Cargo.lock đang có sửa dở, chưa cập nhật materiant." >&2; exit 1; }
         (cd "$root/$app" && cargo update -p materiant --offline --quiet)

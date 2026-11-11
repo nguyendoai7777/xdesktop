@@ -6,7 +6,7 @@ set -u
 root="$(cd "$(dirname "$0")" && pwd)"
 all=false
 [ "${1:-}" = "--all" ] && all=true
-for repo in fastcast materiant groove; do
+for repo in fastcast materiant groove media-wireless-sync; do
   target="$root/$repo/target"
   [ -d "$target" ] || continue
   for dir in "$target"/*/; do
@@ -30,4 +30,4 @@ for tmp in "$root"/*/.cargo/tmp "$root"/.claude/worktrees/*/.cargo/tmp; do
 done
 # Thư mục build tạm của worktree trên Windows (ổ ngoài repo).
 [ -d /c/xdesktop-target ] && find /c/xdesktop-target -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-du -sh "$root/fastcast/target" "$root/materiant/target" "$root/groove/target" 2>/dev/null
+du -sh "$root/fastcast/target" "$root/materiant/target" "$root/groove/target" "$root/media-wireless-sync/target" 2>/dev/null

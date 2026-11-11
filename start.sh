@@ -9,8 +9,8 @@
 #                                       trước) | settings | launcher | overlay | ruler | picker (daemon giả); plan = free | pro
 #                                       (mặc định) | cloud — đổi plan khi test dev, không build lại
 #   bash start.sh groove                ⇒ groove/start.sh: Groovex (bản master)
-#   bash start.sh ferry                 ⇒ ferry/start.sh: daemon khay `mws` bản debug (dữ liệu dev riêng ở
-#                                       ferry/target/dev); khay → Mở cửa sổ bật `mws-ui`
+#   bash start.sh ferry                 ⇒ ferry/start.sh: daemon khay `ferry` bản debug (dữ liệu dev riêng ở
+#                                       ferry/target/dev); khay → Mở cửa sổ bật `ferry-ui`
 #   bash start.sh docs [trang] [worktree]
 #                                       ⇒ materiant/start.sh: gallery materiant; worktree = .claude/worktrees/materiant-<tên>
 #   bash start.sh launcher [worktree]   ⇒ materiant/start.sh: launcher example của materiant

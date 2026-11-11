@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Dựng máy mới cho workspace xdesktop (macOS / Linux). Idempotent — chạy lại lúc nào cũng được.
 #   bash init.sh                 hỏi init project nào
-#   bash init.sh fastcast        không hỏi (fastcast, materiant, groove; nhiều project thì liệt kê)
+#   bash init.sh fastcast        không hỏi (fastcast, materiant, groove, cloud, media-wireless-sync; nhiều project thì liệt kê)
 # Git Bash trên Windows ⇒ đá sang init.ps1 (junction cần PowerShell).
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -61,6 +61,8 @@ repo_url() {
     groove) echo https://github.com/nguyendoai7777/groove.git ;;
     # Server chung của các app desktop (D-24); thư mục `cloud`, remote tên desktop-server.
     cloud) echo https://github.com/nguyendoai7777/desktop-server.git ;;
+    # App khay gửi video sang điện thoại (W-1); thư mục `media-wireless-sync`, remote tên video-wireless-sync.
+    media-wireless-sync) echo https://github.com/nguyendoai7777/video-wireless-sync.git ;;
   esac
 }
 
@@ -123,7 +125,8 @@ selected="$(printf '%s' "$*" | tr ',' ' ')"
 if [ -z "$selected" ] && [ -t 0 ]; then
   select_checklist 'Bạn muốn init project nào:' \
     "fastcast|fastcast   (kéo $(pulls fastcast))" 'materiant|materiant  (chỉ thư viện UI)' \
-    "groove|groove     (kéo $(pulls groove))" 'cloud|cloud      (server chung mọi app: tài khoản, license, đồng bộ)'
+    "groove|groove     (kéo $(pulls groove))" 'cloud|cloud      (server chung mọi app: tài khoản, license, đồng bộ)' \
+    "media-wireless-sync|media-wireless-sync  (kéo $(pulls media-wireless-sync))"
 fi
 if [ -z "$selected" ]; then
   # Stdin là pipe: không đọc được phím lẻ ⇒ gõ số; hết stdin thì lấy mặc định.
@@ -132,6 +135,7 @@ if [ -z "$selected" ]; then
   echo '  [2] materiant  (chỉ thư viện UI)'
   echo "  [3] groove     (kéo $(pulls groove))"
   echo '  [4] cloud      (server chung mọi app: tài khoản, license, đồng bộ)'
+  echo "  [5] media-wireless-sync  (kéo $(pulls media-wireless-sync))"
   while [ -z "$selected" ]; do
     printf 'Chọn (nhiều project thì cách bằng dấu phẩy): '
     read -r answer || answer=""
@@ -142,7 +146,8 @@ if [ -z "$selected" ]; then
         2) selected="$selected materiant" ;;
         3) selected="$selected groove" ;;
         4) selected="$selected cloud" ;;
-        *) echo 'Nhập 1–4 hoặc nhiều số như 1,4.'; selected=""; break ;;
+        5) selected="$selected media-wireless-sync" ;;
+        *) echo 'Nhập 1–5 hoặc nhiều số như 1,4.'; selected=""; break ;;
       esac
     done
   done
@@ -151,7 +156,7 @@ fi
 wanted=""
 for project in $selected; do
   case "$project" in
-    fastcast | groove) wanted="$wanted $project materiant"; uses_cloud "$project" && wanted="$wanted cloud" ;;
+    fastcast | groove | media-wireless-sync) wanted="$wanted $project materiant"; uses_cloud "$project" && wanted="$wanted cloud" ;;
     materiant) wanted="$wanted materiant" ;;
     cloud) wanted="$wanted cloud" ;;
     *) echo "✗ không có project $project" >&2; exit 1 ;;

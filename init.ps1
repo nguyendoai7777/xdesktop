@@ -4,7 +4,7 @@
 # 1. Nối memory của Claude trên máy này vào .claude/memory (track trong git) bằng junction.
 # 2. Clone repo của project được chọn (bảng $repos, $projects); repo đã có thì giữ nguyên, không pull.
 # 3. Soát công cụ.
-param([ValidateSet('fastcast', 'materiant', 'groove', 'cloud')] [string[]] $Project)
+param([ValidateSet('fastcast', 'materiant', 'groove', 'cloud', 'media-wireless-sync')] [string[]] $Project)
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
@@ -58,6 +58,8 @@ $repos = [ordered]@{
     'groove'    = 'https://github.com/nguyendoai7777/groove.git'
     # Server chung của các app desktop (D-24); thư mục `cloud`, remote tên desktop-server.
     'cloud'     = 'https://github.com/nguyendoai7777/desktop-server.git'
+    # App khay gửi video sang điện thoại (W-1); thư mục `media-wireless-sync`, remote tên video-wireless-sync.
+    'media-wireless-sync' = 'https://github.com/nguyendoai7777/video-wireless-sync.git'
 }
 # App dùng server chung `cloud` (D-24): init app ⇒ kéo cloud theo + tạo khung env của app trong cloud/env/. App mới lên
 # server: `node cloud/tools/new-app.mjs <app>` rồi thêm tên vào đây (và `cloud_apps` của init.sh).
@@ -69,12 +71,14 @@ $projects = [ordered]@{
     'materiant' = @('materiant')
     'groove'    = Get-Pulls 'groove'
     'cloud'     = @('cloud')
+    'media-wireless-sync' = Get-Pulls 'media-wireless-sync'
 }
 $labels = @(
     "fastcast   (kéo $((Get-Pulls 'fastcast') -join ' + '))",
     'materiant  (chỉ thư viện UI)',
     "groove     (kéo $((Get-Pulls 'groove') -join ' + '))",
-    'cloud      (server chung mọi app: tài khoản, license, đồng bộ)'
+    'cloud      (server chung mọi app: tài khoản, license, đồng bộ)',
+    "media-wireless-sync  (kéo $((Get-Pulls 'media-wireless-sync') -join ' + '))"
 )
 
 # ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.
@@ -125,12 +129,13 @@ if (-not $Project) {
     Write-Host "  [2] $($labels[1])"
     Write-Host "  [3] $($labels[2])"
     Write-Host "  [4] $($labels[3])"
+    Write-Host "  [5] $($labels[4])"
     while (-not $Project) {
         Write-Host -NoNewline 'Chọn (nhiều project thì cách bằng dấu phẩy): '
         $answer = [Console]::In.ReadLine()
         if ([string]::IsNullOrWhiteSpace($answer)) { $answer = '1' }
         $picks = @($answer -split '[,\s]+' | Where-Object { $_ })
-        if ($picks | Where-Object { $_ -notin '1', '2', '3', '4' }) { Write-Host 'Nhập 1–4 hoặc nhiều số như 1,4.'; continue }
+        if ($picks | Where-Object { $_ -notin '1', '2', '3', '4', '5' }) { Write-Host 'Nhập 1–5 hoặc nhiều số như 1,4.'; continue }
         $Project = @($picks | ForEach-Object { @($projects.Keys)[[int]$_ - 1] })
     }
 }

@@ -4,7 +4,7 @@
 # 1. Nối memory của Claude trên máy này vào .claude/memory (track trong git) bằng junction.
 # 2. Clone repo của project được chọn (bảng $repos, $projects); repo đã có thì giữ nguyên, không pull.
 # 3. Soát công cụ.
-param([ValidateSet('fastcast', 'materiant', 'groove', 'cloud', 'media-wireless-sync')] [string[]] $Project)
+param([ValidateSet('fastcast', 'materiant', 'groove', 'cloud', 'ferry')] [string[]] $Project)
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $root = $PSScriptRoot
@@ -58,8 +58,8 @@ $repos = [ordered]@{
     'groove'    = 'https://github.com/nguyendoai7777/groove.git'
     # Server chung của các app desktop (D-24); thư mục `cloud`, remote tên desktop-server.
     'cloud'     = 'https://github.com/nguyendoai7777/desktop-server.git'
-    # App khay gửi video sang điện thoại (W-1); thư mục `media-wireless-sync`, remote tên video-wireless-sync.
-    'media-wireless-sync' = 'https://github.com/nguyendoai7777/video-wireless-sync.git'
+    # App khay gửi tệp / thư mục sang điện thoại qua WiFi (W-1); thư mục và remote đều tên `ferry`.
+    'ferry'     = 'https://github.com/nguyendoai7777/ferry.git'
 }
 # App dùng server chung `cloud` (D-24): init app ⇒ kéo cloud theo + tạo khung env của app trong cloud/env/. App mới lên
 # server: `node cloud/tools/new-app.mjs <app>` rồi thêm tên vào đây (và `cloud_apps` của init.sh).
@@ -71,14 +71,14 @@ $projects = [ordered]@{
     'materiant' = @('materiant')
     'groove'    = Get-Pulls 'groove'
     'cloud'     = @('cloud')
-    'media-wireless-sync' = Get-Pulls 'media-wireless-sync'
+    'ferry'     = Get-Pulls 'ferry'
 }
 $labels = @(
     "fastcast   (kéo $((Get-Pulls 'fastcast') -join ' + '))",
     'materiant  (chỉ thư viện UI)',
     "groove     (kéo $((Get-Pulls 'groove') -join ' + '))",
     'cloud      (server chung mọi app: tài khoản, license, đồng bộ)',
-    "media-wireless-sync  (kéo $((Get-Pulls 'media-wireless-sync') -join ' + '))"
+    "ferry      (kéo $((Get-Pulls 'ferry') -join ' + '))"
 )
 
 # ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.

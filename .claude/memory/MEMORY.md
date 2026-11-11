@@ -11,3 +11,4 @@
 - [Test fastcast trong màn ảo](feedback-fastcast-tests-headless.md) — Linux: cargo test fastcast-ui mở cửa sổ thật, luôn chạy qua tools/headless-test.sh
 - [Không có Python](feedback-no-python-use-node.md) — script phụ viết bằng Node.js hoặc pwsh / bash, mọi máy đều có Node
 - [Chỉ trong workspace](feedback-workspace-only-files.md) — không đọc / ghi ngoài xdesktop (notes folder, /tmp); bằng chứng vào .ignores/ (gitignore)
+- [Trả lời tiếng Việt](feedback-reply-in-vietnamese.md) — mọi báo cáo / tóm tắt bằng tiếng Việt, không trôi sang tiếng Anh sau nén context

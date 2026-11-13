@@ -63,7 +63,7 @@ bash init.sh       # macOS / Ubuntu (Git Bash trên Windows tự đá sang init.
 
 Idempotent, chạy lại lúc nào cũng được: nối memory, hỏi init project nào (fastcast, materiant, groove, cloud — chọn được nhiều)
 rồi clone repo còn thiếu (fastcast, groove kéo cả materiant; app dùng server chung — bảng `cloud_apps` / `$cloudApps` trong
-`init.*`, hiện là fastcast — kéo thêm `cloud` (remote `desktop-server`) và tạo khung `cloud/env/<app>-dev.env`, `<app>.env`
+`init.*`, hiện là fastcast, groove, ferry — kéo thêm `cloud` (remote `desktop-server`) và tạo khung `cloud/env/<app>-dev.env`, `<app>.env`
 (biến trống, `node cloud/tools/new-app.mjs --env-only`); chọn `cloud` = server + khung env của mọi app dùng nó; repo có rồi
 thì không đụng; remote của materiant tên `materiant-rust`; giá trị bí mật của cloud — `.env`, `env/`, `secrets/` — không theo
 git, điền / chép tay), soát công cụ. Không hỏi: `-Project fastcast,cloud` / `bash init.sh fastcast,cloud`.

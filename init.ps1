@@ -63,7 +63,7 @@ $repos = [ordered]@{
 }
 # App dùng server chung `cloud` (D-24): init app ⇒ kéo cloud theo + tạo khung env của app trong cloud/env/. App mới lên
 # server: `node cloud/tools/new-app.mjs <app>` rồi thêm tên vào đây (và `cloud_apps` của init.sh).
-$cloudApps = @('fastcast')
+$cloudApps = @('fastcast', 'groove', 'ferry')
 function Get-Pulls([string] $App) { $r = @($App, 'materiant'); if ($App -in $cloudApps) { $r += 'cloud' }; $r }
 # Project → các repo cần có.
 $projects = [ordered]@{

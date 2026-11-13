@@ -68,7 +68,7 @@ repo_url() {
 
 # App dùng server chung `cloud` (D-24): init app ⇒ kéo cloud theo + tạo khung env của app trong cloud/env/. App mới lên
 # server: `node cloud/tools/new-app.mjs <app>` rồi thêm tên vào đây (và `$cloudApps` của init.ps1).
-cloud_apps="fastcast"
+cloud_apps="fastcast groove ferry"
 uses_cloud() { case " $cloud_apps " in *" $1 "*) return 0 ;; esac; return 1; }
 # Nhãn trong bảng chọn: "(kéo <repo>…)".
 pulls() { local out="$1 + materiant"; uses_cloud "$1" && out="$out + cloud"; echo "$out"; }

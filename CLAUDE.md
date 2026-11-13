@@ -96,7 +96,7 @@ hot reload: mất trạng thái đang mở (trang, hộp thoại). `--no-watch` 
 
 ## Đánh tag
 
-`bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (fastcast, materiant, groove, ferry; space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. **Release note bắt buộc** (D-22, khuôn `.claude/rules/release-notes.md`): `<repo>/release-notes/v<version>.md` đi kèm commit và làm nội dung tag; thiếu thì script tạo khung rồi dừng. Nâng materiant thì fastcast / groove / ferry có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
+`bash tag.sh` / `pwsh ./tag.ps1`: hỏi project (fastcast, materiant, groove, ferry; space tích, enter xác nhận, chọn được nhiều; không hỏi: `--project a,b`, PowerShell `-Project a,b`), nâng version trong `Cargo.toml` + `Cargo.lock`, commit rồi tag `v<version>`. **Release note** (D-22, khuôn `.claude/rules/release-notes.md`): `<repo>/release-notes/v<version>.md` đi kèm commit và làm nội dung tag; viết sẵn thì dùng, thiếu thì script tự sinh từ tiêu đề commit kể từ tag trước rồi tag luôn (không dừng). Nâng materiant thì fastcast / groove / ferry có thêm commit cập nhật `Cargo.lock`. Không cờ = `-p` / `--patch`; `--minor`, `--major` nâng bậc tương ứng; `--current` tag version đang có, không nâng; `--push` đẩy lên origin. Dừng nếu còn thay đổi chưa commit, không ở `master`, hoặc tag đã có.
 
 ## Lệnh chung
 

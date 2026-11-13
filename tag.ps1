@@ -7,8 +7,9 @@
 #   pwsh ./tag.ps1 -p --push       # đẩy luôn commit + tag lên origin
 #   pwsh ./tag.ps1 -Project materiant --minor     # không hỏi project; nhiều project: -Project fastcast,materiant
 # Nâng materiant thì `Cargo.lock` của fastcast / groove / ferry đổi theo (build dùng `--locked`), nên app có thêm một commit.
-# Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
-# rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
+# Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag có `<repo>/release-notes/v<version>.md`. Viết sẵn thì dùng; thiếu
+# (hoặc còn khung mẫu có dòng `<!-- release-note: … -->`) thì script TỰ SINH từ tiêu đề commit kể từ tag trước rồi tag luôn, không
+# dừng (chủ dự án 13/11/2026). Tệp đi kèm commit nâng version và làm nội dung tag.
 param(
     [ValidateSet('fastcast', 'materiant', 'groove', 'ferry')] [string[]] $Project,
     [Alias('p')] [switch] $Patch,
@@ -86,14 +87,26 @@ if (-not $Project) {
 # materiant trước: app có commit cập nhật lock thì tag của app chứa luôn commit đó.
 $order = @('materiant', 'fastcast', 'groove', 'ferry' | Where-Object { $_ -in $Project })
 
+# Khung mẫu cũ còn dòng này ⇒ coi như chưa viết, tự sinh lại.
 $notesMarker = '<!-- release-note: điền xong thì xoá dòng này -->'
 function Get-NotesFile([string] $Name, [string] $Version) { Join-Path $PSScriptRoot "$Name/release-notes/v$Version.md" }
-# Khung theo `.claude/rules/release-notes.md`.
-function New-NotesStub([string] $Name, [string] $Version) {
+# Release note tự sinh từ tiêu đề commit kể từ tag `v*` gần nhất (bỏ commit plan / release / deps / decisions, bỏ mã task đầu dòng,
+# bỏ trùng) — như `write_auto_notes` của tag.sh. Không có commit nào ⇒ một dòng chung.
+function New-AutoNotes([string] $Name, [string] $Version) {
+    $repo = Join-Path $PSScriptRoot $Name
+    $prev = & git -C $repo describe --tags --abbrev=0 --match "v*" 2>$null
+    $range = if ($LASTEXITCODE -eq 0 -and $prev) { @("$prev..HEAD") } else { @() }
+    $seen = @{}
+    $lines = @(& git -C $repo log --no-merges --format=%s @range | Where-Object {
+            $_ -notmatch "^(plan|release|release notes|deps|decisions|docs|wip)(:| )"
+        } | ForEach-Object { $_ -replace "^[A-Za-z0-9_.-]+: ", "" } | Where-Object {
+            if ($seen.ContainsKey($_)) { $false } else { $seen[$_] = 1; $true }
+        } | ForEach-Object { "- $_" })
+    if ($lines.Count -eq 0) { $lines = @("- Sửa lỗi nhỏ và cải thiện độ ổn định.") }
     $file = Get-NotesFile $Name $Version
     New-Item -ItemType Directory -Force (Split-Path $file) | Out-Null
-    $date = Get-Date -Format 'yyyy-MM-dd'
-    $text = "# $Name v$Version ($date)`n`n$notesMarker`n`n## Mới`n`n- `n`n## Sửa lỗi`n`n- `n`n## Thay đổi khác`n`n- `n"
+    $date = Get-Date -Format "yyyy-MM-dd"
+    $text = "# $Name v$Version ($date)`n`n## Thay đổi`n`n" + ($lines -join "`n") + "`n"
     [IO.File]::WriteAllText($file, $text, [Text.UTF8Encoding]::new($false))
 }
 # Chỉ dòng version đầu tiên: của gói / [workspace.package], không đụng dòng version của phụ thuộc.
@@ -115,7 +128,6 @@ function Get-Plan([string] $Name) {
 }
 
 # Soát hết trước khi đụng gì: một project hỏng thì không project nào đổi.
-$notesMissing = $false
 foreach ($name in $order) {
     $repo = Join-Path $PSScriptRoot $name
     if (-not (Test-Path -LiteralPath (Join-Path $repo '.git'))) { throw "Chưa có ${name}: chạy init.ps1." }
@@ -127,16 +139,11 @@ foreach ($name in $order) {
     if ($branch -ne 'master') { throw "$name đang ở nhánh '$branch', chỉ tag trên master." }
     if (Invoke-Git $repo tag --list $plan.Tag) { throw "Tag $($plan.Tag) của $name đã có." }
     $notes = Get-NotesFile $name $plan.Next
-    if (-not (Test-Path -LiteralPath $notes)) {
-        New-NotesStub $name $plan.Next
-        Write-Host "Chưa có release note: đã tạo khung $name/release-notes/$($plan.Tag).md — điền rồi chạy lại."
-        $notesMissing = $true
-    } elseif ([IO.File]::ReadAllText($notes).Contains($notesMarker)) {
-        Write-Host "$name/release-notes/$($plan.Tag).md còn dòng mẫu: điền xong thì xoá dòng '$notesMarker'."
-        $notesMissing = $true
+    if (-not (Test-Path -LiteralPath $notes) -or [IO.File]::ReadAllText($notes).Contains($notesMarker)) {
+        New-AutoNotes $name $plan.Next
+        Write-Host "${name}: tự sinh release note $name/release-notes/$($plan.Tag).md từ commit (sửa được trước khi push: sửa tệp, git tag -f)."
     }
 }
-if ($notesMissing) { exit 1 }
 
 $pushes = @()
 $lockSynced = @()

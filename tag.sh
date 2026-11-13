@@ -8,8 +8,9 @@
 #   bash tag.sh -p --push       # đẩy luôn commit + tag lên origin
 #   bash tag.sh --project materiant --minor     # không hỏi project; nhiều project: --project fastcast,materiant
 # Nâng materiant thì `Cargo.lock` của fastcast / groove / ferry đổi theo (build dùng `--locked`), nên app có thêm một commit.
-# Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag cần `<repo>/release-notes/v<version>.md`. Thiếu thì script tạo khung
-# rồi dừng; điền xong (xoá dòng `<!-- release-note: … -->`) chạy lại. Tệp đi kèm commit nâng version và làm nội dung tag.
+# Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag có `<repo>/release-notes/v<version>.md`. Viết sẵn thì dùng; thiếu
+# (hoặc còn khung mẫu có dòng `<!-- release-note: … -->`) thì script TỰ SINH từ tiêu đề commit kể từ tag trước rồi tag luôn, không
+# dừng (chủ dự án 13/11/2026). Tệp đi kèm commit nâng version và làm nội dung tag.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -130,37 +131,27 @@ next_version() { # <version hiện tại> ⇒ in version mới
   echo "$major.$minor.$patch"
 }
 
+# Khung mẫu cũ còn dòng này ⇒ coi như chưa viết, tự sinh lại.
 notes_marker='<!-- release-note: điền xong thì xoá dòng này -->'
 # notes_file <repo> <version> ⇒ đường dẫn tệp release note của tag đó.
 notes_file() { echo "$root/$1/release-notes/v$2.md"; }
-# write_notes_stub <name> <version>: khung theo `.claude/rules/release-notes.md`.
-write_notes_stub() {
-  local file
+# write_auto_notes <name> <version>: release note từ tiêu đề commit kể từ tag `v*` gần nhất (bỏ commit plan / release / deps /
+# decisions, bỏ mã task đầu dòng, bỏ trùng). Không có commit nào ⇒ một dòng chung.
+write_auto_notes() {
+  local repo="$root/$1" file prev lines
   file="$(notes_file "$1" "$2")"
+  prev="$(git -C "$repo" describe --tags --abbrev=0 --match "v*" 2>/dev/null || true)"
+  lines="$(git -C "$repo" log --no-merges --format=%s ${prev:+"$prev..HEAD"} \
+    | grep -Ev "^(plan|release|release notes|deps|decisions|docs|wip)(:| )" \
+    | sed -E "s/^[A-Za-z0-9_.-]+: //" | awk "!seen[\$0]++" | sed "s/^/- /" || true)"
+  [ -n "$lines" ] || lines="- Sửa lỗi nhỏ và cải thiện độ ổn định."
   mkdir -p "$(dirname "$file")"
-  cat > "$file" <<NOTES
-# $1 v$2 ($(date +%Y-%m-%d))
-
-$notes_marker
-
-## Mới
-
-- 
-
-## Sửa lỗi
-
-- 
-
-## Thay đổi khác
-
-- 
-NOTES
+  printf "# %s v%s (%s)\n\n## Thay đổi\n\n%s\n" "$1" "$2" "$(date +%Y-%m-%d)" "$lines" > "$file"
 }
 
 read_version() { sed -n 's/^version = "\(.*\)"$/\1/p' "$root/$1/Cargo.toml" | head -1; }
 
 # Soát hết trước khi đụng gì: một project hỏng thì không project nào đổi.
-notes_missing=""
 for name in $order; do
   repo="$root/$name"
   [ -d "$repo/.git" ] || { echo "Chưa có $name: chạy bash init.sh." >&2; exit 1; }
@@ -173,16 +164,11 @@ for name in $order; do
   [ "$branch" = master ] || { echo "$name đang ở nhánh '$branch', chỉ tag trên master." >&2; exit 1; }
   [ -z "$(git -C "$repo" tag --list "v$next")" ] || { echo "Tag v$next của $name đã có." >&2; exit 1; }
   notes="$(notes_file "$name" "$next")"
-  if [ ! -f "$notes" ]; then
-    write_notes_stub "$name" "$next"
-    echo "Chưa có release note: đã tạo khung $name/release-notes/v$next.md — điền rồi chạy lại." >&2
-    notes_missing=1
-  elif grep -qF "$notes_marker" "$notes"; then
-    echo "$name/release-notes/v$next.md còn dòng mẫu: điền xong thì xoá dòng '$notes_marker'." >&2
-    notes_missing=1
+  if [ ! -f "$notes" ] || grep -qF "$notes_marker" "$notes"; then
+    write_auto_notes "$name" "$next"
+    echo "$name: tự sinh release note $name/release-notes/v$next.md từ commit (sửa được trước khi push: sửa tệp, git tag -f)."
   fi
 done
-[ -z "$notes_missing" ] || exit 1
 
 lock_synced=""
 pushes=""

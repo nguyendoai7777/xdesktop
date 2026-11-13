@@ -14,13 +14,16 @@ Mỗi tag `v<version>` của một repo (`fastcast`, `groove`, `materiant`) có 
 
 ## Quy trình
 
-1. Chạy `bash tag.sh` (hoặc `pwsh ./tag.ps1`) như thường. Chưa có tệp của version sắp tag ⇒ script tạo khung
-   `<repo>/release-notes/v<version>.md` rồi dừng, chưa đổi gì khác.
-2. Điền khung, **xoá dòng `<!-- release-note: điền xong thì xoá dòng này -->`** (còn dòng đó thì script từ chối).
-3. Chạy lại đúng lệnh cũ: script nâng version, commit `Cargo.toml` + `Cargo.lock` + tệp release note, đánh tag.
+Chạy `bash tag.sh` (hoặc `pwsh ./tag.ps1`) như thường — **không phải điền gì** (chủ dự án 13/11/2026: "cho phép release êm"):
 
-Có thể viết trước: tạo sẵn tệp đúng tên rồi mới chạy script — tệp chưa commit vẫn được phép, nó đi cùng commit nâng version.
-`--current` (tag version đang có) cũng đòi tệp; tệp chưa commit thì có thêm commit `release notes: v<version>`.
+- Chưa có tệp của version sắp tag (hoặc tệp còn dòng mẫu `<!-- release-note: điền xong thì xoá dòng này -->`) ⇒ script **tự sinh**
+  từ tiêu đề commit kể từ tag `v*` trước (`git log <tag trước>..HEAD`, bỏ commit `plan:` / `release` / `deps:` / `decisions:`, bỏ mã
+  task đầu dòng, bỏ trùng) thành một mục `## Thay đổi`, rồi nâng version, commit `Cargo.toml` + `Cargo.lock` + tệp, đánh tag luôn.
+- Muốn note viết cho người dùng: tạo sẵn tệp đúng tên theo khuôn dưới rồi mới chạy script (tệp chưa commit vẫn được phép, đi
+  cùng commit nâng version). Sửa note tự sinh trước khi push: sửa tệp, `git commit --amend`, `git tag -f -a v<version> --cleanup=verbatim -F <tệp>`.
+- Hộp "Có gì mới" của app (gd8_01) và `notes` của manifest cập nhật (`publish-release --notes`) đọc đúng tệp này.
+
+`--current` (tag version đang có) cũng vậy; tệp chưa commit thì có thêm commit `release notes: v<version>`.
 
 ## Khuôn
 

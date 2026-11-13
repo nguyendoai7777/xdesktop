@@ -6,6 +6,7 @@
 #   bash tag.sh --major         # 0.1.0 → 1.0.0
 #   bash tag.sh --current       # tag đúng version đang có, không nâng
 #   bash tag.sh -p --push       # đẩy luôn commit + tag lên origin
+#   bash tag.sh -f | --force    # tag v<version> đã có thì ghi đè (dời tag sang commit mới; --push đẩy đè tag trên origin)
 #   bash tag.sh --project materiant --minor     # không hỏi project; nhiều project: --project fastcast,materiant
 # Nâng materiant thì `Cargo.lock` của fastcast / groove / ferry đổi theo (build dùng `--locked`), nên app có thêm một commit.
 # Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag có `<repo>/release-notes/v<version>.md`. Viết sẵn thì dùng; thiếu
@@ -62,7 +63,7 @@ select_checklist() {
   done
 }
 
-bump="" push="" projects=""
+bump="" push="" force="" projects=""
 set_bump() {
   [ -z "$bump" ] || { echo "Chỉ chọn một trong -p, --minor, --major, --current." >&2; exit 2; }
   bump="$1"
@@ -74,6 +75,7 @@ while [ $# -gt 0 ]; do
     --major) set_bump major ;;
     --current) set_bump current ;;
     --push) push=1 ;;
+    -f|--force) force=1 ;;
     --project) [ $# -ge 2 ] || { echo "Thiếu tên sau --project." >&2; exit 2; }; projects="$projects $(printf '%s' "$2" | tr ',' ' ')"; shift ;;
     *) echo "Không hiểu tham số: $1" >&2; exit 2 ;;
   esac
@@ -135,12 +137,12 @@ next_version() { # <version hiện tại> ⇒ in version mới
 notes_marker='<!-- release-note: điền xong thì xoá dòng này -->'
 # notes_file <repo> <version> ⇒ đường dẫn tệp release note của tag đó.
 notes_file() { echo "$root/$1/release-notes/v$2.md"; }
-# write_auto_notes <name> <version>: release note từ tiêu đề commit kể từ tag `v*` gần nhất (bỏ commit plan / release / deps /
+# write_auto_notes <name> <version>: release note từ tiêu đề commit kể từ tag `v*` gần nhất (trừ chính tag sắp ghi đè khi --force) (bỏ commit plan / release / deps /
 # decisions, bỏ mã task đầu dòng, bỏ trùng). Không có commit nào ⇒ một dòng chung.
 write_auto_notes() {
   local repo="$root/$1" file prev lines
   file="$(notes_file "$1" "$2")"
-  prev="$(git -C "$repo" describe --tags --abbrev=0 --match "v*" 2>/dev/null || true)"
+  prev="$(git -C "$repo" describe --tags --abbrev=0 --match "v*" --exclude "v$2" 2>/dev/null || true)"
   lines="$(git -C "$repo" log --no-merges --format=%s ${prev:+"$prev..HEAD"} \
     | grep -Ev "^(plan|release|release notes|deps|decisions|docs|wip)(:| )" \
     | sed -E "s/^[A-Za-z0-9_.-]+: //" | awk "!seen[\$0]++" | sed "s/^/- /" || true)"
@@ -162,7 +164,10 @@ for name in $order; do
   [ -z "$dirty" ] || { echo "$name còn thay đổi chưa commit, tag sẽ không khớp code." >&2; exit 1; }
   branch="$(git -C "$repo" branch --show-current)"
   [ "$branch" = master ] || { echo "$name đang ở nhánh '$branch', chỉ tag trên master." >&2; exit 1; }
-  [ -z "$(git -C "$repo" tag --list "v$next")" ] || { echo "Tag v$next của $name đã có." >&2; exit 1; }
+  if [ -n "$(git -C "$repo" tag --list "v$next")" ]; then
+    [ -n "$force" ] || { echo "Tag v$next của $name đã có (thêm -f / --force để ghi đè)." >&2; exit 1; }
+    echo "$name: tag v$next đã có — ghi đè (--force)."
+  fi
   notes="$(notes_file "$name" "$next")"
   if [ ! -f "$notes" ] || grep -qF "$notes_marker" "$notes"; then
     write_auto_notes "$name" "$next"
@@ -204,7 +209,7 @@ for name in $order; do
     git -C "$repo" commit --quiet -m "release notes: $tag" -- "release-notes/$tag.md"
   fi
   # Nội dung tag = release note (changelog); `verbatim` giữ dòng `#` của markdown.
-  git -C "$repo" tag -a "$tag" --cleanup=verbatim -F "$(notes_file "$name" "$next")"
+  git -C "$repo" tag -a ${force:+-f} "$tag" --cleanup=verbatim -F "$(notes_file "$name" "$next")"
   echo "$name: $version → $next, tag $tag ở $(git -C "$repo" rev-parse --short HEAD)"
   pushes="$pushes$name $tag"$'\n'
 done
@@ -216,9 +221,10 @@ done
 while read -r name tag; do
   [ -n "$name" ] || continue
   if [ -n "$push" ]; then
-    git -C "$root/$name" push --quiet origin master $tag
+    # --force: `+<tag>` đè tag cũ trên origin (master vẫn chỉ fast-forward).
+    git -C "$root/$name" push --quiet origin master ${tag:+"${force:++}$tag"}
     echo "Đã đẩy $name lên origin."
   else
-    echo "Chưa đẩy. Đẩy lên: git -C $name push origin master${tag:+ $tag}"
+    echo "Chưa đẩy. Đẩy lên: git -C $name push origin master${tag:+ ${force:++}$tag}"
   fi
 done <<< "$pushes"

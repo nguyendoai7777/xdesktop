@@ -5,6 +5,7 @@
 #   pwsh ./tag.ps1 --major         # 0.1.0 → 1.0.0
 #   pwsh ./tag.ps1 --current       # tag đúng version đang có, không nâng
 #   pwsh ./tag.ps1 -p --push       # đẩy luôn commit + tag lên origin
+#   pwsh ./tag.ps1 -f | --force    # tag v<version> đã có thì ghi đè (dời tag sang commit mới; --push đẩy đè tag trên origin)
 #   pwsh ./tag.ps1 -Project materiant --minor     # không hỏi project; nhiều project: -Project fastcast,materiant
 # Nâng materiant thì `Cargo.lock` của fastcast / groove / ferry đổi theo (build dùng `--locked`), nên app có thêm một commit.
 # Release note (D-22, khuôn `.claude/rules/release-notes.md`): mỗi tag có `<repo>/release-notes/v<version>.md`. Viết sẵn thì dùng; thiếu
@@ -17,10 +18,19 @@ param(
     [switch] $Major,
     [switch] $Current,
     [switch] $Push,
+    [Alias('f')] [switch] $Force,
     # PowerShell không tự nhận cờ hai gạch: đọc ở đây để gõ giống tag.sh.
     [Parameter(ValueFromRemainingArguments)] [string[]] $Rest
 )
 $ErrorActionPreference = 'Stop'
+# Cờ hai gạch như tag.sh (PowerShell không tự nhận).
+foreach ($arg in $Rest) {
+    switch ($arg) {
+        '--force' { $Force = [switch]$true }
+        '--push' { $Push = [switch]$true }
+        default { throw "Không hiểu tham số: $arg" }
+    }
+}
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # ↑ ↓ di chuyển, Space tích / bỏ, Enter xác nhận. Vẽ lại tại chỗ bằng mã ANSI, phải có ít nhất một mục được tích.
@@ -94,7 +104,7 @@ function Get-NotesFile([string] $Name, [string] $Version) { Join-Path $PSScriptR
 # bỏ trùng) — như `write_auto_notes` của tag.sh. Không có commit nào ⇒ một dòng chung.
 function New-AutoNotes([string] $Name, [string] $Version) {
     $repo = Join-Path $PSScriptRoot $Name
-    $prev = & git -C $repo describe --tags --abbrev=0 --match "v*" 2>$null
+    $prev = & git -C $repo describe --tags --abbrev=0 --match "v*" --exclude "v$Version" 2>$null
     $range = if ($LASTEXITCODE -eq 0 -and $prev) { @("$prev..HEAD") } else { @() }
     $seen = @{}
     $lines = @(& git -C $repo log --no-merges --format=%s @range | Where-Object {
@@ -137,7 +147,10 @@ foreach ($name in $order) {
     if ($dirty) { throw "$name còn thay đổi chưa commit, tag sẽ không khớp code." }
     $branch = Invoke-Git $repo branch --show-current
     if ($branch -ne 'master') { throw "$name đang ở nhánh '$branch', chỉ tag trên master." }
-    if (Invoke-Git $repo tag --list $plan.Tag) { throw "Tag $($plan.Tag) của $name đã có." }
+    if (Invoke-Git $repo tag --list $plan.Tag) {
+        if (-not $Force) { throw "Tag $($plan.Tag) của $name đã có (thêm -f / --force để ghi đè)." }
+        Write-Host "${name}: tag $($plan.Tag) đã có — ghi đè (--force)."
+    }
     $notes = Get-NotesFile $name $plan.Next
     if (-not (Test-Path -LiteralPath $notes) -or [IO.File]::ReadAllText($notes).Contains($notesMarker)) {
         New-AutoNotes $name $plan.Next
@@ -191,7 +204,7 @@ foreach ($name in $order) {
         Invoke-Git $repo commit --quiet -m "release notes: $tag" -- "release-notes/$tag.md"
     }
     # Nội dung tag = release note (changelog); `verbatim` giữ dòng `#` của markdown.
-    Invoke-Git $repo tag -a $tag --cleanup=verbatim -F (Get-NotesFile $name $plan.Next)
+    Invoke-Git $repo tag -a @(if ($Force) { '-f' }) $tag --cleanup=verbatim -F (Get-NotesFile $name $plan.Next)
     Write-Host "${name}: $($plan.Version) → $($plan.Next), tag $tag ở $(Invoke-Git $repo rev-parse --short HEAD)"
     $pushes += , @($name, $tag)
 }
@@ -200,7 +213,8 @@ foreach ($app in $lockSynced) { if ($app -notin $order) { $pushes += , @($app) }
 
 foreach ($entry in $pushes) {
     $name = $entry[0]
-    $refs = @('master') + @($entry | Select-Object -Skip 1)
+    # --force: `+<tag>` đè tag cũ trên origin (master vẫn chỉ fast-forward).
+    $refs = @('master') + @($entry | Select-Object -Skip 1 | ForEach-Object { if ($Force) { "+$_" } else { $_ } })
     if ($Push) {
         Invoke-Git (Join-Path $PSScriptRoot $name) push --quiet origin @refs
         Write-Host "Đã đẩy $name lên origin."

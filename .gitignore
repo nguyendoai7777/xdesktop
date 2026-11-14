@@ -9,6 +9,9 @@
 # Bản build do build.ps1 / build.sh sinh
 /release/
 
+# NSIS portable cho bản cài Windows (fastcast / ferry tìm ở đây; chép từ bản tải về, không vào git)
+/tools/nsis/
+
 # Rust
 target/
 **/*.rs.bk

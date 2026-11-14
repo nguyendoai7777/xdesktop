@@ -80,6 +80,10 @@ Chỉ build được cho OS đang chạy. Không hỏi: `-Os windows -Arch x64 -
 
 Model OCR không nằm trong git. Chép sang máy khác: `pwsh ./export-ocr.ps1` / `bash export-ocr.sh` soát sha256 theo sổ rồi nén `fastcast/target/release/models` (bỏ thư viện ONNX Runtime vì theo OS) ra `release/fastcast/fastcast-ocr-models.tar.gz` + `.sha256`; đổi nguồn: `-Models <thư mục>` / đối số đầu. Máy nhận giải nén vào `fastcast/target/release/models`.
 
+Bản cài Windows (`fastcast` / `ferry`) cần `makensis`: cài `winget install NSIS.NSIS` (cần admin), hoặc giải nén bản NSIS
+portable vào `<gốc>/tools/nsis/` (script của hai repo tìm `tools/nsis/makensis.exe`; thư mục đã gitignore), hoặc
+`-Makensis <đường dẫn>` cho `packaging/windows/build-installer.ps1` (script build của repo chưa chuyển cờ này).
+
 ## Dọn dung lượng
 
 `pwsh ./clean.ps1` / `bash clean.sh`: xoá phần build sinh ra, giữ model OCR ở `fastcast/target/release/models` và cache build release (`-All` / `--all` xoá luôn). Không chạy lúc có session đang build.

@@ -9,7 +9,7 @@
 # Bản build do build.ps1 / build.sh sinh
 /release/
 
-# NSIS portable cho bản cài Windows (fastcast / ferry tìm ở đây; chép từ bản tải về, không vào git)
+# NSIS portable cho bản cài Windows (chỗ chính là `tools/nsis` cạnh gốc workspace; ferry tìm thêm ở đây)
 /tools/nsis/
 
 # Rust
